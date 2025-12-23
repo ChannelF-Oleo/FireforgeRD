@@ -1,4 +1,63 @@
-import { ServicePlan, ServiceCatalog } from "@/types";
+// src/types/index.ts
+
+// 1. Definimos las categorías permitidas (incluyendo 'technical')
+export type ServiceCategory = 'web' | 'ecommerce' | 'saas' | 'automation' | 'technical';
+
+// 2. Definimos la estructura del Plan
+export interface ServicePlan {
+  id: string;
+  name: string;
+  price: number;
+  // Cambiamos a 'string' para permitir "RD$", "RD$ / Hora" o "USD"
+  currency: string; 
+  category: ServiceCategory;
+  idealFor: string;
+  deliveryTime: string;
+  isRecommended?: boolean;
+  features: string[];
+}
+
+// 3. Definimos la estructura del Catálogo completo
+export interface ServiceCatalog {
+  web: {
+    laChispa: ServicePlan;
+    laFragua: ServicePlan;
+    acero: ServicePlan;
+    hierroForjado: ServicePlan;
+  };
+  ecommerce: {
+    tiendaStart: ServicePlan;
+    ecommercePro: ServicePlan;
+    marketplace: ServicePlan;
+  };
+  saas: {
+    agendaSimple: ServicePlan;
+    gestionPro: ServicePlan;
+    sistemaAdministrativo: ServicePlan;
+  };
+  automation: {
+    elPortero: ServicePlan;
+    botCaptador: ServicePlan;
+    neuroBot: ServicePlan;
+  };
+  // Agregamos la sección técnica
+  technical: {
+    emailCorp: ServicePlan;
+    vCard: ServicePlan;
+    identidad: ServicePlan;
+    copy: ServicePlan;
+    rescate: ServicePlan;
+  };
+}
+
+export interface CategoryInfo {
+  id: ServiceCategory;
+  name: string;
+  description: string;
+  icon: string;
+  services: ServicePlan[];
+}
+
 
 // Web Services
 export const webServices: ServicePlan[] = [
@@ -16,6 +75,7 @@ export const webServices: ServicePlan[] = [
       "Dominio gratis por un año",
       "Hosting SSL incluido",
       "Diseño responsive",
+      "Mantenimiento: RD$ 500",
     ],
   },
   {
@@ -32,6 +92,7 @@ export const webServices: ServicePlan[] = [
       "Hosting SSL",
       "Google Maps integrado",
       "SEO Básico optimizado",
+      "Mantenimiento: RD$ 1000",
     ],
   },
   {
@@ -45,10 +106,12 @@ export const webServices: ServicePlan[] = [
     isRecommended: true,
     features: [
       "Correos Corporativos",
+      "Dominio .COM (1 año)",
       "Base de datos",
       "Auto-respuesta (Resend)",
       "Diseño interactivo",
       "Formularios avanzados",
+      "Mantenimiento: RD$ 1,500",
     ],
   },
   {
@@ -61,10 +124,12 @@ export const webServices: ServicePlan[] = [
     deliveryTime: "15-20 días",
     features: [
       "Panel Autogestionable (CMS)",
+      "Dominio .COM (1 año)",
       "SEO Avanzado",
       "Capacitación incluida",
       "Next.js + Headless CMS",
       "Múltiples usuarios",
+      "Mantenimiento: RD$ 2,500",
     ],
   },
 ];
@@ -85,6 +150,7 @@ export const ecommerceServices: ServicePlan[] = [
       "Panel de productos",
       "Notificaciones de venta",
       "Inventario básico",
+      "Mantenimiento: RD$ 1,500",
     ],
   },
   {
@@ -99,6 +165,7 @@ export const ecommerceServices: ServicePlan[] = [
     features: [
       "Login de Clientes",
       "Historial de pedidos",
+      "Mantenimiento: RD$ 2,500",
       "Pagos Locales (Azul/Cardnet)",
       "Sistema de cupones",
       "Lista de deseos (Wishlist)",
@@ -114,6 +181,7 @@ export const ecommerceServices: ServicePlan[] = [
     deliveryTime: "30-45 días",
     features: [
       "Multi-vendedor",
+      "Mantenimiento: RD$ 5,500",
       "Precios dinámicos (Mayorista/Detalle)",
       "Lógica de envíos compleja",
       "Integración ERP",
@@ -231,7 +299,94 @@ export const automationServices: ServicePlan[] = [
   },
 ];
 
-// Service Catalog
+// ... (Existing code from webServices, ecommerceServices, saasServices, automationServices) ...
+
+// 5.5 Complementary Technical Services
+// Servicios Técnicos Complementarios - Servicios puntuales y mantenimiento
+export const technicalServices: ServicePlan[] = [
+  {
+    id: "email-corporativo",
+    name: "Email Corporativo",
+    price: 2500,
+    currency: "RD$",
+    category: "technical",
+    idealFor: "Profesionales, Nuevos Negocios",
+    deliveryTime: "24-48 horas",
+    features: [
+      "Configuración DNS/MX",
+      "Alta en servidor",
+      "Validación SPF/DKIM",
+      "Pruebas de entregabilidad",
+    ],
+  },
+  {
+    id: "vcard-digital",
+    name: "vCard Digital",
+    price: 3500,
+    currency: "RD$",
+    category: "technical",
+    idealFor: "Networking, Ventas",
+    deliveryTime: "3-5 días",
+    features: [
+      "Landing Page mini (Perfil)",
+      "Código QR personalizado",
+      "Botón 'Guardar Contacto' (vcf)",
+      "Iconos de Redes Sociales",
+      "Foto de perfil optimizada",
+    ],
+  },
+  {
+    id: "identidad-tecnica",
+    name: "Identidad Técnica",
+    price: 2000,
+    currency: "RD$",
+    category: "technical",
+    idealFor: "Marca Personal",
+    deliveryTime: "24 horas",
+    features: [
+      "Configuración Gravatar Global",
+      "Firma HTML para correos",
+      "Unificación de avatares",
+      "Asesoría de imagen digital",
+    ],
+  },
+  {
+    id: "copywriting-seo",
+    name: "Copywriting SEO",
+    price: 2500,
+    currency: "RD$",
+    category: "technical",
+    idealFor: "Blogs, Landing Pages",
+    deliveryTime: "3-5 días",
+    features: [
+      "Redacción por sección (600 palabras)",
+      "Investigación de Palabras Clave",
+      "Estructura H1, H2, H3",
+      "Meta Títulos y Descripciones",
+      "Optimización para lectura web",
+    ],
+  },
+  {
+    id: "mantenimiento-rescate",
+    name: "Mantenimiento/Rescate",
+    price: 2000,
+    currency: "RD$ / Hora", // Adjusted to reflect hourly nature
+    category: "technical",
+    idealFor: "Sitios Hackeados, Bugs",
+    deliveryTime: "Inmediato / Urgente",
+    features: [
+      "Limpieza de Virus/Malware",
+      "Actualización de Plugins/Core",
+      "Corrección de errores críticos",
+      "Restauración de copias de seguridad",
+      "Diagnóstico de seguridad",
+    ],
+  },
+];
+
+// ... (Update existing exports below) ...
+
+// Service Catalog Update
 export const serviceCatalog: ServiceCatalog = {
   web: {
     laChispa: webServices[0],
@@ -254,17 +409,26 @@ export const serviceCatalog: ServiceCatalog = {
     botCaptador: automationServices[1],
     neuroBot: automationServices[2],
   },
+  // Added Technical Services to Catalog
+  technical: {
+    emailCorp: technicalServices[0],
+    vCard: technicalServices[1],
+    identidad: technicalServices[2],
+    copy: technicalServices[3],
+    rescate: technicalServices[4],
+  },
 };
 
-// All services combined
+// All services combined Update
 export const allServices = [
   ...webServices,
   ...ecommerceServices,
   ...saasServices,
   ...automationServices,
+  ...technicalServices, // Included here
 ];
 
-// Service categories
+// Service categories Update
 export const serviceCategories = [
   {
     id: "web",
@@ -293,5 +457,13 @@ export const serviceCategories = [
     description: "Chatbots y automatización con IA",
     icon: "🤖",
     services: automationServices,
+  },
+  // Added Technical Category
+  {
+    id: "technical",
+    name: "Servicios Técnicos",
+    description: "Soluciones puntuales, mantenimiento y optimización",
+    icon: "🛠️",
+    services: technicalServices,
   },
 ] as const;
