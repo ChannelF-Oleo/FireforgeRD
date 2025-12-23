@@ -97,7 +97,7 @@ export async function submitContactForm(prevState: any, formData: FormData) {
     });
 
     const userEmailPromise = resend.emails.send({
-      from: 'FireforgeRD <onboarding@resend.dev>',
+      from: 'FireforgeRD <onboarding@fireforgerd.com>',
       to: [data.email],
       subject: 'Confirmación de Solicitud',
       html: `

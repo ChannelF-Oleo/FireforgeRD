@@ -1,7 +1,12 @@
 // src/types/index.ts
 
 // 1. Definimos las categorías permitidas (incluyendo 'technical')
-export type ServiceCategory = 'web' | 'ecommerce' | 'saas' | 'automation' | 'technical';
+export type ServiceCategory =
+  | "web"
+  | "ecommerce"
+  | "saas"
+  | "automation"
+  | "technical";
 
 // 2. Definimos la estructura del Plan
 export interface ServicePlan {
@@ -9,7 +14,7 @@ export interface ServicePlan {
   name: string;
   price: number;
   // Cambiamos a 'string' para permitir "RD$", "RD$ / Hora" o "USD"
-  currency: string; 
+  currency: string;
   category: ServiceCategory;
   idealFor: string;
   deliveryTime: string;
@@ -57,7 +62,6 @@ export interface CategoryInfo {
   icon: string;
   services: ServicePlan[];
 }
-
 
 // Web Services
 export const webServices: ServicePlan[] = [
