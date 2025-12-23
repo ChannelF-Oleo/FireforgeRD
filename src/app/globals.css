@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-background: #F9F8F6;
+  --color-surface: #FFFFFF;
+  --color-primary: #FF4D00;
+  --color-primary-hover: #E64500;
+  --color-primary-light: #FF6B2C;
+  --color-text-main: #1A1818;
+  --color-text-body: #3D3A36;
+  --color-text-muted: #6F6B65;
+  --color-text-light: #9C9890;
+  --font-display: 'Fraunces', Georgia, serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #F9F8F6;
+    color: #6F6B65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+  
+  ::selection {
+    background-color: rgba(255, 77, 0, 0.15);
+    color: #1A1818;
+  }
+}
+
+.font-display {
+  font-family: 'Fraunces', Georgia, serif;
+  font-optical-sizing: auto;
+}
+
+.glass-warm {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(26, 24, 24, 0.06);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-warm:hover {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 77, 0, 0.15);
+  box-shadow: 0 8px 32px rgba(255, 77, 0, 0.08);
+}
+
+.text-ember {
+  background: linear-gradient(135deg, #FF4D00 0%, #FF6B2C 50%, #FF4D00 100%);
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: ember-flow 3s ease-in-out infinite;
+}
+
+@keyframes ember-flow {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F9F8F6;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(26, 24, 24, 0.15);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FF4D00;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .backdrop-blur-glass {
+    backdrop-filter: blur(20px);
+  }
+}
