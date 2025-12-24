@@ -245,7 +245,7 @@ export function ContactForm() {
                   </div>
                   <h3 className="font-display text-3xl font-medium text-[#1A1818] mb-4">¡Recibido!</h3>
                   <p className="text-[#6F6B65] mb-8 max-w-md mx-auto">
-                    Gracias <strong>{watch("clientName")}</strong>. Hemos enviado una confirmación a <strong>{watch("email")}</strong>. Te contactaremos pronto.
+                    ¡Gracias! <strong>{watch("clientName")}</strong>. Hemos enviado un e-mail de confirmación. Te contactaremos pronto.
                   </p>
                   
                   <button

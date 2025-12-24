@@ -1,4 +1,4 @@
-import { HeroSection, ServicesGrid, PricingMatrix, ContactForm, FAQSection } from '@/components/sections';
+import { HeroSection, ServicesGrid, PricingMatrix, ContactForm, FAQSection, PortfolioCTA  } from '@/components/sections';
 
 export default function Home() {
   return (
@@ -6,6 +6,7 @@ export default function Home() {
       <HeroSection />
       <ServicesGrid />
       <PricingMatrix />
+      <PortfolioCTA />
       <FAQSection />
       <ContactForm />
     </>

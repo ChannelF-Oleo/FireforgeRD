@@ -25,11 +25,11 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://fireforgerd.com'),
 
   title: {
-    default: "FireforgeRD | Infraestructura Digital de Alto Rendimiento",
+    default: "FireforgeRD | Agencia de Desarrollo Web",
     template: "%s | FireforgeRD"
   },
   
-  description: "Ingeniería web, sistemas a medida y automatización con IA. Desarrollamos soluciones escalables para empresas que buscan control total y cero deuda técnica.",
+  description: "Ingeniería web, sistemas a medida y automatización con IA. Desarrollamos soluciones escalables para empresas que buscan control total y crecimiento.",
   
   keywords: [
     "Desarrollo Web República Dominicana",
@@ -39,7 +39,12 @@ export const metadata: Metadata = {
     "Sistemas CRM",
     "Automatización IA",
     "Diseño Web Premium",
-    "E-commerce avanzado"
+    "E-commerce avanzado",
+    "Paginas web",
+    "Republica Dominicana",
+    "Diseño de paginas",
+    "Fireforgerd",
+    "Fireforge"
   ],
 
   authors: [{ name: "Fireforge Engineering Team" }],
@@ -48,14 +53,14 @@ export const metadata: Metadata = {
 
   openGraph: {
     title: "FireforgeRD | Forjando el Futuro Digital",
-    description: "Infraestructura digital robusta. Sin plantillas. Solo código de alto rendimiento.",
+    description: "Desarrollo Web, sistemas a medida y automatizacion con IA en Republica Dominicana, RD.",
     url: 'https://fireforgerd.com',
     siteName: 'FireforgeRD',
     locale: 'es_DO',
     type: 'website',
     images: [
       {
-        url: '/og-image.jpg',
+        url: '/Icon.png', // Next.js buscará opengraph-image en src/app si usas file conventions
         width: 1200,
         height: 630,
         alt: 'FireforgeRD Digital Infrastructure',
@@ -65,10 +70,10 @@ export const metadata: Metadata = {
 
   twitter: {
     card: 'summary_large_image',
-    title: "FireforgeRD | Infraestructura Digital",
-    description: "Ingeniería web y sistemas a medida. Alto rendimiento para empresas líderes.",
+    title: "FireforgeRD | Agencia de Desarrollo Web",
+    description: "Desarrollo web, sistemas a medida y automatizacion con IA. Alto rendimiento para empresas líderes.",
     creator: '@fireforgerd',
-    images: ['/og-image.jpg'],
+    images: ['/Icon.png'],
   },
 
   robots: {
@@ -82,7 +87,8 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-
+  // Nota: Si usas icon.png en src/app, esta sección de 'icons' es opcional, 
+  // pero dejarla como fallback está bien.
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon-16x16.png',
@@ -95,9 +101,55 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
+  // DATOS ESTRUCTURADOS (Schema.org)
+  // Definidos DENTRO del componente para ser inyectados
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "FireforgeRD",
+    "image": "https://fireforgerd.com/og-image.jpg",
+    "description": "Desarrollo web, sistemas a medida y automatización con IA.",
+    "url": "https://fireforgerd.com",
+    "telephone": "+18094202288",
+    "priceRange": "$$$",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Santo Domingo",
+      "addressCountry": "DO"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 18.4861,
+      "longitude": -69.9312
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ],
+      "opens": "09:00",
+      "closes": "18:00"
+    },
+    "sameAs": [
+      "https://instagram.com/fireforgerd",
+      "https://linkedin.com/company/fireforgerd"
+    ]
+  };
+
   return (
     <html lang="es" className="scroll-smooth">
       <body className={`${inter.className} bg-background text-text-muted min-h-screen flex flex-col antialiased`}>
+        
+        {/* INYECCIÓN JSON-LD */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         
         <Header />
         
