@@ -82,7 +82,7 @@ export async function submitContactForm(prevState: any, formData: FormData) {
     // 1. Email para el ADMIN (Interno)
     const adminEmailPromise = resend.emails.send({
       from: "FireforgeRD <notifications@fireforgerd.com>", // Usa tu dominio verificado
-      to: [process.env.ADMIN_EMAIL || "admin@fireforge.com"],
+      to: [process.env.ADMIN_EMAIL || "channelf@fireforgerd.com"],
       replyTo: data.email,
       subject: `🔥 Lead: ${data.companyName}`,
       // Usamos el componente React
