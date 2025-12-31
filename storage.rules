@@ -1,0 +1,58 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Función helper para verificar autenticación
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Función helper para verificar si es admin
+    function isAdmin() {
+      return isAuthenticated() && 
+             request.auth.token.email in ['channelf@fireforgerd.com'];
+    }
+
+    // Validar que sea una imagen
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+
+    // Validar tamaño máximo (5MB)
+    function isValidSize() {
+      return request.resource.size < 5 * 1024 * 1024;
+    }
+
+    // ============ IMÁGENES DE BLOG ============
+    match /blog/{allPaths=**} {
+      // Lectura pública
+      allow read: if true;
+      // Solo admins pueden subir/eliminar, validando tipo y tamaño
+      allow write: if isAdmin() && isImage() && isValidSize();
+      allow delete: if isAdmin();
+    }
+
+    // ============ IMÁGENES DE CLIENTES ============
+    match /clients/{allPaths=**} {
+      // Lectura pública
+      allow read: if true;
+      // Solo admins pueden subir/eliminar
+      allow write: if isAdmin() && isImage() && isValidSize();
+      allow delete: if isAdmin();
+    }
+
+    // ============ ASSETS GENERALES ============
+    match /assets/{allPaths=**} {
+      // Lectura pública
+      allow read: if true;
+      // Solo admins pueden modificar
+      allow write: if isAdmin();
+    }
+
+    // Denegar todo lo demás por defecto
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

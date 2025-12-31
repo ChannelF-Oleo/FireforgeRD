@@ -1,6 +1,10 @@
-export { HeroSection } from './HeroSection';
-export { ServicesGrid } from './ServicesGrid';
-export { PricingMatrix } from './PricingMatrix';
-export { ContactForm } from './ContactForm';
-export { FAQSection } from './FAQSection';
-export { PortfolioCTA } from './PortfolioCTA';
+export { HeroSection } from "./HeroSection";
+export { ServicesGrid } from "./ServicesGrid";
+export { PricingMatrix } from "./PricingMatrix";
+export { ContactForm } from "./ContactForm";
+export { FAQSection } from "./FAQSection";
+export { PortfolioCTA } from "./PortfolioCTA";
+export { DiagnosticoQuiz } from "./DiagnosticoQuiz";
+export { BlogList } from "./BlogList";
+export { BlogPostView } from "./BlogPostView";
+export { ClientsGrid } from "./ClientsGrid";

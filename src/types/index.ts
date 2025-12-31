@@ -3,12 +3,12 @@ export interface ServicePlan {
   id: string;
   name: string;
   price: number;
-  currency: 'RD$';
+  currency: "RD$" | "USD";
   idealFor: string;
   features: string[];
   isRecommended?: boolean;
   deliveryTime: string;
-  category: 'web' | 'ecommerce' | 'saas' | 'automation';
+  category: "web" | "ecommerce" | "saas" | "automation";
 }
 
 export interface ContactFormData {
@@ -24,6 +24,78 @@ export interface LeadRecord {
   contact: string;
   serviceType: string;
   notes: string;
+}
+
+// ============ BLOG ============
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  coverImage: string;
+  author: string;
+  tags: string[];
+  published: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// ============ CLIENTES / PORTAFOLIO ============
+export interface Client {
+  id: string;
+  name: string;
+  tag: string; // Etiqueta corta (ej: "E-commerce", "Landing Page")
+  description: string;
+  image: string;
+  websiteUrl: string;
+  category: string;
+  featured: boolean;
+  order: number;
+  createdAt: Date;
+}
+
+// ============ QUIZ DIAGNÓSTICO ============
+export interface QuizAnswer {
+  questionId: string;
+  value: string | string[];
+}
+
+export interface QuizResult {
+  id: string;
+  email: string;
+  answers: Record<string, string | string[]>;
+  recommendationPrimary: string;
+  recommendationMix: string[];
+  specSummary: Record<string, string>;
+  budgetLevel: "bajo" | "medio" | "alto";
+  planSuggested: string;
+  createdAt: Date;
+  source?: string;
+  status: "nuevo" | "contactado" | "convertido";
+}
+
+export interface QuizQuestion {
+  id: string;
+  question: string;
+  type: "single" | "multiple" | "scale" | "text";
+  options?: { value: string; label: string; weight?: Record<string, number> }[];
+  required: boolean;
+  category: string;
+}
+
+// ============ CONTACTO ============
+export interface ContactSubmission {
+  id: string;
+  clientName: string;
+  companyName: string;
+  email: string;
+  whatsapp: string;
+  serviceType: string;
+  plan?: string;
+  notes?: string;
+  createdAt: Date;
+  status: "nuevo" | "contactado" | "convertido";
 }
 
 // Component Props
@@ -46,7 +118,7 @@ export interface FloatingWhatsAppProps {
 export interface LeadProcessingRequest {
   formData: ContactFormData;
   timestamp: Date;
-  source: 'contact-form' | 'whatsapp-redirect';
+  source: "contact-form" | "whatsapp-redirect";
 }
 
 export interface LeadProcessingResponse {
@@ -66,7 +138,7 @@ export interface EmailNotification {
 export interface APIError {
   code: string;
   message: string;
-  details?: any;
+  details?: unknown;
   timestamp: Date;
 }
 

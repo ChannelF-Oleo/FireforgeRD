@@ -1,0 +1,55 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Función helper para verificar si el usuario está autenticado
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Función helper para verificar si es admin (puedes agregar más emails)
+    function isAdmin() {
+      return isAuthenticated() && 
+             request.auth.token.email in ['channelf@fireforgerd.com'];
+    }
+
+    // ============ BLOG POSTS ============
+    match /blog_posts/{postId} {
+      // Lectura pública solo de posts publicados
+      allow read: if resource.data.published == true || isAdmin();
+      // Solo admins pueden crear, editar, eliminar
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ============ CLIENTES / PORTAFOLIO ============
+    match /clients/{clientId} {
+      // Lectura pública
+      allow read: if true;
+      // Solo admins pueden crear, editar, eliminar
+      allow create, update, delete: if isAdmin();
+    }
+
+    // ============ LEADS (Formulario de contacto) ============
+    match /leads/{leadId} {
+      // Cualquiera puede crear un lead (formulario público)
+      allow create: if true;
+      // Solo admins pueden leer, actualizar, eliminar
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ============ QUIZ RESULTS ============
+    match /quiz_results/{resultId} {
+      // Cualquiera puede crear (quiz público)
+      allow create: if true;
+      // Solo admins pueden leer, actualizar, eliminar
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ============ CONFIGURACIÓN GENERAL ============
+    match /config/{configId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}
