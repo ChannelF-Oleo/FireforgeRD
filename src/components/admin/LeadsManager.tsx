@@ -24,10 +24,21 @@ import type { ContactSubmission } from "@/types";
 
 type LeadStatus = "nuevo" | "contactado" | "convertido";
 
-const statusConfig: Record<LeadStatus, { label: string; color: string; icon: any }> = {
+const statusConfig: Record<
+  LeadStatus,
+  { label: string; color: string; icon: any }
+> = {
   nuevo: { label: "Nuevo", color: "bg-blue-50 text-blue-600", icon: Clock },
-  contactado: { label: "Contactado", color: "bg-yellow-50 text-yellow-600", icon: CheckCircle },
-  convertido: { label: "Convertido", color: "bg-green-50 text-green-600", icon: UserCheck },
+  contactado: {
+    label: "Contactado",
+    color: "bg-yellow-50 text-yellow-600",
+    icon: CheckCircle,
+  },
+  convertido: {
+    label: "Convertido",
+    color: "bg-green-50 text-green-600",
+    icon: UserCheck,
+  },
 };
 
 export function LeadsManager() {
@@ -66,9 +77,8 @@ export function LeadsManager() {
     }
   };
 
-  const filteredLeads = filter === "todos" 
-    ? leads 
-    : leads.filter(l => l.status === filter);
+  const filteredLeads =
+    filter === "todos" ? leads : leads.filter((l) => l.status === filter);
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat("es-DO", {
@@ -90,46 +100,48 @@ export function LeadsManager() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="font-display text-2xl font-medium text-[#1A1818]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <h2 className="font-display text-xl sm:text-2xl font-medium text-[#1A1818]">
           Leads / Contactos
         </h2>
-        <div className="flex items-center gap-2">
-          {(["todos", "nuevo", "contactado", "convertido"] as const).map((status) => (
-            <button
-              key={status}
-              onClick={() => setFilter(status)}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                filter === status
-                  ? "bg-[#1A1818] text-white"
-                  : "bg-[#F9F8F6] text-[#6F6B65] hover:bg-[#1A1818]/5"
-              }`}
-            >
-              {status === "todos" ? "Todos" : statusConfig[status].label}
-            </button>
-          ))}
+        <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 -mx-1 px-1">
+          {(["todos", "nuevo", "contactado", "convertido"] as const).map(
+            (status) => (
+              <button
+                key={status}
+                onClick={() => setFilter(status)}
+                className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap flex-shrink-0 ${
+                  filter === status
+                    ? "bg-[#1A1818] text-white"
+                    : "bg-[#F9F8F6] text-[#6F6B65] hover:bg-[#1A1818]/5"
+                }`}
+              >
+                {status === "todos" ? "Todos" : statusConfig[status].label}
+              </button>
+            ),
+          )}
         </div>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
-        <div className="bg-blue-50 rounded-xl p-4">
-          <p className="text-2xl font-display font-medium text-blue-600">
-            {leads.filter(l => l.status === "nuevo").length}
+      <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
+        <div className="bg-blue-50 rounded-xl p-3 sm:p-4">
+          <p className="text-lg sm:text-2xl font-display font-medium text-blue-600">
+            {leads.filter((l) => l.status === "nuevo").length}
           </p>
-          <p className="text-sm text-blue-600/70">Nuevos</p>
+          <p className="text-xs sm:text-sm text-blue-600/70">Nuevos</p>
         </div>
-        <div className="bg-yellow-50 rounded-xl p-4">
-          <p className="text-2xl font-display font-medium text-yellow-600">
-            {leads.filter(l => l.status === "contactado").length}
+        <div className="bg-yellow-50 rounded-xl p-3 sm:p-4">
+          <p className="text-lg sm:text-2xl font-display font-medium text-yellow-600">
+            {leads.filter((l) => l.status === "contactado").length}
           </p>
-          <p className="text-sm text-yellow-600/70">Contactados</p>
+          <p className="text-xs sm:text-sm text-yellow-600/70">Contactados</p>
         </div>
-        <div className="bg-green-50 rounded-xl p-4">
-          <p className="text-2xl font-display font-medium text-green-600">
-            {leads.filter(l => l.status === "convertido").length}
+        <div className="bg-green-50 rounded-xl p-3 sm:p-4">
+          <p className="text-lg sm:text-2xl font-display font-medium text-green-600">
+            {leads.filter((l) => l.status === "convertido").length}
           </p>
-          <p className="text-sm text-green-600/70">Convertidos</p>
+          <p className="text-xs sm:text-sm text-green-600/70">Convertidos</p>
         </div>
       </div>
 
@@ -137,44 +149,59 @@ export function LeadsManager() {
       <div className="bg-white rounded-2xl border border-[#1A1818]/5 overflow-hidden">
         {filteredLeads.length === 0 ? (
           <div className="p-12 text-center text-[#6F6B65]">
-            No hay leads {filter !== "todos" ? `con estado "${statusConfig[filter as LeadStatus].label}"` : ""}.
+            No hay leads{" "}
+            {filter !== "todos"
+              ? `con estado "${statusConfig[filter as LeadStatus].label}"`
+              : ""}
+            .
           </div>
         ) : (
           <div className="divide-y divide-[#1A1818]/5">
             {filteredLeads.map((lead) => {
               const StatusIcon = statusConfig[lead.status || "nuevo"].icon;
               return (
-                <div key={lead.id} className="p-5">
-                  <div className="flex items-start justify-between gap-4 mb-3">
-                    <div>
-                      <h3 className="font-medium text-[#1A1818]">{lead.clientName}</h3>
+                <div key={lead.id} className="p-4 sm:p-5">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 sm:gap-4 mb-3">
+                    <div className="min-w-0">
+                      <h3 className="font-medium text-[#1A1818] truncate">
+                        {lead.clientName}
+                      </h3>
                       <div className="flex items-center gap-2 text-sm text-[#6F6B65] mt-1">
-                        <Building2 className="w-3.5 h-3.5" />
-                        <span>{lead.companyName}</span>
+                        <Building2 className="w-3.5 h-3.5 flex-shrink-0" />
+                        <span className="truncate">{lead.companyName}</span>
                       </div>
                     </div>
-                    <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${statusConfig[lead.status || "nuevo"].color}`}>
+                    <div
+                      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium self-start flex-shrink-0 ${statusConfig[lead.status || "nuevo"].color}`}
+                    >
                       <StatusIcon className="w-3.5 h-3.5" />
                       {statusConfig[lead.status || "nuevo"].label}
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-4 text-sm text-[#6F6B65] mb-3">
-                    <a href={`mailto:${lead.email}`} className="flex items-center gap-1.5 hover:text-[#FF4D00]">
-                      <Mail className="w-3.5 h-3.5" />
-                      {lead.email}
+                  <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-4 text-sm text-[#6F6B65] mb-3">
+                    <a
+                      href={`mailto:${lead.email}`}
+                      className="flex items-center gap-1.5 hover:text-[#FF4D00] min-w-0"
+                    >
+                      <Mail className="w-3.5 h-3.5 flex-shrink-0" />
+                      <span className="truncate">{lead.email}</span>
                     </a>
-                    <a href={`https://wa.me/${lead.whatsapp.replace(/\D/g, "")}`} target="_blank" className="flex items-center gap-1.5 hover:text-[#FF4D00]">
-                      <Phone className="w-3.5 h-3.5" />
+                    <a
+                      href={`https://wa.me/${lead.whatsapp.replace(/\D/g, "")}`}
+                      target="_blank"
+                      className="flex items-center gap-1.5 hover:text-[#FF4D00]"
+                    >
+                      <Phone className="w-3.5 h-3.5 flex-shrink-0" />
                       {lead.whatsapp}
                     </a>
                     <span className="flex items-center gap-1.5">
-                      <Calendar className="w-3.5 h-3.5" />
+                      <Calendar className="w-3.5 h-3.5 flex-shrink-0" />
                       {formatDate(lead.createdAt)}
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2 mb-3">
+                  <div className="flex flex-wrap items-center gap-2 mb-3">
                     <span className="px-2 py-0.5 bg-[#F9F8F6] rounded text-xs font-medium text-[#1A1818]">
                       {lead.serviceType}
                     </span>
@@ -186,14 +213,18 @@ export function LeadsManager() {
                   </div>
 
                   {lead.notes && (
-                    <p className="text-sm text-[#6F6B65] bg-[#F9F8F6] rounded-lg p-3 mb-3">
+                    <p className="text-sm text-[#6F6B65] bg-[#F9F8F6] rounded-lg p-3 mb-3 break-words">
                       {lead.notes}
                     </p>
                   )}
 
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-[#9C9890]">Cambiar estado:</span>
-                    {(["nuevo", "contactado", "convertido"] as LeadStatus[]).map((status) => (
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-xs text-[#9C9890] w-full sm:w-auto">
+                      Cambiar estado:
+                    </span>
+                    {(
+                      ["nuevo", "contactado", "convertido"] as LeadStatus[]
+                    ).map((status) => (
                       <button
                         key={status}
                         onClick={() => updateStatus(lead.id, status)}

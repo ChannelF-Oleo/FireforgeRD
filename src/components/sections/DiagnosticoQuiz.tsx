@@ -41,6 +41,7 @@ export function DiagnosticoQuiz() {
     primary: SolutionKey;
     scores: Record<SolutionKey, number>;
   } | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const currentQuestion = quizQuestions[currentStep];
   const progress = ((currentStep + 1) / quizQuestions.length) * 100;
@@ -113,13 +114,14 @@ export function DiagnosticoQuiz() {
     if (!clientName.trim() || !email.trim()) return;
 
     setIsCalculating(true);
+    setSubmitError(null);
     const calculatedResults = calculateResults();
 
     // Guardar en Firebase y enviar emails
     const primarySolution = solutionDescriptions[calculatedResults.primary];
 
     try {
-      await submitQuizResults({
+      const result = await submitQuizResults({
         clientName,
         email,
         answers,
@@ -129,8 +131,17 @@ export function DiagnosticoQuiz() {
         suggestedPlans: primarySolution.plans,
         scores: calculatedResults.scores,
       });
+
+      if (!result.success) {
+        console.error("Error del servidor:", result.message);
+        setSubmitError(result.message);
+        // Aún mostramos resultados aunque falle el guardado
+      }
     } catch (error) {
       console.error("Error guardando quiz:", error);
+      setSubmitError(
+        "Error de conexión. Tus resultados se mostrarán pero no se guardaron.",
+      );
     }
 
     setResults(calculatedResults);
