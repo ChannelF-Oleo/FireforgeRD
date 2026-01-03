@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 
 import { PublicLayout } from "@/components/layout/PublicLayout";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 
 // EMBER GLASS: Sans-serif geométrica para UI
 const inter = Inter({
@@ -139,26 +140,11 @@ export default function RootLayout({
 
   return (
     <html lang="es" className="scroll-smooth">
-      <head>
-        {/* Google Analytics */}
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-GF4L0SL5X4"
-        />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-GF4L0SL5X4');
-            `,
-          }}
-        />
-      </head>
       <body
         className={`${inter.className} bg-background text-text-muted min-h-screen flex flex-col antialiased`}
       >
+        <GoogleAnalytics />
+
         {/* INYECCIÓN JSON-LD */}
         <script
           type="application/ld+json"

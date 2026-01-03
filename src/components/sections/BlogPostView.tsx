@@ -26,30 +26,50 @@ export function BlogPostView({ post }: Props) {
     return Math.ceil(words / wordsPerMinute);
   };
 
-  // Convertir Markdown a HTML
+  // Convertir Markdown a HTML con configuración optimizada
   const htmlContent = useMemo(() => {
+    // Configurar marked
     marked.setOptions({
-      breaks: true,
-      gfm: true,
+      breaks: true, // Convertir saltos de línea a <br>
+      gfm: true, // GitHub Flavored Markdown
     });
-    return marked(post.content) as string;
+
+    // Si el contenido no tiene formato markdown, agregar párrafos básicos
+    let content = post.content || "";
+
+    // Detectar si ya tiene formato HTML
+    const hasHtml = /<[a-z][\s\S]*>/i.test(content);
+
+    if (hasHtml) {
+      // Ya es HTML, devolverlo tal cual
+      return content;
+    }
+
+    // Convertir Markdown a HTML
+    const html = marked.parse(content);
+
+    return html as string;
   }, [post.content]);
 
   const handleShare = async () => {
     if (navigator.share) {
-      await navigator.share({
-        title: post.title,
-        text: post.excerpt,
-        url: window.location.href,
-      });
+      try {
+        await navigator.share({
+          title: post.title,
+          text: post.excerpt,
+          url: window.location.href,
+        });
+      } catch {
+        // Usuario canceló
+      }
     } else {
-      navigator.clipboard.writeText(window.location.href);
+      await navigator.clipboard.writeText(window.location.href);
       alert("Enlace copiado al portapapeles");
     }
   };
 
   return (
-    <article className="py-24 bg-white">
+    <article className="py-16 md:py-24 bg-white">
       <div className="container mx-auto px-4 md:px-6">
         {/* Back Link */}
         <Link
@@ -62,33 +82,39 @@ export function BlogPostView({ post }: Props) {
 
         <div className="max-w-3xl mx-auto">
           {/* Header */}
-          <header className="mb-10">
+          <header className="mb-8 md:mb-10">
             {/* Tags */}
-            <div className="flex flex-wrap gap-2 mb-4">
-              {post.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="px-3 py-1 bg-[#F9F8F6] text-[#FF4D00] text-xs font-bold uppercase tracking-wider rounded-full"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
+            {post.tags && post.tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-4">
+                {post.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="px-3 py-1 bg-[#F9F8F6] text-[#FF4D00] text-xs font-bold uppercase tracking-wider rounded-full"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
 
-            <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-light text-[#1A1818] mb-6 leading-tight">
+            <h1 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-[#1A1818] mb-4 md:mb-6 leading-tight">
               {post.title}
             </h1>
 
-            <p className="text-xl text-[#6F6B65] mb-6">{post.excerpt}</p>
+            {post.excerpt && (
+              <p className="text-lg md:text-xl text-[#6F6B65] mb-6">
+                {post.excerpt}
+              </p>
+            )}
 
             {/* Meta */}
-            <div className="flex flex-wrap items-center gap-4 text-sm text-[#9C9890]">
+            <div className="flex flex-wrap items-center gap-3 md:gap-4 text-sm text-[#9C9890]">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-[#FF4D00] flex items-center justify-center text-white text-xs font-bold">
-                  {post.author.charAt(0)}
+                  {post.author?.charAt(0) || "F"}
                 </div>
                 <span className="text-[#1A1818] font-medium">
-                  {post.author}
+                  {post.author || "FireforgeRD"}
                 </span>
               </div>
               <div className="flex items-center gap-1">
@@ -97,21 +123,21 @@ export function BlogPostView({ post }: Props) {
               </div>
               <div className="flex items-center gap-1">
                 <Clock className="w-4 h-4" />
-                <span>{estimateReadTime(post.content)} min de lectura</span>
+                <span>{estimateReadTime(post.content)} min</span>
               </div>
               <button
                 onClick={handleShare}
                 className="flex items-center gap-1 hover:text-[#FF4D00] transition-colors ml-auto"
               >
                 <Share2 className="w-4 h-4" />
-                Compartir
+                <span className="hidden sm:inline">Compartir</span>
               </button>
             </div>
           </header>
 
           {/* Cover Image */}
           {post.coverImage && (
-            <div className="relative aspect-video rounded-2xl overflow-hidden mb-10 bg-[#F9F8F6]">
+            <div className="relative aspect-video rounded-xl md:rounded-2xl overflow-hidden mb-8 md:mb-10 bg-[#F9F8F6]">
               <Image
                 src={post.coverImage}
                 alt={post.title}
@@ -122,16 +148,16 @@ export function BlogPostView({ post }: Props) {
             </div>
           )}
 
-          {/* Content */}
+          {/* Content - Estilos aplicados directamente */}
           <div
-            className="prose prose-lg max-w-none prose-headings:font-display prose-headings:text-[#1A1818] prose-headings:font-medium prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3 prose-p:text-[#3D3A36] prose-p:leading-relaxed prose-p:mb-4 prose-a:text-[#FF4D00] prose-a:no-underline hover:prose-a:underline prose-strong:text-[#1A1818] prose-ul:my-4 prose-ul:list-disc prose-ul:pl-6 prose-ol:my-4 prose-ol:list-decimal prose-ol:pl-6 prose-li:text-[#3D3A36] prose-li:mb-2 prose-blockquote:border-l-4 prose-blockquote:border-[#FF4D00] prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-[#6F6B65] prose-code:bg-[#F9F8F6] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-[#FF4D00] prose-code:text-sm prose-pre:bg-[#1A1818] prose-pre:rounded-xl prose-img:rounded-xl"
+            className="blog-content"
             dangerouslySetInnerHTML={{ __html: htmlContent }}
           />
 
           {/* Footer CTA */}
-          <div className="mt-16 p-8 bg-[#F9F8F6] rounded-2xl text-center">
+          <div className="mt-12 md:mt-16 p-6 md:p-8 bg-[#F9F8F6] rounded-2xl text-center">
             <BookOpen className="w-10 h-10 text-[#FF4D00] mx-auto mb-4" />
-            <h3 className="font-display text-2xl text-[#1A1818] mb-3">
+            <h3 className="font-display text-xl md:text-2xl text-[#1A1818] mb-3">
               ¿Te gustó este artículo?
             </h3>
             <p className="text-[#6F6B65] mb-6">
