@@ -121,15 +121,15 @@ export function ClientsManager() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="font-display text-2xl font-medium text-[#1A1818]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <h2 className="font-display text-xl sm:text-2xl font-medium text-[#1A1818]">
           Clientes / Portafolio
         </h2>
         <button
           onClick={() =>
             setEditingClient({ featured: false, order: clients.length })
           }
-          className="flex items-center gap-2 px-4 py-2 bg-[#1A1818] text-white rounded-xl text-sm font-medium hover:bg-[#FF4D00] transition-colors"
+          className="flex items-center justify-center gap-2 px-4 py-2 bg-[#1A1818] text-white rounded-xl text-sm font-medium hover:bg-[#FF4D00] transition-colors w-full sm:w-auto"
         >
           <Plus className="w-4 h-4" />
           Nuevo Cliente
@@ -152,7 +152,7 @@ export function ClientsManager() {
               </button>
             </div>
 
-            <div className="p-6 space-y-4">
+            <div className="p-4 sm:p-6 space-y-4">
               <div>
                 <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider block mb-2">
                   Nombre
@@ -163,7 +163,7 @@ export function ClientsManager() {
                   onChange={(e) =>
                     setEditingClient({ ...editingClient, name: e.target.value })
                   }
-                  className="w-full px-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:border-[#FF4D00]/30 outline-none"
+                  className="w-full px-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:border-[#FF4D00]/30 outline-none text-sm sm:text-base"
                   placeholder="Nombre del cliente/proyecto"
                 />
               </div>
@@ -178,7 +178,7 @@ export function ClientsManager() {
                   onChange={(e) =>
                     setEditingClient({ ...editingClient, tag: e.target.value })
                   }
-                  className="w-full px-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:border-[#FF4D00]/30 outline-none"
+                  className="w-full px-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:border-[#FF4D00]/30 outline-none text-sm sm:text-base"
                   placeholder="Ej: E-commerce, Landing Page, Sistema Web"
                 />
               </div>
@@ -195,7 +195,7 @@ export function ClientsManager() {
                       description: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:border-[#FF4D00]/30 outline-none resize-none"
+                  className="w-full px-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:border-[#FF4D00]/30 outline-none resize-none text-sm sm:text-base"
                   rows={3}
                   placeholder="Breve descripción del proyecto"
                 />
@@ -223,12 +223,12 @@ export function ClientsManager() {
                       websiteUrl: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:border-[#FF4D00]/30 outline-none"
+                  className="w-full px-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:border-[#FF4D00]/30 outline-none text-sm sm:text-base"
                   placeholder="https://cliente.com"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider block mb-2">
                     Categoría
@@ -241,7 +241,7 @@ export function ClientsManager() {
                         category: e.target.value,
                       })
                     }
-                    className="w-full px-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:border-[#FF4D00]/30 outline-none"
+                    className="w-full px-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:border-[#FF4D00]/30 outline-none text-sm sm:text-base"
                   >
                     <option value="web">Sitio Web</option>
                     <option value="ecommerce">E-commerce</option>
@@ -262,7 +262,7 @@ export function ClientsManager() {
                         order: parseInt(e.target.value),
                       })
                     }
-                    className="w-full px-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:border-[#FF4D00]/30 outline-none"
+                    className="w-full px-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:border-[#FF4D00]/30 outline-none text-sm sm:text-base"
                   />
                 </div>
               </div>
@@ -319,55 +319,95 @@ export function ClientsManager() {
         ) : (
           <div className="divide-y divide-[#1A1818]/5">
             {clients.map((client) => (
-              <div key={client.id} className="p-4 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[#F9F8F6] overflow-hidden flex-shrink-0">
-                  {client.image && (
-                    <img
-                      src={client.image}
-                      alt={client.name}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
+              <div key={client.id} className="p-3 sm:p-4">
+                <div className="flex items-start sm:items-center gap-3 sm:gap-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#F9F8F6] overflow-hidden flex-shrink-0">
+                    {client.image && (
+                      <img
+                        src={client.image}
+                        alt={client.name}
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-medium text-[#1A1818] truncate text-sm sm:text-base">
+                      {client.name}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-[#6F6B65] truncate">
+                      {client.tag || client.category}
+                    </p>
+                  </div>
+                  {/* Desktop actions */}
+                  <div className="hidden sm:flex items-center gap-2">
+                    {client.websiteUrl && (
+                      <a
+                        href={client.websiteUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 rounded-lg text-[#6F6B65] hover:bg-[#F9F8F6]"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    )}
+                    <button
+                      onClick={() => toggleFeatured(client)}
+                      className={`p-2 rounded-lg ${client.featured ? "text-yellow-500 bg-yellow-50" : "text-[#9C9890] bg-[#F9F8F6]"}`}
+                    >
+                      <Star
+                        className="w-4 h-4"
+                        fill={client.featured ? "currentColor" : "none"}
+                      />
+                    </button>
+                    <button
+                      onClick={() => setEditingClient(client)}
+                      className="p-2 rounded-lg text-[#6F6B65] hover:bg-[#F9F8F6]"
+                    >
+                      <Edit2 className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(client.id)}
+                      className="p-2 rounded-lg text-red-500 hover:bg-red-50"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-medium text-[#1A1818] truncate">
-                    {client.name}
-                  </h3>
-                  <p className="text-sm text-[#6F6B65]">
-                    {client.tag || client.category}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
+                {/* Mobile actions */}
+                <div className="flex sm:hidden items-center gap-1 mt-3 pt-3 border-t border-[#1A1818]/5">
                   {client.websiteUrl && (
                     <a
                       href={client.websiteUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-2 rounded-lg text-[#6F6B65] hover:bg-[#F9F8F6]"
+                      className="flex-1 flex items-center justify-center gap-1 p-2 rounded-lg text-[#6F6B65] bg-[#F9F8F6] text-xs"
                     >
-                      <ExternalLink className="w-4 h-4" />
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      Ver
                     </a>
                   )}
                   <button
                     onClick={() => toggleFeatured(client)}
-                    className={`p-2 rounded-lg ${client.featured ? "text-yellow-500 bg-yellow-50" : "text-[#9C9890] bg-[#F9F8F6]"}`}
+                    className={`flex-1 flex items-center justify-center gap-1 p-2 rounded-lg text-xs ${client.featured ? "text-yellow-600 bg-yellow-50" : "text-[#9C9890] bg-[#F9F8F6]"}`}
                   >
                     <Star
-                      className="w-4 h-4"
+                      className="w-3.5 h-3.5"
                       fill={client.featured ? "currentColor" : "none"}
                     />
+                    {client.featured ? "Destacado" : "Destacar"}
                   </button>
                   <button
                     onClick={() => setEditingClient(client)}
-                    className="p-2 rounded-lg text-[#6F6B65] hover:bg-[#F9F8F6]"
+                    className="flex-1 flex items-center justify-center gap-1 p-2 rounded-lg text-[#6F6B65] bg-[#F9F8F6] text-xs"
                   >
-                    <Edit2 className="w-4 h-4" />
+                    <Edit2 className="w-3.5 h-3.5" />
+                    Editar
                   </button>
                   <button
                     onClick={() => handleDelete(client.id)}
-                    className="p-2 rounded-lg text-red-500 hover:bg-red-50"
+                    className="p-2 rounded-lg text-red-500 bg-red-50"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
