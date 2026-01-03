@@ -1,8 +1,10 @@
 "use client";
 
+import { useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Calendar, Clock, ArrowLeft, Share2, BookOpen } from "lucide-react";
+import { marked } from "marked";
 import type { BlogPost } from "@/types";
 
 interface Props {
@@ -23,6 +25,15 @@ export function BlogPostView({ post }: Props) {
     const words = content.split(/\s+/).length;
     return Math.ceil(words / wordsPerMinute);
   };
+
+  // Convertir Markdown a HTML
+  const htmlContent = useMemo(() => {
+    marked.setOptions({
+      breaks: true,
+      gfm: true,
+    });
+    return marked(post.content) as string;
+  }, [post.content]);
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -113,8 +124,8 @@ export function BlogPostView({ post }: Props) {
 
           {/* Content */}
           <div
-            className="prose prose-lg max-w-none prose-headings:font-display prose-headings:text-[#1A1818] prose-p:text-[#3D3A36] prose-a:text-[#FF4D00] prose-a:no-underline hover:prose-a:underline prose-strong:text-[#1A1818] prose-code:bg-[#F9F8F6] prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-pre:bg-[#1A1818] prose-img:rounded-xl"
-            dangerouslySetInnerHTML={{ __html: post.content }}
+            className="prose prose-lg max-w-none prose-headings:font-display prose-headings:text-[#1A1818] prose-headings:font-medium prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3 prose-p:text-[#3D3A36] prose-p:leading-relaxed prose-p:mb-4 prose-a:text-[#FF4D00] prose-a:no-underline hover:prose-a:underline prose-strong:text-[#1A1818] prose-ul:my-4 prose-ul:list-disc prose-ul:pl-6 prose-ol:my-4 prose-ol:list-decimal prose-ol:pl-6 prose-li:text-[#3D3A36] prose-li:mb-2 prose-blockquote:border-l-4 prose-blockquote:border-[#FF4D00] prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-[#6F6B65] prose-code:bg-[#F9F8F6] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-[#FF4D00] prose-code:text-sm prose-pre:bg-[#1A1818] prose-pre:rounded-xl prose-img:rounded-xl"
+            dangerouslySetInnerHTML={{ __html: htmlContent }}
           />
 
           {/* Footer CTA */}
