@@ -5,7 +5,17 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, MessageCircle, ChevronDown, Lock, Loader2, Mail, Phone, User, Building2 } from "lucide-react";
+import {
+  CheckCircle2,
+  MessageCircle,
+  ChevronDown,
+  Lock,
+  Loader2,
+  Mail,
+  Phone,
+  User,
+  Building2,
+} from "lucide-react";
 import { submitContactForm } from "@/app/actions";
 import { serviceCategories } from "@/lib/services-data";
 
@@ -39,7 +49,8 @@ export function ContactForm() {
 
   const selectedServiceId = watch("serviceType");
   const availablePlans = selectedServiceId
-    ? serviceCategories.find((cat) => cat.id === selectedServiceId)?.services || []
+    ? serviceCategories.find((cat) => cat.id === selectedServiceId)?.services ||
+      []
     : [];
 
   useEffect(() => {
@@ -48,7 +59,7 @@ export function ContactForm() {
 
   const onSubmit = async (data: FormDataSchema) => {
     setIsSubmitting(true);
-    
+
     const formData = new FormData();
     formData.append("clientName", data.clientName);
     formData.append("companyName", data.companyName);
@@ -71,7 +82,10 @@ export function ContactForm() {
       console.error("Error en envío:", error);
       // Fallback
       const msg = `Hola, soy ${data.clientName} de ${data.companyName}. Tuve un error en el formulario web. Me interesa el servicio de ${data.serviceType}.`;
-      window.open(`https://wa.me/18290000000?text=${encodeURIComponent(msg)}`, '_blank');
+      window.open(
+        `https://wa.me/18094202288?text=${encodeURIComponent(msg)}`,
+        "_blank",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -83,19 +97,23 @@ export function ContactForm() {
 
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         <div className="max-w-2xl mx-auto">
-          
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F9F8F6] border border-[#1A1818]/5 mb-4">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF4D00] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FF4D00]"></span>
               </span>
-              <span className="text-[10px] font-bold tracking-widest uppercase text-[#6F6B65]">Agenda Abierta</span>
+              <span className="text-[10px] font-bold tracking-widest uppercase text-[#6F6B65]">
+                Agenda Abierta
+              </span>
             </div>
             <h2 className="font-display text-4xl md:text-5xl font-light text-[#1A1818] mb-4">
-              Inicia tu <span className="text-[#FF4D00] font-medium">Transformación</span>
+              Inicia tu{" "}
+              <span className="text-[#FF4D00] font-medium">Transformación</span>
             </h2>
-            <p className="text-[#6F6B65] text-lg">Cuéntanos sobre tu empresa y diseñemos una solución a medida.</p>
+            <p className="text-[#6F6B65] text-lg">
+              Cuéntanos sobre tu empresa y diseñemos una solución a medida.
+            </p>
           </div>
 
           <div className="rounded-3xl bg-white shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] border border-[#1A1818]/5 overflow-hidden p-8 md:p-10 relative">
@@ -112,7 +130,9 @@ export function ContactForm() {
                   {/* BLOQUE 1: IDENTIDAD (2 Columnas) */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider ml-1">Tu Nombre</label>
+                      <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider ml-1">
+                        Tu Nombre
+                      </label>
                       <div className="relative group">
                         <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[#FF4D00] transition-colors" />
                         <input
@@ -121,11 +141,17 @@ export function ContactForm() {
                           className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:bg-white focus:border-[#FF4D00]/30 focus:ring-4 focus:ring-[#FF4D00]/5 outline-none transition-all text-sm"
                         />
                       </div>
-                      {errors.clientName && <p className="text-xs text-red-500 ml-1">{errors.clientName.message}</p>}
+                      {errors.clientName && (
+                        <p className="text-xs text-red-500 ml-1">
+                          {errors.clientName.message}
+                        </p>
+                      )}
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider ml-1">Empresa</label>
+                      <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider ml-1">
+                        Empresa
+                      </label>
                       <div className="relative group">
                         <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[#FF4D00] transition-colors" />
                         <input
@@ -134,27 +160,39 @@ export function ContactForm() {
                           className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:bg-white focus:border-[#FF4D00]/30 focus:ring-4 focus:ring-[#FF4D00]/5 outline-none transition-all text-sm"
                         />
                       </div>
-                      {errors.companyName && <p className="text-xs text-red-500 ml-1">{errors.companyName.message}</p>}
+                      {errors.companyName && (
+                        <p className="text-xs text-red-500 ml-1">
+                          {errors.companyName.message}
+                        </p>
+                      )}
                     </div>
                   </div>
 
                   {/* BLOQUE 2: CONTACTO (2 Columnas) */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider ml-1">Correo Corporativo</label>
+                      <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider ml-1">
+                        Correo Electronico
+                      </label>
                       <div className="relative group">
                         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[#FF4D00] transition-colors" />
                         <input
                           {...register("email")}
-                          placeholder="ana@empresa.com"
+                          placeholder="ana@gmail.com"
                           className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:bg-white focus:border-[#FF4D00]/30 focus:ring-4 focus:ring-[#FF4D00]/5 outline-none transition-all text-sm"
                         />
                       </div>
-                      {errors.email && <p className="text-xs text-red-500 ml-1">{errors.email.message}</p>}
+                      {errors.email && (
+                        <p className="text-xs text-red-500 ml-1">
+                          {errors.email.message}
+                        </p>
+                      )}
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider ml-1">WhatsApp</label>
+                      <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider ml-1">
+                        WhatsApp
+                      </label>
                       <div className="relative group">
                         <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[#FF4D00] transition-colors" />
                         <input
@@ -163,7 +201,11 @@ export function ContactForm() {
                           className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:bg-white focus:border-[#FF4D00]/30 focus:ring-4 focus:ring-[#FF4D00]/5 outline-none transition-all text-sm"
                         />
                       </div>
-                      {errors.whatsapp && <p className="text-xs text-red-500 ml-1">{errors.whatsapp.message}</p>}
+                      {errors.whatsapp && (
+                        <p className="text-xs text-red-500 ml-1">
+                          {errors.whatsapp.message}
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -176,11 +218,17 @@ export function ContactForm() {
                       >
                         <option value="">Selecciona Servicio...</option>
                         {serviceCategories.map((cat) => (
-                          <option key={cat.id} value={cat.id}>{cat.name}</option>
+                          <option key={cat.id} value={cat.id}>
+                            {cat.name}
+                          </option>
                         ))}
                       </select>
                       <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9C9890] pointer-events-none" />
-                      {errors.serviceType && <p className="text-xs text-red-500 mt-1 ml-1">{errors.serviceType.message}</p>}
+                      {errors.serviceType && (
+                        <p className="text-xs text-red-500 mt-1 ml-1">
+                          {errors.serviceType.message}
+                        </p>
+                      )}
                     </div>
 
                     <div className="relative">
@@ -188,22 +236,26 @@ export function ContactForm() {
                         {...register("plan")}
                         disabled={!selectedServiceId}
                         className={`w-full appearance-none px-4 py-3.5 rounded-xl border border-transparent outline-none transition-all text-sm cursor-pointer font-medium ${
-                          !selectedServiceId 
-                            ? "bg-gray-100 text-gray-400 cursor-not-allowed" 
+                          !selectedServiceId
+                            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                             : "bg-[#F9F8F6] focus:bg-white focus:border-[#FF4D00]/30 text-[#1A1818]"
                         }`}
                       >
                         <option value="">
-                          {selectedServiceId ? "Selecciona Plan..." : "Elige servicio primero"}
+                          {selectedServiceId
+                            ? "Selecciona Plan..."
+                            : "Elige servicio primero"}
                         </option>
                         {availablePlans.map((plan) => (
-                          <option key={plan.id} value={plan.name}>{plan.name}</option>
+                          <option key={plan.id} value={plan.name}>
+                            {plan.name}
+                          </option>
                         ))}
                       </select>
                       {!selectedServiceId ? (
-                          <Lock className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+                        <Lock className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
                       ) : (
-                          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9C9890] pointer-events-none" />
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9C9890] pointer-events-none" />
                       )}
                     </div>
                   </div>
@@ -226,7 +278,8 @@ export function ContactForm() {
                   >
                     {isSubmitting ? (
                       <>
-                        <Loader2 className="w-4 h-4 animate-spin" /> Procesando...
+                        <Loader2 className="w-4 h-4 animate-spin" />{" "}
+                        Procesando...
                       </>
                     ) : (
                       "Solicitar Cotización"
@@ -243,13 +296,19 @@ export function ContactForm() {
                   <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6 mx-auto">
                     <CheckCircle2 className="w-10 h-10" />
                   </div>
-                  <h3 className="font-display text-3xl font-medium text-[#1A1818] mb-4">¡Recibido!</h3>
+                  <h3 className="font-display text-3xl font-medium text-[#1A1818] mb-4">
+                    ¡Recibido!
+                  </h3>
                   <p className="text-[#6F6B65] mb-8 max-w-md mx-auto">
-                    ¡Gracias! <strong>{watch("clientName")}</strong>. Hemos enviado un e-mail de confirmación. Te contactaremos pronto.
+                    ¡Gracias! <strong>{watch("clientName")}</strong>. Hemos
+                    enviado un e-mail de confirmación. Te contactaremos pronto.
                   </p>
-                  
+
                   <button
-                    onClick={() => { setIsSuccess(false); reset(); }}
+                    onClick={() => {
+                      setIsSuccess(false);
+                      reset();
+                    }}
                     className="text-sm font-medium text-[#1A1818] underline underline-offset-4 hover:text-[#FF4D00] transition-colors"
                   >
                     Nueva solicitud
@@ -263,4 +322,3 @@ export function ContactForm() {
     </section>
   );
 }
-

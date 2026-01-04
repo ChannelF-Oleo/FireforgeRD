@@ -277,3 +277,26 @@
     font-size: 0.8rem;
   }
 }
+
+/* ========================================
+   GLOBAL INTERACTIVE ELEMENTS
+   ======================================== */
+button,
+[role="button"],
+a,
+.cursor-pointer {
+  cursor: pointer;
+}
+
+button:disabled,
+[disabled] {
+  cursor: not-allowed;
+}
+
+/* Ensure all clickable elements have proper hover states */
+a:not([class]),
+button:not([class]) {
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}

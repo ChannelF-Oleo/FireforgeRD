@@ -47,11 +47,11 @@ export function MobileMenu({
       <div className="flex flex-col w-full max-w-sm space-y-3 relative z-10">
         {menuItems.map((item, idx) => {
           const baseClasses = `
-            w-full py-4 text-base font-medium rounded-2xl transition-all duration-300 text-center
+            w-full py-4 text-base font-medium rounded-2xl transition-all duration-300 text-center cursor-pointer
             ${
               item.highlight
-                ? "bg-[#FF4D00] text-white shadow-[0_4px_20px_rgba(255,77,0,0.3)]"
-                : "bg-white/70 backdrop-blur-sm border border-[#1A1818]/5 text-[#1A1818] hover:border-[#FF4D00]/20 hover:shadow-[0_4px_20px_rgba(255,77,0,0.08)]"
+                ? "bg-[#FF4D00] text-white shadow-[0_4px_20px_rgba(255,77,0,0.3)] hover:bg-[#E64500] active:scale-[0.98]"
+                : "bg-white/70 backdrop-blur-sm border border-[#1A1818]/5 text-[#1A1818] hover:border-[#FF4D00]/20 hover:shadow-[0_4px_20px_rgba(255,77,0,0.08)] active:scale-[0.98]"
             }
           `;
 

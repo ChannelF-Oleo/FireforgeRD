@@ -32,7 +32,9 @@ import type { BlogPost } from "@/types";
 export function BlogManager() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
-  const [editingPost, setEditingPost] = useState<Partial<BlogPost> | null>(null);
+  const [editingPost, setEditingPost] = useState<Partial<BlogPost> | null>(
+    null,
+  );
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -254,7 +256,10 @@ export function BlogManager() {
                       type="text"
                       value={editingPost.author || "FireforgeRD"}
                       onChange={(e) =>
-                        setEditingPost({ ...editingPost, author: e.target.value })
+                        setEditingPost({
+                          ...editingPost,
+                          author: e.target.value,
+                        })
                       }
                       className="w-full px-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:border-[#FF4D00]/30 outline-none text-sm"
                     />
@@ -329,7 +334,7 @@ export function BlogManager() {
                       />
                     </div>
                   )}
-                  
+
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
