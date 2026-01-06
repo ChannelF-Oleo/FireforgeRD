@@ -23,15 +23,13 @@ const categoryIcons: Record<string, React.ReactNode> = {
   automation: <Bot className="w-4 h-4 md:w-5 md:h-5" />,
 };
 
-const formatDOP = (amount: number) => {
-  return new Intl.NumberFormat("es-DO", {
+const formatUSD = (amount: number) => {
+  return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "DOP",
+    currency: "USD",
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
-  })
-    .format(amount)
-    .replace("DOP", "RD$");
+  }).format(amount);
 };
 
 export function PricingMatrix() {
@@ -49,22 +47,25 @@ export function PricingMatrix() {
       }
     };
 
-    window.addEventListener("changePricingTab", handleTabChange as EventListener);
+    window.addEventListener(
+      "changePricingTab",
+      handleTabChange as EventListener,
+    );
 
     return () => {
       window.removeEventListener(
         "changePricingTab",
-        handleTabChange as EventListener
+        handleTabChange as EventListener,
       );
     };
   }, []);
 
   // --- LOGICA SPOTLIGHT OPTIMIZADA (CSS VARIABLES) ---
   const containerRef = useRef<HTMLDivElement>(null);
-  
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return;
-    
+
     const div = containerRef.current;
     const rect = div.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -108,9 +109,9 @@ export function PricingMatrix() {
         </div>
 
         {/* --- TABS --- */}
-        <div 
-            className="mb-16 md:mb-24 flex flex-wrap justify-center gap-2 md:gap-4"
-            role="tablist" // Accesibilidad añadida
+        <div
+          className="mb-16 md:mb-24 flex flex-wrap justify-center gap-2 md:gap-4"
+          role="tablist" // Accesibilidad añadida
         >
           {serviceCategories.map((cat) => (
             <button
@@ -148,11 +149,9 @@ export function PricingMatrix() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.3 }}
-              
               ref={containerRef}
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
-              
               className="relative rounded-3xl border border-white/50 bg-white/40 backdrop-blur-2xl shadow-sm pt-8 md:pt-0 group/spotlight overflow-hidden"
             >
               {/* SPOTLIGHT GRADIENT OVERLAY (CSS VARS)
@@ -161,8 +160,8 @@ export function PricingMatrix() {
               <div
                 className="pointer-events-none absolute -inset-px transition-opacity duration-300 z-30 rounded-3xl opacity-0"
                 style={{
-                    opacity: "var(--spotlight-opacity, 0)",
-                    background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(255,77,0,0.06), transparent 40%)`
+                  opacity: "var(--spotlight-opacity, 0)",
+                  background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(255,77,0,0.06), transparent 40%)`,
                 }}
               />
 
@@ -184,10 +183,10 @@ export function PricingMatrix() {
                   >
                     {/* El resto del contenido de la Card se mantiene igual... */}
                     {/* ... Badge, Header, Price, Features, Button ... */}
-                    
+
                     {/* (He resumido esta parte para no repetir todo el código anterior, 
                          ya que la lógica interna de la card estaba perfecta) */}
-                    
+
                     {plan.isRecommended && (
                       <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#1A1818] text-white pl-3 pr-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase flex items-center gap-2 shadow-[0_8px_20px_-5px_rgba(0,0,0,0.5)] whitespace-nowrap z-50 ring-4 ring-[#F9F8F6]">
                         <span className="text-sm animate-[pulse_1.5s_ease-in-out_infinite]">
@@ -198,7 +197,9 @@ export function PricingMatrix() {
                     )}
 
                     <div className="mb-6 relative z-10">
-                      <h3 className={`text-lg lg:text-xl font-display font-medium mb-2 truncate ${plan.isRecommended ? "text-[#FF4D00]" : "text-[#1A1818]"}`}>
+                      <h3
+                        className={`text-lg lg:text-xl font-display font-medium mb-2 truncate ${plan.isRecommended ? "text-[#FF4D00]" : "text-[#1A1818]"}`}
+                      >
                         {plan.name}
                       </h3>
                       {/* ... resto del contenido ... */}
@@ -209,30 +210,32 @@ export function PricingMatrix() {
                       </div>
                       <div className="flex items-baseline gap-1">
                         <span className="text-3xl lg:text-3xl xl:text-4xl font-light tracking-tight text-[#1A1818]">
-                            {formatDOP(plan.price)}
+                          {formatUSD(plan.price)}
                         </span>
                       </div>
                     </div>
-                    
+
                     {/* Features loop ... */}
                     <div className="flex-1 space-y-3 mb-8 relative z-10">
-                        {plan.features.map((f, i) => (
-                            <div key={i} className="flex items-start gap-2.5 text-sm text-[#6F6B65]">
-                                <Check size={14} className="mt-0.5 text-[#FF4D00]" />
-                                <span className="text-[13px]">{f}</span>
-                            </div>
-                        ))}
+                      {plan.features.map((f, i) => (
+                        <div
+                          key={i}
+                          className="flex items-start gap-2.5 text-sm text-[#6F6B65]"
+                        >
+                          <Check size={14} className="mt-0.5 text-[#FF4D00]" />
+                          <span className="text-[13px]">{f}</span>
+                        </div>
+                      ))}
                     </div>
 
                     <div className="mt-auto pt-5 border-t border-[#1A1818]/5 relative z-10">
-                        <Button 
-                            onClick={() => scrollToElement("contact")}
-                            className={`w-full ${plan.isRecommended ? "bg-gradient-to-r from-[#FF4D00] to-[#FF6B2C] text-white" : "bg-[#F0EFED] text-[#1A1818]"}`}
-                        >
-                            Solicitar Ahora <ArrowRight className="ml-2 w-4 h-4" />
-                        </Button>
+                      <Button
+                        onClick={() => scrollToElement("contact")}
+                        className={`w-full ${plan.isRecommended ? "bg-gradient-to-r from-[#FF4D00] to-[#FF6B2C] text-white" : "bg-[#F0EFED] text-[#1A1818]"}`}
+                      >
+                        Solicitar Ahora <ArrowRight className="ml-2 w-4 h-4" />
+                      </Button>
                     </div>
-
                   </div>
                 ))}
               </div>
@@ -260,4 +263,3 @@ export function PricingMatrix() {
     </section>
   );
 }
-
