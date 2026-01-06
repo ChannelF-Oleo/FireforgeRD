@@ -68,8 +68,8 @@ export const webServices: ServicePlan[] = [
   {
     id: "la-chispa",
     name: "La Chispa",
-    price: 10000,
-    currency: "RD$",
+    price: 160,
+    currency: "USD",
     category: "web",
     idealFor: "Marcas Personales, Link-in-bio",
     deliveryTime: "5-7 días",
@@ -79,14 +79,14 @@ export const webServices: ServicePlan[] = [
       "Dominio gratis por un año",
       "Hosting SSL incluido",
       "Diseño responsive",
-      "Mantenimiento: RD$ 500",
+      "Mantenimiento: USD $10",
     ],
   },
   {
     id: "la-fragua",
     name: "La Fragua",
-    price: 15500,
-    currency: "RD$",
+    price: 250,
+    currency: "USD",
     category: "web",
     idealFor: "Pymes, Consultoras, Abogados",
     deliveryTime: "7-10 días",
@@ -96,14 +96,14 @@ export const webServices: ServicePlan[] = [
       "Hosting SSL",
       "Google Maps integrado",
       "SEO Básico optimizado",
-      "Mantenimiento: RD$ 1000",
+      "Mantenimiento: USD $20",
     ],
   },
   {
     id: "acero",
     name: "Acero",
-    price: 25500,
-    currency: "RD$",
+    price: 400,
+    currency: "USD",
     category: "web",
     idealFor: "Inmobiliarias, Seguros",
     deliveryTime: "10-15 días",
@@ -115,14 +115,14 @@ export const webServices: ServicePlan[] = [
       "Auto-respuesta (Resend)",
       "Diseño interactivo",
       "Formularios avanzados",
-      "Mantenimiento: RD$ 1,500",
+      "Mantenimiento: USD $25",
     ],
   },
   {
     id: "hierro-forjado",
     name: "Hierro Forjado",
-    price: 37000,
-    currency: "RD$",
+    price: 600,
+    currency: "USD",
     category: "web",
     idealFor: "Periódicos, Catálogos",
     deliveryTime: "15-20 días",
@@ -133,7 +133,7 @@ export const webServices: ServicePlan[] = [
       "Capacitación incluida",
       "Next.js + Headless CMS",
       "Múltiples usuarios",
-      "Mantenimiento: RD$ 2,500",
+      "Mantenimiento: USD $40",
     ],
   },
 ];
@@ -143,8 +143,8 @@ export const ecommerceServices: ServicePlan[] = [
   {
     id: "tienda-start",
     name: "Tienda Start",
-    price: 35000,
-    currency: "RD$",
+    price: 550,
+    currency: "USD",
     category: "ecommerce",
     idealFor: "Ropa, Accesorios, Productos Digitales",
     deliveryTime: "15-20 días",
@@ -154,14 +154,14 @@ export const ecommerceServices: ServicePlan[] = [
       "Panel de productos",
       "Notificaciones de venta",
       "Inventario básico",
-      "Mantenimiento: RD$ 1,500",
+      "Mantenimiento: USD $25",
     ],
   },
   {
     id: "ecommerce-pro",
     name: "E-Commerce Pro",
-    price: 70000,
-    currency: "RD$",
+    price: 1100,
+    currency: "USD",
     category: "ecommerce",
     idealFor: "Tiendas Establecidas",
     deliveryTime: "20-30 días",
@@ -169,7 +169,7 @@ export const ecommerceServices: ServicePlan[] = [
     features: [
       "Login de Clientes",
       "Historial de pedidos",
-      "Mantenimiento: RD$ 2,500",
+      "Mantenimiento: USD $40",
       "Pagos Locales (Azul/Cardnet)",
       "Sistema de cupones",
       "Lista de deseos (Wishlist)",
@@ -178,14 +178,14 @@ export const ecommerceServices: ServicePlan[] = [
   {
     id: "marketplace",
     name: "Marketplace",
-    price: 120000,
-    currency: "RD$",
+    price: 1900,
+    currency: "USD",
     category: "ecommerce",
     idealFor: "B2B, Mayoristas",
     deliveryTime: "30-45 días",
     features: [
       "Multi-vendedor",
-      "Mantenimiento: RD$ 5,500",
+      "Mantenimiento: USD $90",
       "Precios dinámicos (Mayorista/Detalle)",
       "Lógica de envíos compleja",
       "Integración ERP",
@@ -199,14 +199,14 @@ export const saasServices: ServicePlan[] = [
   {
     id: "agenda-simple",
     name: "Agenda Simple",
-    price: 25000,
-    currency: "RD$",
+    price: 400,
+    currency: "USD",
     category: "saas",
     idealFor: "Booking y Reservas",
     deliveryTime: "15-20 días",
     features: [
-      "Setup: RD$ 25,000",
-      "Mensual: RD$ 2,000",
+      "Setup: USD $400",
+      "Mensual: USD $35",
       "Reserva online",
       "Bloqueo automático",
       "Notificaciones SMS/Email",
@@ -215,15 +215,15 @@ export const saasServices: ServicePlan[] = [
   {
     id: "gestion-pro",
     name: "Gestión Pro",
-    price: 42500,
-    currency: "RD$",
+    price: 670,
+    currency: "USD",
     category: "saas",
     idealFor: "Agenda + CRM",
     deliveryTime: "20-30 días",
     isRecommended: true,
     features: [
-      "Setup: RD$ 42,500",
-      "Mensual: RD$ 3,000",
+      "Setup: USD $670",
+      "Mensual: USD $50",
       "Expediente de clientes",
       "Historial de visitas",
       "Recordatorios automáticos 24h",
@@ -232,14 +232,14 @@ export const saasServices: ServicePlan[] = [
   {
     id: "sistema-administrativo",
     name: "Sistema Administrativo",
-    price: 95000,
-    currency: "RD$",
+    price: 1500,
+    currency: "USD",
     category: "saas",
     idealFor: "Full ERP",
     deliveryTime: "45-60 días",
     features: [
-      "Setup: RD$ 95,000",
-      "Mensual: RD$ 5,000",
+      "Setup: USD $1,500",
+      "Mensual: USD $80",
       "Multiusuario/Roles",
       "Caja chica",
       "Reportes avanzados",
@@ -253,14 +253,14 @@ export const automationServices: ServicePlan[] = [
   {
     id: "el-portero",
     name: "El Portero",
-    price: 9500, // Setup fee
-    currency: "RD$",
+    price: 150, // Setup fee
+    currency: "USD",
     category: "automation",
     idealFor: "Menú Digital & FAQ",
     deliveryTime: "5-7 días",
     features: [
-      "Setup: RD$ 9,500 (Pago Único)",
-      "Mantenimiento: RD$ 1,500/mes", // Agregado
+      "Setup: USD $150 (Pago Único)",
+      "Mantenimiento: USD $25/mes", // Agregado
       "Chatbot de reglas",
       "Menú de botones interactivo",
       "Soporte Tecnico", // Justificación del pago mensual
@@ -269,15 +269,15 @@ export const automationServices: ServicePlan[] = [
   {
     id: "bot-captador",
     name: "Bot Captador",
-    price: 18500, // Setup fee
-    currency: "RD$",
+    price: 300, // Setup fee
+    currency: "USD",
     category: "automation",
     idealFor: "CRM Automatizado",
     deliveryTime: "7-10 días",
     isRecommended: true,
     features: [
-      "Setup: RD$ 18,500 (Pago Único)",
-      "Soporte: RD$ 3,000/mes", // Agregado
+      "Setup: USD $300 (Pago Único)",
+      "Soporte: USD $50/mes", // Agregado
       "Cualificación y Filtro de Leads",
       "Conexión a Notion/Sheets/Google",
       "Reporte mensual de conversaciones", // Valor agregado mensual
@@ -286,14 +286,14 @@ export const automationServices: ServicePlan[] = [
   {
     id: "neuro-bot",
     name: "Neuro-Bot IA",
-    price: 35000, // Setup fee
-    currency: "RD$",
+    price: 600, // Setup fee
+    currency: "USD",
     category: "automation",
     idealFor: "Atención al Cliente Inteligente",
     deliveryTime: "10-15 días",
     features: [
-      "Setup: RD$ 35,000 (Pago Único)",
-      "Fee Mensual: Desde RD$ 5,000*", // Asterisco por consumo de tokens
+      "Setup: USD $600 (Pago Único)",
+      "Fee Mensual: Desde USD $80*", // Asterisco por consumo de tokens
       "Conexión AI (GPT-4o / Gemini)",
       "Manejo de objeciones natural",
       "Conversaciones inteligentes",
@@ -311,8 +311,8 @@ export const technicalServices: ServicePlan[] = [
   {
     id: "email-corporativo",
     name: "Email Corporativo",
-    price: 2500,
-    currency: "RD$",
+    price: 40,
+    currency: "USD",
     category: "technical",
     idealFor: "Profesionales, Nuevos Negocios",
     deliveryTime: "24-48 horas",
@@ -326,8 +326,8 @@ export const technicalServices: ServicePlan[] = [
   {
     id: "vcard-digital",
     name: "vCard Digital",
-    price: 3500,
-    currency: "RD$",
+    price: 55,
+    currency: "USD",
     category: "technical",
     idealFor: "Networking, Ventas",
     deliveryTime: "3-5 días",
@@ -342,8 +342,8 @@ export const technicalServices: ServicePlan[] = [
   {
     id: "identidad-tecnica",
     name: "Identidad Técnica",
-    price: 2000,
-    currency: "RD$",
+    price: 35,
+    currency: "USD",
     category: "technical",
     idealFor: "Marca Personal",
     deliveryTime: "24 horas",
@@ -357,8 +357,8 @@ export const technicalServices: ServicePlan[] = [
   {
     id: "copywriting-seo",
     name: "Copywriting SEO",
-    price: 2500,
-    currency: "RD$",
+    price: 40,
+    currency: "USD",
     category: "technical",
     idealFor: "Blogs, Landing Pages",
     deliveryTime: "3-5 días",
@@ -373,8 +373,8 @@ export const technicalServices: ServicePlan[] = [
   {
     id: "mantenimiento-rescate",
     name: "Mantenimiento/Rescate",
-    price: 2000,
-    currency: "RD$ / Hora", // Adjusted to reflect hourly nature
+    price: 40,
+    currency: "USD / Hora", // Adjusted to reflect hourly nature
     category: "technical",
     idealFor: "Sitios Hackeados, Bugs",
     deliveryTime: "Inmediato / Urgente",

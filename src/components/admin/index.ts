@@ -1,5 +1,6 @@
 // Main components
 export { AdminDashboard } from "./AdminDashboard";
+export { AdminLayoutClient } from "./AdminLayoutClient";
 export { BlogManager } from "./BlogManager";
 export { ClientsManager } from "./ClientsManager";
 export { LeadsManager } from "./LeadsManager";
