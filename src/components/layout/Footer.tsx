@@ -112,7 +112,7 @@ export function Footer() {
             <div className="space-y-4">
               {/* WhatsApp */}
               <a
-                href="https://wa.me/18094202288"
+                href="https://wa.me/18498534067"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 text-sm text-white hover:text-[#FF4D00] transition-colors group"

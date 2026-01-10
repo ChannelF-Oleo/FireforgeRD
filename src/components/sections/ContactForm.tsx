@@ -83,7 +83,7 @@ export function ContactForm() {
       // Fallback
       const msg = `Hola, soy ${data.clientName} de ${data.companyName}. Tuve un error en el formulario web. Me interesa el servicio de ${data.serviceType}.`;
       window.open(
-        `https://wa.me/18094202288?text=${encodeURIComponent(msg)}`,
+        `https://wa.me/18498534067?text=${encodeURIComponent(msg)}`,
         "_blank",
       );
     } finally {
