@@ -13,7 +13,7 @@ function LocationMap() {
   return (
     <div className="relative w-full h-48 rounded-2xl overflow-hidden border border-white/10 group">
       <a
-        href="https://maps.app.goo.gl/atVa4R8Hwz2UfUR19"
+        href="https://www.google.com/maps/place/FireforgeRD/@18.498882,-69.9297735,17z"
         target="_blank"
         rel="noopener noreferrer"
         className="block w-full h-full"
