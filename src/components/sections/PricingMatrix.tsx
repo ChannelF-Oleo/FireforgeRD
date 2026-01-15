@@ -231,7 +231,7 @@ export function PricingMatrix() {
                     <div className="mt-auto pt-5 border-t border-[#1A1818]/5 relative z-10">
                       <Button
                         onClick={() => scrollToElement("contact")}
-                        className={`w-full ${plan.isRecommended ? "bg-gradient-to-r from-[#FF4D00] to-[#FF6B2C] text-white" : "bg-[#F0EFED] text-[#1A1818]"}`}
+                        className={`w-full transition-all duration-300 ${plan.isRecommended ? "bg-gradient-to-r from-[#FF4D00] to-[#FF6B2C] text-white hover:shadow-[0_8px_30px_-5px_rgba(255,77,0,0.5)] hover:scale-[1.02]" : "bg-[#F0EFED] text-[#1A1818] hover:bg-transparent hover:border hover:border-[#FF4D00] hover:text-[#FF4D00]"}`}
                       >
                         Solicitar Ahora <ArrowRight className="ml-2 w-4 h-4" />
                       </Button>

@@ -4,6 +4,44 @@ import Link from "next/link";
 import { FireLogo } from "@/components/ui/animated-logo";
 import { Instagram, Github, MessageCircle, MapPin, Mail } from "lucide-react";
 
+// Componente del mapa con efecto grayscale
+function LocationMap() {
+  // URL del embed de Google Maps para FireforgeRD
+  const mapEmbedUrl =
+    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3783.6637935566773!2d-69.92977352480885!3d18.498882082590516!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8eaf893f7b632bf9%3A0x36bc55434309055c!2sFireforgeRD!5e0!3m2!1ses-419!2sdo!4v1768481974792!5m2!1ses-419!2sdo";
+
+  return (
+    <div className="relative w-full h-48 rounded-2xl overflow-hidden border border-white/10 group">
+      <a
+        href="https://maps.app.goo.gl/atVa4R8Hwz2UfUR19"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block w-full h-full"
+        aria-label="Ver ubicación de FireforgeRD en Google Maps"
+      >
+        <iframe
+          src={mapEmbedUrl}
+          width="100%"
+          height="100%"
+          style={{ border: 0 }}
+          allowFullScreen={false}
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          title="Ubicación de FireforgeRD"
+          className="grayscale brightness-75 contrast-125 group-hover:grayscale-0 group-hover:brightness-100 group-hover:contrast-100 transition-all duration-500 pointer-events-none"
+        />
+      </a>
+      {/* Badge de ubicación */}
+      <div className="absolute bottom-3 left-3 flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1A1818]/80 backdrop-blur-sm border border-white/10 pointer-events-none">
+        <MapPin className="w-3 h-3 text-[#FF4D00]" aria-hidden="true" />
+        <span className="text-[10px] text-white font-medium uppercase tracking-wider">
+          Santo Domingo, RD
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
@@ -52,15 +90,8 @@ export function Footer() {
               Desarrollo web y estrategias digitales que posicionan tu negocio.
             </p>
 
-            {/* Ubicación */}
-            <div className="flex items-start gap-3 text-sm text-[#9C9890] pt-2">
-              <MapPin className="w-4 h-4 mt-1 text-[#FF4D00]" />
-              <span>
-                Santo Domingo, Distrito Nacional.
-                <br />
-                República Dominicana.
-              </span>
-            </div>
+            {/* Mapa con efecto grayscale */}
+            <LocationMap />
           </div>
 
           {/* 2. MENÚ RÁPIDO */}
@@ -118,7 +149,7 @@ export function Footer() {
                 className="flex items-center gap-3 text-sm text-white hover:text-[#FF4D00] transition-colors group"
               >
                 <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-[#FF4D00]/10 transition-colors">
-                  <MessageCircle className="w-4 h-4" />
+                  <MessageCircle className="w-4 h-4" aria-hidden="true" />
                 </div>
                 <span>Chat vía WhatsApp</span>
               </a>
@@ -129,7 +160,7 @@ export function Footer() {
                 className="flex items-center gap-3 text-sm text-[#9C9890] hover:text-white transition-colors group"
               >
                 <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
-                  <Mail className="w-4 h-4" />
+                  <Mail className="w-4 h-4" aria-hidden="true" />
                 </div>
                 <span>hola@fireforgerd.com</span>
               </a>
@@ -137,24 +168,30 @@ export function Footer() {
 
             {/* REDES SOCIALES (Github Integrado) */}
             <div className="pt-6 border-t border-white/5">
-              <div className="flex gap-4">
+              <div
+                className="flex gap-4"
+                role="list"
+                aria-label="Redes sociales"
+              >
                 <a
                   href="https://www.instagram.com/fireforgerd/"
                   target="_blank"
-                  aria-label="Instagram"
+                  rel="noopener noreferrer"
+                  aria-label="Síguenos en Instagram"
                   className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[#9C9890] hover:bg-[#E1306C] hover:text-white transition-all duration-300"
                 >
-                  <Instagram className="w-5 h-5" />
+                  <Instagram className="w-5 h-5" aria-hidden="true" />
                 </a>
 
                 {/* GITHUB: Hover blanco con texto negro (Clean & Techy) */}
                 <a
                   href="https://github.com/ChannelF-Oleo"
                   target="_blank"
-                  aria-label="Github"
+                  rel="noopener noreferrer"
+                  aria-label="Ver nuestro Github"
                   className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[#9C9890] hover:bg-white hover:text-black transition-all duration-300"
                 >
-                  <Github className="w-5 h-5" />
+                  <Github className="w-5 h-5" aria-hidden="true" />
                 </a>
               </div>
             </div>

@@ -74,7 +74,7 @@ export function ServicesGrid() {
         <div className="pointer-events-none absolute top-0 right-0 h-[40vh] w-[40vh] md:h-[800px] md:w-[800px] rounded-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[rgba(255,77,0,0.08)] via-transparent to-transparent blur-3xl" />
         <div className="pointer-events-none absolute bottom-0 left-0 h-[30vh] w-[30vh] md:h-[600px] md:w-[600px] rounded-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[rgba(255,77,0,0.05)] via-transparent to-transparent blur-3xl" />
 
-        <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-[0.02]" />
+        {/* Patrón de fondo removido - grid-pattern.svg no existe */}
 
         <div className="container relative z-10 mx-auto px-4 md:px-6">
           {/* --- HEADER --- */}

@@ -5,8 +5,9 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/private/', '/admin/'], // Bloquea rutas internas si las tuvieras
+      disallow: ['/private/', '/admin/'],
     },
-    sitemap: 'https://fireforgerd.com/sitemap.xml', // Asegúrate de que este dominio sea el real
+    // IMPORTANTE: Usar www para consistencia con redirecciones
+    sitemap: 'https://www.fireforgerd.com/sitemap.xml',
   };
 }

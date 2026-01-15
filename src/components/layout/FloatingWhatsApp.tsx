@@ -42,10 +42,16 @@ export function FloatingWhatsApp({
         onClick={handleClick}
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
-        className="relative group w-14 h-14 rounded-full flex items-center justify-center focus:outline-none"
+        aria-label="Contactar por WhatsApp"
+        className="relative group w-14 h-14 rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[#25D366] focus:ring-offset-2"
         initial={{ scale: 0, rotate: -180 }}
         animate={{ scale: 1, rotate: 0 }}
         transition={{ type: "spring", stiffness: 260, damping: 20, delay: 1 }}
+        initial={{
+          scale: 0,
+          rotate: -180,
+          boxShadow: "0 0px 0px rgba(37, 211, 102, 0)",
+        }}
         whileHover={{
           scale: 1.08,
           boxShadow: "0 8px 30px rgba(37, 211, 102, 0.4)",

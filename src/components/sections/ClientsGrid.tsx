@@ -127,6 +127,7 @@ export function ClientsGrid() {
                         src={client.image}
                         alt={client.name}
                         fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (
@@ -192,6 +193,9 @@ export function ClientsGrid() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
             onClick={() => setSelectedClient(null)}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -208,11 +212,15 @@ export function ClientsGrid() {
                     src={selectedClient.image}
                     alt={selectedClient.name}
                     fill
+                    sizes="(max-width: 640px) 100vw, 640px"
                     className="object-cover"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <Briefcase className="w-16 h-16 text-[#9C9890]" />
+                    <Briefcase
+                      className="w-16 h-16 text-[#9C9890]"
+                      aria-hidden="true"
+                    />
                   </div>
                 )}
 
@@ -220,8 +228,9 @@ export function ClientsGrid() {
                 <button
                   onClick={() => setSelectedClient(null)}
                   className="absolute top-4 right-4 p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors"
+                  aria-label="Cerrar modal"
                 >
-                  <X className="w-5 h-5 text-[#1A1818]" />
+                  <X className="w-5 h-5 text-[#1A1818]" aria-hidden="true" />
                 </button>
 
                 {selectedClient.featured && (
@@ -237,7 +246,10 @@ export function ClientsGrid() {
                   {selectedClient.category}
                 </span>
 
-                <h2 className="font-display text-2xl sm:text-3xl font-medium text-[#1A1818] mt-2 mb-4">
+                <h2
+                  id="modal-title"
+                  className="font-display text-2xl sm:text-3xl font-medium text-[#1A1818] mt-2 mb-4"
+                >
                   {selectedClient.name}
                 </h2>
 

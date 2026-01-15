@@ -14,15 +14,17 @@ const inter = Inter({
 });
 
 // EMBER GLASS: Viewport con tema claro
+// NOTA: Permitimos zoom (sin maximumScale: 1) para accesibilidad móvil
 export const viewport: Viewport = {
   themeColor: "#F9F8F6",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
+  // maximumScale removido para permitir zoom - mejor accesibilidad
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://fireforgerd.com"),
+  // IMPORTANTE: Usar www para consistencia con redirecciones
+  metadataBase: new URL("https://www.fireforgerd.com"),
 
   title: {
     default: "FireforgeRD | Agencia de Desarrollo Web",
@@ -52,11 +54,16 @@ export const metadata: Metadata = {
   creator: "FireforgeRD",
   publisher: "FireforgeRD",
 
+  // URL canónica alternativa
+  alternates: {
+    canonical: "https://www.fireforgerd.com",
+  },
+
   openGraph: {
     title: "FireforgeRD | Forjando el Futuro Digital",
     description:
       "Desarrollo Web, sistemas a medida y automatizacion con IA en Republica Dominicana, RD.",
-    url: "https://fireforgerd.com",
+    url: "https://www.fireforgerd.com",
     siteName: "FireforgeRD",
     locale: "es_DO",
     type: "website",

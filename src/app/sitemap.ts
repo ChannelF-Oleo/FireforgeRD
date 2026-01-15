@@ -14,7 +14,8 @@ async function getBlogSlugs(): Promise<string[]> {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://fireforgerd.com";
+  // IMPORTANTE: Usar www para consistencia con redirecciones
+  const baseUrl = "https://www.fireforgerd.com";
 
   // Páginas estáticas
   const staticPages: MetadataRoute.Sitemap = [

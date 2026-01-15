@@ -130,38 +130,68 @@ export function ContactForm() {
                   {/* BLOQUE 1: IDENTIDAD (2 Columnas) */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider ml-1">
+                      <label
+                        htmlFor="clientName"
+                        className="text-xs font-bold text-[#1A1818] uppercase tracking-wider ml-1"
+                      >
                         Tu Nombre
                       </label>
                       <div className="relative group">
-                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[#FF4D00] transition-colors" />
+                        <User
+                          className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[#FF4D00] transition-colors"
+                          aria-hidden="true"
+                        />
                         <input
+                          id="clientName"
                           {...register("clientName")}
                           placeholder="Ej: Ana García"
+                          aria-invalid={errors.clientName ? "true" : "false"}
+                          aria-describedby={
+                            errors.clientName ? "clientName-error" : undefined
+                          }
                           className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:bg-white focus:border-[#FF4D00]/30 focus:ring-4 focus:ring-[#FF4D00]/5 outline-none transition-all text-sm"
                         />
                       </div>
                       {errors.clientName && (
-                        <p className="text-xs text-red-500 ml-1">
+                        <p
+                          id="clientName-error"
+                          className="text-xs text-red-500 ml-1"
+                          role="alert"
+                        >
                           {errors.clientName.message}
                         </p>
                       )}
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider ml-1">
+                      <label
+                        htmlFor="companyName"
+                        className="text-xs font-bold text-[#1A1818] uppercase tracking-wider ml-1"
+                      >
                         Empresa
                       </label>
                       <div className="relative group">
-                        <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[#FF4D00] transition-colors" />
+                        <Building2
+                          className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[#FF4D00] transition-colors"
+                          aria-hidden="true"
+                        />
                         <input
+                          id="companyName"
                           {...register("companyName")}
                           placeholder="Ej: Constructora AG"
+                          aria-invalid={errors.companyName ? "true" : "false"}
+                          aria-describedby={
+                            errors.companyName ? "companyName-error" : undefined
+                          }
                           className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:bg-white focus:border-[#FF4D00]/30 focus:ring-4 focus:ring-[#FF4D00]/5 outline-none transition-all text-sm"
                         />
                       </div>
                       {errors.companyName && (
-                        <p className="text-xs text-red-500 ml-1">
+                        <p
+                          id="companyName-error"
+                          className="text-xs text-red-500 ml-1"
+                          role="alert"
+                        >
                           {errors.companyName.message}
                         </p>
                       )}
@@ -171,38 +201,70 @@ export function ContactForm() {
                   {/* BLOQUE 2: CONTACTO (2 Columnas) */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider ml-1">
+                      <label
+                        htmlFor="email"
+                        className="text-xs font-bold text-[#1A1818] uppercase tracking-wider ml-1"
+                      >
                         Correo Electronico
                       </label>
                       <div className="relative group">
-                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[#FF4D00] transition-colors" />
+                        <Mail
+                          className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[#FF4D00] transition-colors"
+                          aria-hidden="true"
+                        />
                         <input
+                          id="email"
+                          type="email"
                           {...register("email")}
                           placeholder="ana@gmail.com"
+                          aria-invalid={errors.email ? "true" : "false"}
+                          aria-describedby={
+                            errors.email ? "email-error" : undefined
+                          }
                           className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:bg-white focus:border-[#FF4D00]/30 focus:ring-4 focus:ring-[#FF4D00]/5 outline-none transition-all text-sm"
                         />
                       </div>
                       {errors.email && (
-                        <p className="text-xs text-red-500 ml-1">
+                        <p
+                          id="email-error"
+                          className="text-xs text-red-500 ml-1"
+                          role="alert"
+                        >
                           {errors.email.message}
                         </p>
                       )}
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider ml-1">
+                      <label
+                        htmlFor="whatsapp"
+                        className="text-xs font-bold text-[#1A1818] uppercase tracking-wider ml-1"
+                      >
                         WhatsApp
                       </label>
                       <div className="relative group">
-                        <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[#FF4D00] transition-colors" />
+                        <Phone
+                          className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-[#FF4D00] transition-colors"
+                          aria-hidden="true"
+                        />
                         <input
+                          id="whatsapp"
+                          type="tel"
                           {...register("whatsapp")}
                           placeholder="809-555-5555"
+                          aria-invalid={errors.whatsapp ? "true" : "false"}
+                          aria-describedby={
+                            errors.whatsapp ? "whatsapp-error" : undefined
+                          }
                           className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:bg-white focus:border-[#FF4D00]/30 focus:ring-4 focus:ring-[#FF4D00]/5 outline-none transition-all text-sm"
                         />
                       </div>
                       {errors.whatsapp && (
-                        <p className="text-xs text-red-500 ml-1">
+                        <p
+                          id="whatsapp-error"
+                          className="text-xs text-red-500 ml-1"
+                          role="alert"
+                        >
                           {errors.whatsapp.message}
                         </p>
                       )}
@@ -211,9 +273,17 @@ export function ContactForm() {
 
                   {/* BLOQUE 3: SERVICIOS */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                    <div className="relative">
+                    <div className="relative space-y-1.5">
+                      <label
+                        htmlFor="serviceType"
+                        className="text-xs font-bold text-[#1A1818] uppercase tracking-wider ml-1"
+                      >
+                        Tipo de Servicio
+                      </label>
                       <select
+                        id="serviceType"
                         {...register("serviceType")}
+                        aria-label="Selecciona el tipo de servicio"
                         className="w-full appearance-none px-4 py-3.5 rounded-xl bg-[#F9F8F6] border border-transparent focus:bg-white focus:border-[#FF4D00]/30 outline-none transition-all text-sm text-[#1A1818] cursor-pointer font-medium"
                       >
                         <option value="">Selecciona Servicio...</option>
@@ -223,7 +293,7 @@ export function ContactForm() {
                           </option>
                         ))}
                       </select>
-                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9C9890] pointer-events-none" />
+                      <ChevronDown className="absolute right-3 bottom-3.5 w-4 h-4 text-[#9C9890] pointer-events-none" />
                       {errors.serviceType && (
                         <p className="text-xs text-red-500 mt-1 ml-1">
                           {errors.serviceType.message}
@@ -231,10 +301,18 @@ export function ContactForm() {
                       )}
                     </div>
 
-                    <div className="relative">
+                    <div className="relative space-y-1.5">
+                      <label
+                        htmlFor="plan"
+                        className="text-xs font-bold text-[#1A1818] uppercase tracking-wider ml-1"
+                      >
+                        Plan
+                      </label>
                       <select
+                        id="plan"
                         {...register("plan")}
                         disabled={!selectedServiceId}
+                        aria-label="Selecciona el plan"
                         className={`w-full appearance-none px-4 py-3.5 rounded-xl border border-transparent outline-none transition-all text-sm cursor-pointer font-medium ${
                           !selectedServiceId
                             ? "bg-gray-100 text-gray-400 cursor-not-allowed"
@@ -253,16 +331,20 @@ export function ContactForm() {
                         ))}
                       </select>
                       {!selectedServiceId ? (
-                        <Lock className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+                        <Lock className="absolute right-3 bottom-3.5 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
                       ) : (
-                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9C9890] pointer-events-none" />
+                        <ChevronDown className="absolute right-3 bottom-3.5 w-4 h-4 text-[#9C9890] pointer-events-none" />
                       )}
                     </div>
                   </div>
 
                   {/* NOTAS */}
-                  <div>
+                  <div className="space-y-1.5">
+                    <label htmlFor="notes" className="sr-only">
+                      Notas adicionales
+                    </label>
                     <textarea
+                      id="notes"
                       {...register("notes")}
                       placeholder="Cuéntanos brevemente qué necesitas..."
                       rows={3}

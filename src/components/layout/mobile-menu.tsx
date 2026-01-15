@@ -40,6 +40,9 @@ export function MobileMenu({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-40 pt-24 px-6 bg-[#F9F8F6]/98 backdrop-blur-xl md:hidden flex flex-col items-center justify-start"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Menú de navegación"
     >
       {/* Luz ambiental */}
       <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-gradient-to-bl from-[rgba(255,77,0,0.06)] to-transparent rounded-full blur-3xl pointer-events-none" />
