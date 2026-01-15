@@ -147,10 +147,18 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="es" className="scroll-smooth">
+    <html lang="es">
       <head>
-        {/* Google Tag Manager */}
-        <Script id="gtm-script" strategy="afterInteractive">
+        {/* Preconnect para recursos críticos - mejora LCP */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+
+        {/* Google Tag Manager - carga diferida para no bloquear render */}
+        <Script id="gtm-script" strategy="lazyOnload">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
           new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
           j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=

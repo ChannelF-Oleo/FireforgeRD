@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { adminDb } from "@/lib/firebase-admin";
 import { BlogPostView } from "@/components/sections/BlogPostView";
 import type { BlogPost } from "@/types";
 
@@ -11,22 +10,30 @@ interface Props {
 
 async function getPost(slug: string): Promise<BlogPost | null> {
   try {
-    const postsRef = collection(db, "blog_posts");
-    const q = query(
-      postsRef,
-      where("slug", "==", slug),
-      where("published", "==", true),
-    );
-    const snapshot = await getDocs(q);
+    const snapshot = await adminDb
+      .collection("blog_posts")
+      .where("slug", "==", slug)
+      .where("published", "==", true)
+      .limit(1)
+      .get();
 
     if (snapshot.empty) return null;
 
     const doc = snapshot.docs[0];
+    const data = doc.data();
+
     return {
       id: doc.id,
-      ...doc.data(),
-      createdAt: doc.data().createdAt?.toDate() || new Date(),
-      updatedAt: doc.data().updatedAt?.toDate() || new Date(),
+      title: data.title,
+      slug: data.slug,
+      excerpt: data.excerpt,
+      content: data.content,
+      coverImage: data.coverImage || null,
+      author: data.author || "FireforgeRD",
+      tags: data.tags || [],
+      published: data.published,
+      createdAt: data.createdAt?.toDate() || new Date(),
+      updatedAt: data.updatedAt?.toDate() || new Date(),
     } as BlogPost;
   } catch (error) {
     console.error("Error fetching post:", error);

@@ -80,7 +80,7 @@ export function Footer() {
               </span>
             </div>
 
-            <p className="text-[#9C9890] leading-relaxed max-w-sm text-sm font-light">
+            <p className="text-[#706B63] leading-relaxed max-w-sm text-sm font-light">
               Dejamos de lado el "tecnicismo" para enfocarnos en lo que importa:
               <span className="text-white font-medium">
                 {" "}
@@ -96,7 +96,7 @@ export function Footer() {
 
           {/* 2. MENÚ RÁPIDO */}
           <div className="md:col-span-2 space-y-4">
-            <h4 className="font-medium tracking-wider uppercase text-xs text-[#6F6B65]">
+            <h4 className="font-medium tracking-wider uppercase text-xs text-[#A8A49E]">
               Servicios
             </h4>
             <ul className="space-y-3">
@@ -104,7 +104,7 @@ export function Footer() {
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-[#9C9890] hover:text-[#FF4D00] transition-colors text-sm flex items-center gap-2 group"
+                    className="text-[#A8A49E] hover:text-[#FF4D00] transition-colors text-sm flex items-center gap-2 group"
                   >
                     <span className="w-0 group-hover:w-2 transition-all duration-300 h-[1px] bg-[#FF4D00]"></span>
                     {link.name}
@@ -116,7 +116,7 @@ export function Footer() {
 
           {/* 2.5 PÁGINAS */}
           <div className="md:col-span-2 space-y-4">
-            <h4 className="font-medium tracking-wider uppercase text-xs text-[#6F6B65]">
+            <h4 className="font-medium tracking-wider uppercase text-xs text-[#A8A49E]">
               Explorar
             </h4>
             <ul className="space-y-3">
@@ -124,7 +124,7 @@ export function Footer() {
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-[#9C9890] hover:text-[#FF4D00] transition-colors text-sm flex items-center gap-2 group"
+                    className="text-[#A8A49E] hover:text-[#FF4D00] transition-colors text-sm flex items-center gap-2 group"
                   >
                     <span className="w-0 group-hover:w-2 transition-all duration-300 h-[1px] bg-[#FF4D00]"></span>
                     {link.name}
@@ -136,7 +136,7 @@ export function Footer() {
 
           {/* 3. CONTACTO & SOCIAL */}
           <div className="md:col-span-3 space-y-6">
-            <h4 className="font-medium tracking-wider uppercase text-xs text-[#6F6B65]">
+            <h4 className="font-medium tracking-wider uppercase text-xs text-[#A8A49E]">
               Hablemos de negocios
             </h4>
 
@@ -157,7 +157,7 @@ export function Footer() {
               {/* Email */}
               <a
                 href="mailto:hola@fireforgerd.com"
-                className="flex items-center gap-3 text-sm text-[#9C9890] hover:text-white transition-colors group"
+                className="flex items-center gap-3 text-sm text-[#A8A49E] hover:text-white transition-colors group"
               >
                 <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
                   <Mail className="w-4 h-4" aria-hidden="true" />
@@ -168,32 +168,36 @@ export function Footer() {
 
             {/* REDES SOCIALES (Github Integrado) */}
             <div className="pt-6 border-t border-white/5">
-              <div
+              <ul
                 className="flex gap-4"
                 role="list"
                 aria-label="Redes sociales"
               >
-                <a
-                  href="https://www.instagram.com/fireforgerd/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Síguenos en Instagram"
-                  className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[#9C9890] hover:bg-[#E1306C] hover:text-white transition-all duration-300"
-                >
-                  <Instagram className="w-5 h-5" aria-hidden="true" />
-                </a>
+                <li>
+                  <a
+                    href="https://www.instagram.com/fireforgerd/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Síguenos en Instagram"
+                    className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[#A8A49E] hover:bg-[#E1306C] hover:text-white transition-all duration-300"
+                  >
+                    <Instagram className="w-5 h-5" aria-hidden="true" />
+                  </a>
+                </li>
 
                 {/* GITHUB: Hover blanco con texto negro (Clean & Techy) */}
-                <a
-                  href="https://github.com/ChannelF-Oleo"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Ver nuestro Github"
-                  className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[#9C9890] hover:bg-white hover:text-black transition-all duration-300"
-                >
-                  <Github className="w-5 h-5" aria-hidden="true" />
-                </a>
-              </div>
+                <li>
+                  <a
+                    href="https://github.com/ChannelF-Oleo"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Ver nuestro Github"
+                    className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-[#A8A49E] hover:bg-white hover:text-black transition-all duration-300"
+                  >
+                    <Github className="w-5 h-5" aria-hidden="true" />
+                  </a>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -203,17 +207,17 @@ export function Footer() {
           <div className="flex flex-col md:flex-row gap-4 items-center">
             <Link
               href="/admin/login"
-              className="text-[#6F6B65] text-xs hover:text-[#6F6B65]"
+              className="text-[#A8A49E] text-xs hover:text-[#A8A49E]"
             >
               © {currentYear} FireforgeRD.
             </Link>
-            <span className="hidden md:inline text-[#6F6B65] text-xs">•</span>
+            <span className="hidden md:inline text-[#A8A49E] text-xs">•</span>
             <div className="flex gap-4">
               {links.legal.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
-                  className="text-[#6F6B65] hover:text-white text-xs transition-colors"
+                  className="text-[#A8A49E] hover:text-white text-xs transition-colors"
                 >
                   {link.name}
                 </a>

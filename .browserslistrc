@@ -1,0 +1,13 @@
+# Navegadores modernos - evita polyfills para ES5/ES6
+# Esto reduce significativamente el bundle size
+
+# Producción: Solo navegadores con soporte ES2020+
+chrome >= 91
+firefox >= 90
+safari >= 14
+edge >= 91
+
+# Excluir navegadores antiguos explícitamente
+not ie 11
+not op_mini all
+not dead

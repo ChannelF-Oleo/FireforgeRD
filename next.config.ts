@@ -8,8 +8,17 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "firebasestorage.googleapis.com",
-        port: "",
-        pathname: "/v0/b/fireforgerd.firebasestorage.app/o/**",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "*.firebasestorage.app",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "storage.googleapis.com",
+        pathname: "/**",
       },
     ],
   },
@@ -37,6 +46,46 @@ const nextConfig: NextConfig = {
   // 4. Turbopack root para evitar warning de múltiples lockfiles
   turbopack: {
     root: path.resolve("."),
+  },
+
+  // 5. Optimización de bundles - Target moderno para evitar polyfills
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
+
+  // 6. Optimización experimental - tree shaking agresivo
+  experimental: {
+    optimizePackageImports: [
+      "lucide-react",
+      "framer-motion",
+      "@react-email/components",
+      "firebase",
+      "firebase/firestore",
+      "firebase/storage",
+      "firebase/auth",
+    ],
+  },
+
+  // 7. Optimización de producción
+  productionBrowserSourceMaps: false,
+
+  // 8. Configuración de módulos modernos
+  modularizeImports: {
+    "lucide-react": {
+      transform: "lucide-react/dist/esm/icons/{{kebabCase member}}",
+    },
+  },
+
+  // 9. Webpack config para excluir polyfills innecesarios
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // No incluir polyfills para APIs modernas que ya tienen soporte nativo
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        punycode: false,
+      };
+    }
+    return config;
   },
 };
 

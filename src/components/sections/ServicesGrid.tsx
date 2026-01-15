@@ -96,7 +96,7 @@ export function ServicesGrid() {
             </h2>
 
             {/* Ajuste: text-balance mejora mucho la lectura en párrafos cortos centrados */}
-            <p className="mx-auto max-w-3xl text-lg font-light leading-relaxed text-[#6F6B65] md:text-xl text-balance px-4">
+            <p className="mx-auto max-w-3xl text-lg font-light leading-relaxed text-[#5C5850] md:text-xl text-balance px-4">
               Diseñamos soluciones web para{" "}
               <span className="font-medium text-[#1A1818]">escalar</span>,
               automatizar y{" "}
@@ -121,14 +121,13 @@ export function ServicesGrid() {
                 className="h-full"
               >
                 <div className="group relative flex flex-col justify-between h-full min-h-[320px] md:min-h-[380px] p-6 md:p-8 rounded-3xl border border-white/60 bg-white/40 backdrop-blur-xl shadow-sm transition-all duration-500 hover:bg-white/80 hover:shadow-[0_20px_40px_-10px_rgba(255,77,0,0.1)] overflow-hidden">
-                  
                   {/* GRADIENTE INTERNO AL HOVER */}
                   <div className="absolute inset-0 bg-gradient-to-br from-[#FF4D00]/5 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none" />
 
                   {/* CONTENIDO SUPERIOR */}
                   <div className="relative z-10 flex-grow">
                     <div className="flex justify-between items-start mb-6 md:mb-8">
-                      <span className="inline-block px-3 py-1 rounded-full border border-[#1A1818]/5 bg-[#1A1818]/5 text-[10px] uppercase tracking-widest text-[#6F6B65] font-bold">
+                      <span className="inline-block px-3 py-1 rounded-full border border-[#1A1818]/5 bg-[#1A1818]/5 text-[10px] uppercase tracking-widest text-[#5C5850] font-bold">
                         {service.tag}
                       </span>
 
@@ -142,7 +141,7 @@ export function ServicesGrid() {
                       {service.name}
                     </h3>
 
-                    <p className="text-sm leading-relaxed text-[#6F6B65] text-balance">
+                    <p className="text-sm leading-relaxed text-[#5C5850] text-balance">
                       {service.description}
                     </p>
                   </div>
@@ -174,4 +173,3 @@ export function ServicesGrid() {
     </LazyMotion>
   );
 }
-

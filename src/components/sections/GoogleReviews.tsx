@@ -27,12 +27,12 @@ export function GoogleReviews() {
             <Star className="w-5 h-5 fill-current" />
           </div>
 
-          <h3 className="font-display text-3xl md:text-4xl font-light text-[#1A1818] mb-4">
+          <h2 className="font-display text-3xl md:text-4xl font-light text-[#1A1818] mb-4">
             Confianza{" "}
             <span className="text-[#FF4D00] font-medium">Forjada</span>
-          </h3>
+          </h2>
 
-          <p className="text-[#6F6B65] text-lg max-w-xl mx-auto">
+          <p className="text-[#5C5850] text-lg max-w-xl mx-auto">
             Lo que dicen quienes han construido su futuro digital con nosotros.
           </p>
         </div>

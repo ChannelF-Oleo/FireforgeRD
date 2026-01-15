@@ -6,5 +6,7 @@ export { FAQSection } from "./FAQSection";
 export { PortfolioCTA } from "./PortfolioCTA";
 export { DiagnosticoQuiz } from "./DiagnosticoQuiz";
 export { BlogList } from "./BlogList";
+export { BlogListUI } from "./BlogListUI";
 export { BlogPostView } from "./BlogPostView";
 export { ClientsGrid } from "./ClientsGrid";
+export { ClientsGridUI } from "./ClientsGridUI";

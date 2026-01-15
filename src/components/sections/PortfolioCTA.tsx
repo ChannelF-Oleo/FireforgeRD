@@ -28,7 +28,7 @@ export function PortfolioCTA() {
             <span className="font-medium">trabajos anteriores</span>?
           </h2>
 
-          <p className="text-[#6F6B65] text-lg mb-8 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-[#5C5850] text-lg mb-8 max-w-2xl mx-auto leading-relaxed">
             La mejor forma de entender lo que podemos hacer por tu empresa es
             viendo lo que ya hemos logrado para otros.
           </p>

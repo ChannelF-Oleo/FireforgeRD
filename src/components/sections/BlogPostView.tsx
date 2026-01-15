@@ -74,7 +74,7 @@ export function BlogPostView({ post }: Props) {
         {/* Back Link */}
         <Link
           href="/blog"
-          className="inline-flex items-center gap-2 text-[#6F6B65] hover:text-[#FF4D00] transition-colors mb-8"
+          className="inline-flex items-center gap-2 text-[#5C5850] hover:text-[#FF4D00] transition-colors mb-8"
         >
           <ArrowLeft className="w-4 h-4" />
           Volver al blog
@@ -102,7 +102,7 @@ export function BlogPostView({ post }: Props) {
             </h1>
 
             {post.excerpt && (
-              <p className="text-lg md:text-xl text-[#6F6B65] mb-6">
+              <p className="text-lg md:text-xl text-[#5C5850] mb-6">
                 {post.excerpt}
               </p>
             )}
@@ -161,7 +161,7 @@ export function BlogPostView({ post }: Props) {
             <h3 className="font-display text-xl md:text-2xl text-[#1A1818] mb-3">
               ¿Te gustó este artículo?
             </h3>
-            <p className="text-[#6F6B65] mb-6">
+            <p className="text-[#5C5850] mb-6">
               Descubre cómo podemos ayudarte a implementar estas ideas en tu
               negocio.
             </p>
