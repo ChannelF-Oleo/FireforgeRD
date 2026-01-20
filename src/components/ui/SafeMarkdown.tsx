@@ -32,16 +32,12 @@ export function SafeMarkdown({ content, className = "" }: SafeMarkdownProps) {
       return content;
     }
 
-    // Configurar marked de forma determinista
-    marked.setOptions({
-      breaks: true,
-      gfm: true,
-      headerIds: false,
-      mangle: false,
-    });
-
+    // Usar la nueva API de marked (v5+)
     try {
-      return marked.parse(content) as string;
+      return marked.parse(content, {
+        breaks: true,
+        gfm: true,
+      }) as string;
     } catch (error) {
       console.error('Error parsing markdown:', error);
       return `<p>${content.replace(/\n/g, '<br>')}</p>`;
