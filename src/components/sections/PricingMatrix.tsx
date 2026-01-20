@@ -47,6 +47,9 @@ export function PricingMatrix() {
       }
     };
 
+    // Verificar que estamos en el cliente
+    if (typeof window === 'undefined') return;
+
     window.addEventListener(
       "changePricingTab",
       handleTabChange as EventListener,

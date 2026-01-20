@@ -4,3 +4,4 @@ export { Input } from "./Input";
 export { Textarea } from "./Textarea";
 export { Select } from "./Select";
 export { LoadingSpinner, LoadingScreen } from "./LoadingSpinner";
+export { SafeMarkdown } from "./SafeMarkdown";

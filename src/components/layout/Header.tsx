@@ -31,6 +31,9 @@ export function Header() {
   const isHomePage = pathname === "/";
 
   useEffect(() => {
+    // Verificar que estamos en el cliente
+    if (typeof window === 'undefined') return;
+    
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 40);
     };
@@ -42,6 +45,9 @@ export function Header() {
   const handleNavClick = useCallback((sectionId: string) => {
     setIsMobileOpen(false);
     setActiveSection(sectionId);
+
+    // Verificar que estamos en el cliente
+    if (typeof window === 'undefined') return;
 
     if (sectionId === "hero") {
       window.scrollTo({ top: 0, behavior: "smooth" });

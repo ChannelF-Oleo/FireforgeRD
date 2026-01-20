@@ -17,6 +17,9 @@ export function ClientsGridUI({ initialClients }: ClientsGridUIProps) {
 
   // Cerrar modal con Escape
   useEffect(() => {
+    // Verificar que estamos en el cliente
+    if (typeof document === 'undefined') return;
+    
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape") setSelectedClient(null);
     };

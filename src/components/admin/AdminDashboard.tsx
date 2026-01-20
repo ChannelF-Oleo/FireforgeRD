@@ -30,6 +30,9 @@ export function AdminDashboard() {
 
   // Cerrar sidebar en resize a desktop
   useEffect(() => {
+    // Verificar que estamos en el cliente
+    if (typeof window === 'undefined') return;
+    
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
         setSidebarOpen(false);
@@ -42,6 +45,9 @@ export function AdminDashboard() {
 
   // Cerrar sidebar con Escape
   useEffect(() => {
+    // Verificar que estamos en el cliente
+    if (typeof document === 'undefined') return;
+    
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape" && sidebarOpen) {
         setSidebarOpen(false);

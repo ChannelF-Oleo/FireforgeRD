@@ -17,6 +17,9 @@ export function FloatingWhatsApp({
   const [isHovered, setIsHovered] = useState(false);
 
   const handleClick = () => {
+    // Verificar que estamos en el cliente
+    if (typeof window === 'undefined') return;
+    
     const url = generateWhatsAppURL(phoneNumber, message);
     window.open(url, "_blank");
   };

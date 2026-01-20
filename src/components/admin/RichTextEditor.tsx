@@ -28,6 +28,9 @@ export function RichTextEditor({
 }: RichTextEditorProps) {
   const insertMarkdown = useCallback(
     (before: string, after: string = "", placeholder: string = "") => {
+      // Verificar que estamos en el cliente
+      if (typeof document === 'undefined') return;
+      
       const textarea = document.getElementById(
         "markdown-editor",
       ) as HTMLTextAreaElement;

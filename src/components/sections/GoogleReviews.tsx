@@ -5,6 +5,9 @@ import { Star } from "lucide-react";
 
 export function GoogleReviews() {
   useEffect(() => {
+    // Verificar que estamos en el cliente
+    if (typeof window === 'undefined' || typeof document === 'undefined') return;
+    
     // Cargar el script de Elfsight solo una vez
     if (
       !document.querySelector(

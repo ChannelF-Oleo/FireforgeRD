@@ -46,7 +46,7 @@ export async function ClientsGrid() {
             <span className="text-[#FF4D00] font-medium">Clientes</span>
           </h1>
 
-          <p className="text-[#6F6B65] text-lg max-w-2xl mx-auto">
+          <p className="text-[#5C5850] text-lg max-w-2xl mx-auto">
             Empresas que han confiado en nosotros para transformar su presencia
             digital.
           </p>
@@ -56,7 +56,7 @@ export async function ClientsGrid() {
 
         {/* CTA */}
         <div className="text-center mt-16">
-          <p className="text-[#6F6B65] mb-4">
+          <p className="text-[#5C5850] mb-4">
             ¿Quieres que tu empresa esté aquí?
           </p>
           <Link

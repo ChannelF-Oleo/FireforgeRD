@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Calendar, Clock, ArrowLeft, Share2, BookOpen } from "lucide-react";
-import { marked } from "marked";
+import { SafeMarkdown } from "@/components/ui/SafeMarkdown";
 import type { BlogPost } from "@/types";
 
 interface Props {
@@ -26,32 +26,12 @@ export function BlogPostView({ post }: Props) {
     return Math.ceil(words / wordsPerMinute);
   };
 
-  // Convertir Markdown a HTML con configuración optimizada
-  const htmlContent = useMemo(() => {
-    // Configurar marked
-    marked.setOptions({
-      breaks: true, // Convertir saltos de línea a <br>
-      gfm: true, // GitHub Flavored Markdown
-    });
-
-    // Si el contenido no tiene formato markdown, agregar párrafos básicos
-    let content = post.content || "";
-
-    // Detectar si ya tiene formato HTML
-    const hasHtml = /<[a-z][\s\S]*>/i.test(content);
-
-    if (hasHtml) {
-      // Ya es HTML, devolverlo tal cual
-      return content;
+  const handleShare = async () => {
+    // Verificar que estamos en el cliente
+    if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+      return;
     }
 
-    // Convertir Markdown a HTML
-    const html = marked.parse(content);
-
-    return html as string;
-  }, [post.content]);
-
-  const handleShare = async () => {
     if (navigator.share) {
       try {
         await navigator.share({
@@ -63,8 +43,13 @@ export function BlogPostView({ post }: Props) {
         // Usuario canceló
       }
     } else {
-      await navigator.clipboard.writeText(window.location.href);
-      alert("Enlace copiado al portapapeles");
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        alert("Enlace copiado al portapapeles");
+      } catch {
+        // Fallback si clipboard no está disponible
+        console.log('No se pudo copiar al portapapeles');
+      }
     }
   };
 
@@ -149,10 +134,10 @@ export function BlogPostView({ post }: Props) {
             </div>
           )}
 
-          {/* Content - Estilos aplicados directamente */}
-          <div
-            className="blog-content"
-            dangerouslySetInnerHTML={{ __html: htmlContent }}
+          {/* Content - Usando SafeMarkdown para evitar hydration mismatch */}
+          <SafeMarkdown 
+            content={post.content} 
+            className="prose prose-lg max-w-none"
           />
 
           {/* Footer CTA */}
