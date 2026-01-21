@@ -1,11 +1,10 @@
 "use client";
 
 import { useMemo } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Calendar, Clock, ArrowLeft, Share2, BookOpen } from "lucide-react";
 import { SafeMarkdown } from "@/components/ui/SafeMarkdown";
-import { getBlogImageProps } from "@/lib/image-utils";
+import { SafeImage } from "@/components/ui/SafeImage";
 import type { BlogPost } from "@/types";
 
 interface Props {
@@ -137,19 +136,20 @@ export function BlogPostView({ post }: Props) {
           </header>
 
           {/* Cover Image */}
-          {(() => {
-            const imageProps = getBlogImageProps(post.coverImage, post.title, true);
-            return imageProps ? (
-              <div className="relative aspect-video rounded-xl md:rounded-2xl overflow-hidden mb-8 md:mb-10 bg-[#F9F8F6]">
-                <Image
-                  {...imageProps}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 768px"
-                  className="object-cover"
-                />
-              </div>
-            ) : null;
-          })()}
+          {post.coverImage && (
+            <div className="relative aspect-video rounded-xl md:rounded-2xl overflow-hidden mb-8 md:mb-10 bg-[#F9F8F6]">
+              <SafeImage
+                src={post.coverImage}
+                alt={post.title}
+                fill
+                sizes="(max-width: 768px) 100vw, 768px"
+                className="object-cover"
+                priority
+                quality={75}
+                placeholder="blur"
+              />
+            </div>
+          )}
 
           {/* Content - Usando SafeMarkdown para evitar hydration mismatch */}
           <SafeMarkdown 

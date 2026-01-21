@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidatePath, revalidateTag } from 'next/cache';
+import { revalidatePath } from 'next/cache';
 
 /**
  * Invalida el caché del blog después de crear/editar/eliminar posts
@@ -12,8 +12,8 @@ export async function revalidateBlog() {
     revalidatePath('/blog');
     revalidatePath('/blog/[slug]', 'page');
     
-    // Invalidar cache tags (Next.js 16 requiere segundo parámetro)
-    revalidateTag('blog-posts', { profile: 'max' });
+    // También invalidar la página principal que puede mostrar posts recientes
+    revalidatePath('/');
     
     return { success: true };
   } catch (error) {
@@ -28,7 +28,7 @@ export async function revalidateBlog() {
 export async function revalidateBlogPost(slug: string) {
   try {
     revalidatePath(`/blog/${slug}`);
-    revalidateTag('blog-posts', { profile: 'max' });
+    revalidatePath('/blog');
     
     return { success: true };
   } catch (error) {

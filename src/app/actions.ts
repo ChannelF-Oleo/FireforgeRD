@@ -4,6 +4,7 @@ import { z } from "zod";
 import { Resend } from "resend";
 import { adminDb } from "@/lib/firebase-admin";
 import { Timestamp } from "firebase-admin/firestore";
+import { errorTracker, withRetry, emailCircuitBreaker } from "@/lib/error-tracking";
 
 // --- IMPORTAMOS LAS PLANTILLAS ---
 import { ClientConfirmation } from "@/emails/ClientConfirmation";
@@ -104,38 +105,67 @@ export async function submitContactForm(
     };
   }
 
-  // --- PASO 2: NOTIFICACIÓN (Resend) ---
+  // --- PASO 2: NOTIFICACIÓN (Resend con Circuit Breaker) ---
   try {
-    const adminEmailPromise = resend.emails.send({
-      from: "FireforgeRD <notifications@fireforgerd.com>",
-      to: [process.env.ADMIN_EMAIL || "channelf@fireforgerd.com"],
-      replyTo: data.email,
-      subject: `🔥 Lead: ${data.companyName}`,
-      react: LeadNotification({
-        clientName: data.clientName,
-        companyName: data.companyName,
-        serviceType: data.serviceType,
-        email: data.email,
-        whatsapp: data.whatsapp,
-        notes: data.notes,
-      }) as React.ReactElement,
-    });
+    await emailCircuitBreaker.execute(async () => {
+      const adminEmailPromise = withRetry(
+        () => resend.emails.send({
+          from: "FireforgeRD <notifications@fireforgerd.com>",
+          to: [process.env.ADMIN_EMAIL || "channelf@fireforgerd.com"],
+          replyTo: data.email,
+          subject: `🔥 Lead: ${data.companyName}`,
+          react: LeadNotification({
+            clientName: data.clientName,
+            companyName: data.companyName,
+            serviceType: data.serviceType,
+            email: data.email,
+            whatsapp: data.whatsapp,
+            notes: data.notes,
+          }) as React.ReactElement,
+        }),
+        { 
+          maxAttempts: 3, 
+          context: { 
+            correlationId, 
+            action: 'send_admin_email',
+            component: 'contact_form' 
+          } 
+        }
+      );
 
-    const userEmailPromise = resend.emails.send({
-      from: "FireforgeRD <onboarding@fireforgerd.com>",
-      to: [data.email],
-      subject: "Hemos recibido tu solicitud - FireforgeRD",
-      react: ClientConfirmation({
-        clientName: data.clientName,
-        serviceType: data.serviceType,
-        plan: data.plan,
-      }) as React.ReactElement,
-    });
+      const userEmailPromise = withRetry(
+        () => resend.emails.send({
+          from: "FireforgeRD <onboarding@fireforgerd.com>",
+          to: [data.email],
+          subject: "Hemos recibido tu solicitud - FireforgeRD",
+          react: ClientConfirmation({
+            clientName: data.clientName,
+            serviceType: data.serviceType,
+            plan: data.plan,
+          }) as React.ReactElement,
+        }),
+        { 
+          maxAttempts: 3, 
+          context: { 
+            correlationId, 
+            action: 'send_user_email',
+            component: 'contact_form' 
+          } 
+        }
+      );
 
-    await Promise.allSettled([adminEmailPromise, userEmailPromise]);
+      await Promise.allSettled([adminEmailPromise, userEmailPromise]);
+    }, { correlationId, component: 'contact_form' });
+    
     console.log(`[${correlationId}] ✅ Emails enviados.`);
   } catch (emailError) {
     console.error(`[${correlationId}] ⚠️ Error emails:`, emailError);
+    errorTracker.logError(emailError as Error, {
+      correlationId,
+      component: 'contact_form',
+      action: 'email_notification_failed',
+      metadata: { clientEmail: data.email }
+    });
   }
 
   return { success: true, message: "Solicitud procesada exitosamente" };

@@ -21,12 +21,12 @@ import {
   EyeOff,
   Loader2,
   Save,
-  X,
   Calendar,
   ExternalLink,
 } from "lucide-react";
 import { ImageUpload } from "./ImageUpload";
 import { RichTextEditor } from "./RichTextEditor";
+import { Modal, ModalContent, ModalFooter } from "@/components/ui/Modal";
 import { revalidateBlog } from "@/app/actions/blog";
 import type { BlogPost } from "@/types";
 
@@ -168,160 +168,150 @@ export function BlogManager() {
         </button>
       </div>
 
-      {/* Editor Modal - Fullscreen en móvil */}
-      {editingPost && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center sm:p-4">
-          <div className="bg-white w-full sm:rounded-2xl sm:max-w-4xl h-full sm:h-auto sm:max-h-[90vh] overflow-hidden flex flex-col">
-            {/* Header */}
-            <div className="sticky top-0 bg-white border-b border-[#1A1818]/5 p-3 sm:p-4 flex items-center justify-between z-10">
-              <h3 className="font-medium text-[#1A1818] text-sm sm:text-base">
-                {editingPost.id ? "Editar Post" : "Nuevo Post"}
-              </h3>
-              <button
-                onClick={() => setEditingPost(null)}
-                className="p-2 hover:bg-[#F9F8F6] rounded-lg"
-              >
-                <X className="w-5 h-5" />
-              </button>
+      {/* Editor Modal con Focus Trap */}
+      <Modal
+        isOpen={!!editingPost}
+        onClose={() => setEditingPost(null)}
+        title={editingPost?.id ? "Editar Post" : "Nuevo Post"}
+        size="xl"
+        className="sm:max-w-4xl"
+      >
+        <ModalContent>
+          <div className="space-y-4">
+            <div>
+              <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider block mb-2">
+                Título
+              </label>
+              <input
+                type="text"
+                value={editingPost?.title || ""}
+                onChange={(e) =>
+                  setEditingPost({ ...editingPost, title: e.target.value })
+                }
+                className="w-full px-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:border-[#FF4D00]/30 outline-none text-sm sm:text-base"
+                placeholder="Título del post"
+                autoFocus
+              />
             </div>
 
-            {/* Content - Scrollable */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
-              <div>
-                <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider block mb-2">
-                  Título
-                </label>
-                <input
-                  type="text"
-                  value={editingPost.title || ""}
-                  onChange={(e) =>
-                    setEditingPost({ ...editingPost, title: e.target.value })
-                  }
-                  className="w-full px-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:border-[#FF4D00]/30 outline-none text-sm sm:text-base"
-                  placeholder="Título del post"
-                />
-              </div>
+            <div>
+              <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider block mb-2">
+                Extracto
+              </label>
+              <textarea
+                value={editingPost?.excerpt || ""}
+                onChange={(e) =>
+                  setEditingPost({ ...editingPost, excerpt: e.target.value })
+                }
+                className="w-full px-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:border-[#FF4D00]/30 outline-none resize-none text-sm sm:text-base"
+                rows={2}
+                placeholder="Breve descripción para SEO y previews"
+              />
+            </div>
 
-              <div>
-                <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider block mb-2">
-                  Extracto
-                </label>
-                <textarea
-                  value={editingPost.excerpt || ""}
-                  onChange={(e) =>
-                    setEditingPost({ ...editingPost, excerpt: e.target.value })
-                  }
-                  className="w-full px-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:border-[#FF4D00]/30 outline-none resize-none text-sm sm:text-base"
-                  rows={2}
-                  placeholder="Breve descripción para SEO y previews"
-                />
-              </div>
+            <div>
+              <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider block mb-2">
+                Contenido
+              </label>
+              <RichTextEditor
+                value={editingPost?.content || ""}
+                onChange={(content) =>
+                  setEditingPost({ ...editingPost, content })
+                }
+                placeholder="Escribe el contenido de tu artículo..."
+              />
+            </div>
 
-              <div>
-                <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider block mb-2">
-                  Contenido
-                </label>
-                <RichTextEditor
-                  value={editingPost.content || ""}
-                  onChange={(content) =>
-                    setEditingPost({ ...editingPost, content })
-                  }
-                  placeholder="Escribe el contenido de tu artículo..."
-                />
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <ImageUpload
-                  value={editingPost.coverImage || ""}
-                  onChange={(url) =>
-                    setEditingPost({ ...editingPost, coverImage: url })
-                  }
-                  folder="blog"
-                  label="Imagen de Portada"
-                />
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider block mb-2">
-                      Tags (separados por coma)
-                    </label>
-                    <input
-                      type="text"
-                      value={(editingPost.tags || []).join(", ")}
-                      onChange={(e) =>
-                        setEditingPost({
-                          ...editingPost,
-                          tags: e.target.value
-                            .split(",")
-                            .map((t) => t.trim())
-                            .filter(Boolean),
-                        })
-                      }
-                      className="w-full px-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:border-[#FF4D00]/30 outline-none text-sm"
-                      placeholder="web, tecnología, tips"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider block mb-2">
-                      Autor
-                    </label>
-                    <input
-                      type="text"
-                      value={editingPost.author || "FireforgeRD"}
-                      onChange={(e) =>
-                        setEditingPost({
-                          ...editingPost,
-                          author: e.target.value,
-                        })
-                      }
-                      className="w-full px-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:border-[#FF4D00]/30 outline-none text-sm"
-                    />
-                  </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <ImageUpload
+                value={editingPost?.coverImage || ""}
+                onChange={(url) =>
+                  setEditingPost({ ...editingPost, coverImage: url })
+                }
+                folder="blog"
+                label="Imagen de Portada"
+              />
+              <div className="space-y-4">
+                <div>
+                  <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider block mb-2">
+                    Tags (separados por coma)
+                  </label>
+                  <input
+                    type="text"
+                    value={(editingPost?.tags || []).join(", ")}
+                    onChange={(e) =>
+                      setEditingPost({
+                        ...editingPost,
+                        tags: e.target.value
+                          .split(",")
+                          .map((t) => t.trim())
+                          .filter(Boolean),
+                      })
+                    }
+                    className="w-full px-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:border-[#FF4D00]/30 outline-none text-sm"
+                    placeholder="web, tecnología, tips"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-[#1A1818] uppercase tracking-wider block mb-2">
+                    Autor
+                  </label>
+                  <input
+                    type="text"
+                    value={editingPost?.author || "FireforgeRD"}
+                    onChange={(e) =>
+                      setEditingPost({
+                        ...editingPost,
+                        author: e.target.value,
+                      })
+                    }
+                    className="w-full px-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:border-[#FF4D00]/30 outline-none text-sm"
+                  />
                 </div>
               </div>
-
-              <div className="flex items-center gap-3 pt-2">
-                <input
-                  type="checkbox"
-                  id="published"
-                  checked={editingPost.published || false}
-                  onChange={(e) =>
-                    setEditingPost({
-                      ...editingPost,
-                      published: e.target.checked,
-                    })
-                  }
-                  className="w-5 h-5 rounded border-[#1A1818]/20 text-[#FF4D00] focus:ring-[#FF4D00]"
-                />
-                <label htmlFor="published" className="text-sm text-[#1A1818]">
-                  Publicar inmediatamente
-                </label>
-              </div>
             </div>
 
-            {/* Footer - Fixed */}
-            <div className="sticky bottom-0 bg-white border-t border-[#1A1818]/5 p-3 sm:p-4 flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
-              <button
-                onClick={() => setEditingPost(null)}
-                className="px-4 py-2.5 text-sm font-medium text-[#6F6B65] hover:text-[#1A1818] order-2 sm:order-1"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleSave}
-                disabled={saving || !editingPost.title || !editingPost.content}
-                className="flex items-center justify-center gap-2 px-6 py-2.5 bg-[#1A1818] text-white rounded-xl text-sm font-medium hover:bg-[#FF4D00] transition-colors disabled:opacity-50 order-1 sm:order-2"
-              >
-                {saving ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Save className="w-4 h-4" />
-                )}
-                Guardar
-              </button>
+            <div className="flex items-center gap-3 pt-2">
+              <input
+                type="checkbox"
+                id="published"
+                checked={editingPost?.published || false}
+                onChange={(e) =>
+                  setEditingPost({
+                    ...editingPost,
+                    published: e.target.checked,
+                  })
+                }
+                className="w-5 h-5 rounded border-[#1A1818]/20 text-[#FF4D00] focus:ring-[#FF4D00]"
+              />
+              <label htmlFor="published" className="text-sm text-[#1A1818]">
+                Publicar inmediatamente
+              </label>
             </div>
           </div>
-        </div>
-      )}
+        </ModalContent>
+
+        <ModalFooter>
+          <button
+            onClick={() => setEditingPost(null)}
+            className="px-4 py-2.5 text-sm font-medium text-[#6F6B65] hover:text-[#1A1818] order-2 sm:order-1"
+          >
+            Cancelar
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={saving || !editingPost?.title || !editingPost?.content}
+            className="flex items-center justify-center gap-2 px-6 py-2.5 bg-[#1A1818] text-white rounded-xl text-sm font-medium hover:bg-[#FF4D00] transition-colors disabled:opacity-50 order-1 sm:order-2"
+          >
+            {saving ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Save className="w-4 h-4" />
+            )}
+            Guardar
+          </button>
+        </ModalFooter>
+      </Modal>
 
       {/* Posts List */}
       <div className="bg-white rounded-2xl border border-[#1A1818]/5 overflow-hidden">

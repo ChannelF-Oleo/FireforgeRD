@@ -54,8 +54,7 @@ const getCachedPost = unstable_cache(
   },
   ['blog-post'],
   { 
-    revalidate: 600, // 10 minutos
-    tags: ['blog-posts'] 
+    revalidate: 600 // 10 minutos
   }
 );
 

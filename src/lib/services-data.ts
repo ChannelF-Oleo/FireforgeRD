@@ -1,28 +1,7 @@
-// src/types/index.ts
+// Importamos tipos desde el archivo central
+import type { ServicePlan, ServiceCategory } from "@/types";
 
-// 1. Definimos las categorías permitidas (incluyendo 'technical')
-export type ServiceCategory =
-  | "web"
-  | "ecommerce"
-  | "saas"
-  | "automation"
-  | "technical";
-
-// 2. Definimos la estructura del Plan
-export interface ServicePlan {
-  id: string;
-  name: string;
-  price: number;
-  // Cambiamos a 'string' para permitir "RD$", "RD$ / Hora" o "USD"
-  currency: string;
-  category: ServiceCategory;
-  idealFor: string;
-  deliveryTime: string;
-  isRecommended?: boolean;
-  features: string[];
-}
-
-// 3. Definimos la estructura del Catálogo completo
+// Definimos interfaces específicas para este archivo
 export interface ServiceCatalog {
   web: {
     laChispa: ServicePlan;
@@ -45,7 +24,6 @@ export interface ServiceCatalog {
     botCaptador: ServicePlan;
     neuroBot: ServicePlan;
   };
-  // Agregamos la sección técnica
   technical: {
     emailCorp: ServicePlan;
     vCard: ServicePlan;

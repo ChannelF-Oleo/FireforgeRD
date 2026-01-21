@@ -75,7 +75,7 @@ export function getBlogImageProps(
     alt,
     priority: isPriority,
     loading: isPriority ? 'eager' : 'lazy',
-    quality: isPriority ? 90 : 85,
+    quality: 75, // ⚡ SOLUCIÓN: Usar solo calidad 75 para evitar warnings
     placeholder: 'blur',
     blurDataURL: IMAGE_PLACEHOLDER,
   };

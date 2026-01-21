@@ -7,14 +7,14 @@
 - **Solución**: 
   - Agregado `export const revalidate = 300` (5 min) en `/blog`
   - Agregado `export const revalidate = 600` (10 min) en `/blog/[slug]`
-  - Implementado `unstable_cache()` con tags para invalidación selectiva
+  - Implementado `unstable_cache()` para optimización
 
 ### 2. **FALTA DE INVALIDACIÓN MANUAL**
 - **Problema**: El admin no forzaba actualización del caché público
 - **Solución**:
   - Creado `src/app/actions/blog.ts` con funciones de revalidación
   - Agregado `revalidateBlog()` después de crear/editar/eliminar posts
-  - Implementado `revalidateTag('blog-posts')` para invalidación por tags
+  - Usa `revalidatePath()` compatible con Next.js 16
 
 ### 3. **ERROR DE FECHAS INVÁLIDAS**
 - **Problema**: `RangeError: Invalid time value` al formatear fechas de Firestore
@@ -34,7 +34,6 @@
 - **Solución**:
   - Mejorada configuración de `images` en `next.config.ts`
   - Creado `src/lib/image-utils.ts` para validación y optimización
-  - Agregado middleware para mejor caching de imágenes
   - Implementado placeholders y lazy loading optimizado
 
 ### 6. **ADVERTENCIAS DE LCP (Largest Contentful Paint)**
@@ -43,6 +42,13 @@
   - Primeras 3 imágenes del blog con `priority={true}` y `loading="eager"`
   - Resto de imágenes con lazy loading
   - Placeholders blur para mejor UX
+
+### 7. **ERRORES DE BUILD EN NEXT.JS 16**
+- **Problema**: Incompatibilidad con `revalidateTag` y middleware deprecated
+- **Solución**:
+  - Simplificado a usar solo `revalidatePath()` que es más estable
+  - Eliminado middleware deprecated
+  - Compatible con Next.js 16
 
 ## 🚀 **PASOS PARA COMPLETAR LA SOLUCIÓN**
 
@@ -64,8 +70,7 @@ En el admin, después de publicar un post, el caché se invalida automáticament
 
 - **Lista de posts** (`/blog`): Se revalida cada 5 minutos
 - **Posts individuales** (`/blog/[slug]`): Se revalida cada 10 minutos
-- **Invalidación manual**: Automática después de operaciones CRUD
-- **Imágenes**: Cache inmutable de 1 año con middleware optimizado
+- **Invalidación manual**: Automática después de operaciones CRUD usando `revalidatePath()`
 
 ## 🔍 **CÓMO VERIFICAR QUE FUNCIONA**
 
@@ -75,6 +80,7 @@ En el admin, después de publicar un post, el caché se invalida automáticament
 4. **Eliminar post**: Debería desaparecer inmediatamente
 5. **Imágenes**: Deberían cargar sin errores 500
 6. **Performance**: Sin advertencias de LCP en DevTools
+7. **Build**: Debería compilar sin errores en Next.js 16
 
 ## ⚠️ **NOTAS IMPORTANTES**
 
@@ -82,6 +88,7 @@ En el admin, después de publicar un post, el caché se invalida automáticament
 - Si necesitas actualización inmediata, reinicia el servidor de desarrollo
 - En producción, los cambios son más rápidos gracias a la invalidación automática
 - Las imágenes ahora tienen validación y fallbacks para evitar errores
+- Compatible con Next.js 16 sin warnings ni errores de build
 
 ## 🛠️ **ARCHIVOS MODIFICADOS**
 
@@ -93,9 +100,9 @@ En el admin, después de publicar un post, el caché se invalida automáticament
 - `src/components/admin/BlogManager.tsx` - Invalidación automática
 - `src/app/actions/blog.ts` - Acciones de revalidación (NUEVO) - Compatible con Next.js 16
 - `src/lib/image-utils.ts` - Utilidades para imágenes (NUEVO)
-- `src/middleware.ts` - Middleware para imágenes (NUEVO)
 - `next.config.ts` - Configuración mejorada de imágenes
 - `firestore.indexes.json` - Índices optimizados
+- `src/middleware.ts` - ELIMINADO (deprecated en Next.js 16)
 
 ## 🎯 **OPTIMIZACIONES DE RENDIMIENTO**
 
@@ -103,5 +110,5 @@ En el admin, después de publicar un post, el caché se invalida automáticament
 - **Placeholders**: Blur effect mientras cargan las imágenes
 - **Calidad adaptativa**: 90% para imágenes priority, 85% para lazy
 - **Formatos modernos**: WebP y AVIF cuando sea posible
-- **Cache headers**: 1 año para imágenes de Firebase Storage
-- **Next.js 16 Compatible**: Uso correcto de `revalidateTag` con perfil 'max'
+- **Cache simplificado**: Usa `revalidatePath()` estable en lugar de tags complejas
+- **Next.js 16 Compatible**: Sin warnings ni errores de build

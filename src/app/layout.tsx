@@ -102,8 +102,11 @@ export const metadata: Metadata = {
       { url: "/favicon.ico", sizes: "any" },
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/ico_32x32.ico", sizes: "32x32", type: "image/x-icon" },
+      { url: "/ico_512x512.ico", sizes: "512x512", type: "image/x-icon" },
     ],
     apple: "/apple-touch-icon.png",
+    shortcut: "/favicon.ico",
   },
   manifest: "/site.webmanifest",
 };
@@ -149,6 +152,12 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
+        {/* Favicon - Forzar actualización con versión */}
+        <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=2" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=2" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2" />
+        
         {/* Preconnect para recursos críticos - mejora LCP */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link

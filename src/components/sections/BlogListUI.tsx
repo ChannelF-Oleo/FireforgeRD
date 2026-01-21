@@ -1,25 +1,97 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import Image from "next/image";
+import { useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { Calendar, Clock, ArrowRight, BookOpen } from "lucide-react";
-import { getBlogImageProps } from "@/lib/image-utils";
+import { 
+  Calendar, 
+  Clock, 
+  ArrowRight, 
+  BookOpen, 
+  Search, 
+  Filter, 
+  X, 
+  ChevronDown,
+  SortAsc,
+  SortDesc
+} from "lucide-react";
+import { SafeImage } from "@/components/ui/SafeImage";
 import type { BlogPost } from "@/types";
 
 interface BlogListUIProps {
   initialPosts: BlogPost[];
 }
 
-export function BlogListUI({ initialPosts }: BlogListUIProps) {
-  const [selectedTag, setSelectedTag] = useState<string>("todos");
+type SortOption = 'newest' | 'oldest' | 'title-asc' | 'title-desc';
 
-  const allTags = ["todos", ...new Set(initialPosts.flatMap((p) => p.tags))];
-  const filteredPosts =
-    selectedTag === "todos"
-      ? initialPosts
-      : initialPosts.filter((p) => p.tags.includes(selectedTag));
+export function BlogListUI({ initialPosts }: BlogListUIProps) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [sortBy, setSortBy] = useState<SortOption>('newest');
+  const [showFilters, setShowFilters] = useState(false);
+
+  // Obtener todos los tags únicos
+  const allTags = useMemo(() => {
+    const tags = new Set(initialPosts.flatMap((p) => p.tags));
+    return Array.from(tags).sort();
+  }, [initialPosts]);
+
+  // Filtrar y ordenar posts
+  const filteredAndSortedPosts = useMemo(() => {
+    let filtered = initialPosts;
+
+    // Filtrar por búsqueda de texto
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(post => 
+        post.title.toLowerCase().includes(term) ||
+        post.excerpt.toLowerCase().includes(term) ||
+        post.content.toLowerCase().includes(term) ||
+        post.tags.some(tag => tag.toLowerCase().includes(term))
+      );
+    }
+
+    // Filtrar por tags seleccionados
+    if (selectedTags.length > 0) {
+      filtered = filtered.filter(post =>
+        selectedTags.some(tag => post.tags.includes(tag))
+      );
+    }
+
+    // Ordenar
+    const sorted = [...filtered].sort((a, b) => {
+      switch (sortBy) {
+        case 'newest':
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        case 'oldest':
+          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        case 'title-asc':
+          return a.title.localeCompare(b.title);
+        case 'title-desc':
+          return b.title.localeCompare(a.title);
+        default:
+          return 0;
+      }
+    });
+
+    return sorted;
+  }, [initialPosts, searchTerm, selectedTags, sortBy]);
+
+  const toggleTag = (tag: string) => {
+    setSelectedTags(prev => 
+      prev.includes(tag) 
+        ? prev.filter(t => t !== tag)
+        : [...prev, tag]
+    );
+  };
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setSelectedTags([]);
+    setSortBy('newest');
+  };
+
+  const hasActiveFilters = searchTerm.trim() || selectedTags.length > 0 || sortBy !== 'newest';
 
   const formatDate = (date: Date | string | null | undefined) => {
     // ⚡ SOLUCIÓN: Validación robusta de fechas
@@ -50,41 +122,183 @@ export function BlogListUI({ initialPosts }: BlogListUIProps) {
     return Math.ceil(words / wordsPerMinute);
   };
 
+  const getSortLabel = (sort: SortOption) => {
+    switch (sort) {
+      case 'newest': return 'Más recientes';
+      case 'oldest': return 'Más antiguos';
+      case 'title-asc': return 'Título A-Z';
+      case 'title-desc': return 'Título Z-A';
+    }
+  };
+
   return (
     <>
-      {/* Tags Filter */}
-      {allTags.length > 1 && (
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
-          {allTags.map((tag) => (
-            <button
-              key={tag}
-              onClick={() => setSelectedTag(tag)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                selectedTag === tag
-                  ? "bg-[#1A1818] text-white"
-                  : "bg-[#F9F8F6] text-[#5C5850] hover:bg-[#1A1818]/5"
-              }`}
+      {/* Herramienta de Filtrado Avanzada */}
+      <div className="mb-8">
+        {/* Barra de búsqueda y controles principales */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-4">
+          {/* Búsqueda */}
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9C9890]" />
+            <input
+              type="text"
+              placeholder="Buscar artículos..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:border-[#FF4D00]/30 outline-none text-sm placeholder:text-[#9C9890]"
+            />
+          </div>
+
+          {/* Ordenamiento */}
+          <div className="relative">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as SortOption)}
+              className="appearance-none pl-4 pr-10 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:border-[#FF4D00]/30 outline-none text-sm font-medium text-[#1A1818] cursor-pointer"
             >
-              {tag.charAt(0).toUpperCase() + tag.slice(1)}
-            </button>
-          ))}
+              <option value="newest">Más recientes</option>
+              <option value="oldest">Más antiguos</option>
+              <option value="title-asc">Título A-Z</option>
+              <option value="title-desc">Título Z-A</option>
+            </select>
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9C9890] pointer-events-none" />
+          </div>
+
+          {/* Toggle filtros */}
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className={`flex items-center gap-2 px-4 py-3 rounded-xl font-medium text-sm transition-all ${
+              showFilters || selectedTags.length > 0
+                ? "bg-[#1A1818] text-white"
+                : "bg-[#F9F8F6] text-[#5C5850] hover:bg-[#1A1818]/5"
+            }`}
+          >
+            <Filter className="w-4 h-4" />
+            <span className="hidden sm:inline">Filtros</span>
+            {selectedTags.length > 0 && (
+              <span className="bg-[#FF4D00] text-white text-xs px-2 py-0.5 rounded-full">
+                {selectedTags.length}
+              </span>
+            )}
+          </button>
         </div>
-      )}
+
+        {/* Panel de filtros expandible */}
+        <AnimatePresence>
+          {showFilters && allTags.length > 0 && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="overflow-hidden"
+            >
+              <div className="p-4 bg-[#F9F8F6] rounded-xl">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-medium text-[#1A1818] text-sm">Filtrar por categorías</h3>
+                  {selectedTags.length > 0 && (
+                    <button
+                      onClick={() => setSelectedTags([])}
+                      className="text-xs text-[#FF4D00] hover:text-[#FF4D00]/80 font-medium"
+                    >
+                      Limpiar tags
+                    </button>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {allTags.map((tag) => (
+                    <button
+                      key={tag}
+                      onClick={() => toggleTag(tag)}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                        selectedTags.includes(tag)
+                          ? "bg-[#1A1818] text-white"
+                          : "bg-white text-[#5C5850] hover:bg-[#1A1818]/5 border border-[#1A1818]/10"
+                      }`}
+                    >
+                      #{tag}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Filtros activos y resultados */}
+        <div className="flex items-center justify-between mt-4">
+          <div className="flex items-center gap-2 text-sm text-[#5C5850]">
+            <span>{filteredAndSortedPosts.length} artículo{filteredAndSortedPosts.length !== 1 ? 's' : ''}</span>
+            {hasActiveFilters && (
+              <>
+                <span>•</span>
+                <button
+                  onClick={clearFilters}
+                  className="text-[#FF4D00] hover:text-[#FF4D00]/80 font-medium flex items-center gap-1"
+                >
+                  <X className="w-3 h-3" />
+                  Limpiar filtros
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Tags seleccionados */}
+          {selectedTags.length > 0 && (
+            <div className="flex items-center gap-2">
+              {selectedTags.map((tag) => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center gap-1 px-2 py-1 bg-[#1A1818] text-white text-xs rounded-full"
+                >
+                  #{tag}
+                  <button
+                    onClick={() => toggleTag(tag)}
+                    className="hover:bg-white/20 rounded-full p-0.5"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Posts Grid */}
-      {filteredPosts.length === 0 ? (
+      {filteredAndSortedPosts.length === 0 ? (
         <div className="text-center py-20">
           <BookOpen className="w-16 h-16 text-[#9C9890] mx-auto mb-4" />
-          <p className="text-[#5C5850] text-lg">
-            No hay artículos publicados aún.
-          </p>
-          <p className="text-[#9C9890] text-sm mt-2">
-            Vuelve pronto para ver nuevo contenido.
-          </p>
+          {hasActiveFilters ? (
+            <>
+              <p className="text-[#5C5850] text-lg mb-2">
+                No se encontraron artículos
+              </p>
+              <p className="text-[#9C9890] text-sm mb-4">
+                Intenta ajustar tus filtros de búsqueda
+              </p>
+              <button
+                onClick={clearFilters}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-[#FF4D00] text-white rounded-xl text-sm font-medium hover:bg-[#FF4D00]/90 transition-colors"
+              >
+                <X className="w-4 h-4" />
+                Limpiar filtros
+              </button>
+            </>
+          ) : (
+            <>
+              <p className="text-[#5C5850] text-lg">
+                No hay artículos publicados aún.
+              </p>
+              <p className="text-[#9C9890] text-sm mt-2">
+                Vuelve pronto para ver nuevo contenido.
+              </p>
+            </>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredPosts.map((post, index) => (
+          {filteredAndSortedPosts.map((post, index) => (
             <motion.article
               key={post.id}
               initial={{ opacity: 0, y: 20 }}
@@ -96,21 +310,16 @@ export function BlogListUI({ initialPosts }: BlogListUIProps) {
                 <div className="bg-white rounded-2xl border border-[#1A1818]/5 overflow-hidden hover:shadow-xl hover:shadow-[#FF4D00]/5 transition-all duration-300">
                   {/* Cover Image */}
                   <div className="relative aspect-[16/10] overflow-hidden bg-[#F9F8F6]">
-                    {(() => {
-                      const imageProps = getBlogImageProps(post.coverImage, post.title, index < 3);
-                      return imageProps ? (
-                        <Image
-                          {...imageProps}
-                          fill
-                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                          className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <BookOpen className="w-12 h-12 text-[#9C9890]" />
-                        </div>
-                      );
-                    })()}
+                    <SafeImage
+                      src={post.coverImage}
+                      alt={post.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      priority={index < 3}
+                      quality={75}
+                      placeholder="blur"
+                    />
                   </div>
 
                   {/* Content */}

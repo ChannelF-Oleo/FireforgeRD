@@ -3,13 +3,15 @@ export interface ServicePlan {
   id: string;
   name: string;
   price: number;
-  currency: "RD$" | "USD";
+  currency: "RD$" | "USD" | "USD / Hora" | string; // Permitir flexibilidad para casos especiales
   idealFor: string;
   features: string[];
   isRecommended?: boolean;
   deliveryTime: string;
-  category: "web" | "ecommerce" | "saas" | "automation";
+  category: "web" | "ecommerce" | "saas" | "automation" | "technical";
 }
+
+export type ServiceCategory = "web" | "ecommerce" | "saas" | "automation" | "technical";
 
 export interface ContactFormData {
   fullName: string;
@@ -164,5 +166,12 @@ export interface ServiceCatalog {
     elPortero: ServicePlan;
     botCaptador: ServicePlan;
     neuroBot: ServicePlan;
+  };
+  technical: {
+    emailCorp: ServicePlan;
+    vCard: ServicePlan;
+    identidad: ServicePlan;
+    copy: ServicePlan;
+    rescate: ServicePlan;
   };
 }
