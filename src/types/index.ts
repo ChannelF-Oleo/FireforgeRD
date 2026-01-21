@@ -175,3 +175,13 @@ export interface ServiceCatalog {
     rescate: ServicePlan;
   };
 }
+// Global type declarations
+declare global {
+  interface Window {
+    dataLayer: any[];
+    gtag: (...args: any[]) => void;
+  }
+}
+
+// This export is needed to make this file a module
+export {};

@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { FloatingWhatsApp } from "./FloatingWhatsApp";
+import { ClientOnly } from "@/components/ui/ClientOnly";
 
 export function PublicLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -32,7 +33,9 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <Footer />
-      <FloatingWhatsApp />
+      <ClientOnly>
+        <FloatingWhatsApp />
+      </ClientOnly>
     </>
   );
 }
