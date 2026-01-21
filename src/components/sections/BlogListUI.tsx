@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { Calendar, Clock, ArrowRight, BookOpen } from "lucide-react";
+import { getBlogImageProps } from "@/lib/image-utils";
 import type { BlogPost } from "@/types";
 
 interface BlogListUIProps {
@@ -95,19 +96,21 @@ export function BlogListUI({ initialPosts }: BlogListUIProps) {
                 <div className="bg-white rounded-2xl border border-[#1A1818]/5 overflow-hidden hover:shadow-xl hover:shadow-[#FF4D00]/5 transition-all duration-300">
                   {/* Cover Image */}
                   <div className="relative aspect-[16/10] overflow-hidden bg-[#F9F8F6]">
-                    {post.coverImage ? (
-                      <Image
-                        src={post.coverImage}
-                        alt={post.title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <BookOpen className="w-12 h-12 text-[#9C9890]" />
-                      </div>
-                    )}
+                    {(() => {
+                      const imageProps = getBlogImageProps(post.coverImage, post.title, index < 3);
+                      return imageProps ? (
+                        <Image
+                          {...imageProps}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <BookOpen className="w-12 h-12 text-[#9C9890]" />
+                        </div>
+                      );
+                    })()}
                   </div>
 
                   {/* Content */}

@@ -12,8 +12,8 @@ export async function revalidateBlog() {
     revalidatePath('/blog');
     revalidatePath('/blog/[slug]', 'page');
     
-    // Invalidar cache tags
-    revalidateTag('blog-posts');
+    // Invalidar cache tags (Next.js 16 requiere segundo parámetro)
+    revalidateTag('blog-posts', { profile: 'max' });
     
     return { success: true };
   } catch (error) {
@@ -28,7 +28,7 @@ export async function revalidateBlog() {
 export async function revalidateBlogPost(slug: string) {
   try {
     revalidatePath(`/blog/${slug}`);
-    revalidateTag('blog-posts');
+    revalidateTag('blog-posts', { profile: 'max' });
     
     return { success: true };
   } catch (error) {

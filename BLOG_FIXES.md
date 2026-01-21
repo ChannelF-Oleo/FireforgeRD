@@ -29,6 +29,21 @@
   - `published + createdAt` (para listado de posts)
   - `slug + published` (para posts individuales)
 
+### 5. **ERROR 500 EN IMÁGENES DE FIREBASE STORAGE**
+- **Problema**: Next.js Image Optimization fallaba con URLs de Firebase
+- **Solución**:
+  - Mejorada configuración de `images` en `next.config.ts`
+  - Creado `src/lib/image-utils.ts` para validación y optimización
+  - Agregado middleware para mejor caching de imágenes
+  - Implementado placeholders y lazy loading optimizado
+
+### 6. **ADVERTENCIAS DE LCP (Largest Contentful Paint)**
+- **Problema**: Imágenes above-the-fold sin `loading="eager"`
+- **Solución**:
+  - Primeras 3 imágenes del blog con `priority={true}` y `loading="eager"`
+  - Resto de imágenes con lazy loading
+  - Placeholders blur para mejor UX
+
 ## 🚀 **PASOS PARA COMPLETAR LA SOLUCIÓN**
 
 ### 1. Desplegar Índices de Firestore
@@ -50,6 +65,7 @@ En el admin, después de publicar un post, el caché se invalida automáticament
 - **Lista de posts** (`/blog`): Se revalida cada 5 minutos
 - **Posts individuales** (`/blog/[slug]`): Se revalida cada 10 minutos
 - **Invalidación manual**: Automática después de operaciones CRUD
+- **Imágenes**: Cache inmutable de 1 año con middleware optimizado
 
 ## 🔍 **CÓMO VERIFICAR QUE FUNCIONA**
 
@@ -57,20 +73,35 @@ En el admin, después de publicar un post, el caché se invalida automáticament
 2. **Editar post**: Los cambios deberían reflejarse inmediatamente
 3. **Cambiar estado**: Publicar/despublicar debería actualizar la lista
 4. **Eliminar post**: Debería desaparecer inmediatamente
+5. **Imágenes**: Deberían cargar sin errores 500
+6. **Performance**: Sin advertencias de LCP en DevTools
 
 ## ⚠️ **NOTAS IMPORTANTES**
 
 - Los cambios pueden tardar hasta 5-10 minutos en aparecer debido al caché
 - Si necesitas actualización inmediata, reinicia el servidor de desarrollo
 - En producción, los cambios son más rápidos gracias a la invalidación automática
+- Las imágenes ahora tienen validación y fallbacks para evitar errores
 
 ## 🛠️ **ARCHIVOS MODIFICADOS**
 
 - `src/app/blog/page.tsx` - Agregado revalidate
 - `src/app/blog/[slug]/page.tsx` - Agregado revalidate y cache
 - `src/components/sections/BlogList.tsx` - Cache optimizado
-- `src/components/sections/BlogListUI.tsx` - Formateo de fechas seguro
-- `src/components/sections/BlogPostView.tsx` - Formateo de fechas seguro
+- `src/components/sections/BlogListUI.tsx` - Formateo de fechas seguro + imágenes optimizadas
+- `src/components/sections/BlogPostView.tsx` - Formateo de fechas seguro + imágenes optimizadas
 - `src/components/admin/BlogManager.tsx` - Invalidación automática
-- `src/app/actions/blog.ts` - Acciones de revalidación (NUEVO)
+- `src/app/actions/blog.ts` - Acciones de revalidación (NUEVO) - Compatible con Next.js 16
+- `src/lib/image-utils.ts` - Utilidades para imágenes (NUEVO)
+- `src/middleware.ts` - Middleware para imágenes (NUEVO)
+- `next.config.ts` - Configuración mejorada de imágenes
 - `firestore.indexes.json` - Índices optimizados
+
+## 🎯 **OPTIMIZACIONES DE RENDIMIENTO**
+
+- **Lazy Loading**: Solo las primeras 3 imágenes cargan eagerly
+- **Placeholders**: Blur effect mientras cargan las imágenes
+- **Calidad adaptativa**: 90% para imágenes priority, 85% para lazy
+- **Formatos modernos**: WebP y AVIF cuando sea posible
+- **Cache headers**: 1 año para imágenes de Firebase Storage
+- **Next.js 16 Compatible**: Uso correcto de `revalidateTag` con perfil 'max'
