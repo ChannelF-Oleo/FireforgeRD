@@ -2,29 +2,50 @@ import { BookOpen } from "lucide-react";
 import { adminDb } from "@/lib/firebase-admin";
 import { BlogListUI } from "./BlogListUI";
 import type { BlogPost } from "@/types";
+import { unstable_cache } from "next/cache";
+
+// ⚡ SOLUCIÓN: Cache optimizado con invalidación automática
+const getCachedPosts = unstable_cache(
+  async (): Promise<BlogPost[]> => {
+    const snapshot = await adminDb
+      .collection("blog_posts")
+      .where("published", "==", true)
+      .orderBy("createdAt", "desc")
+      .get();
+
+    return snapshot.docs.map((doc) => {
+      const data = doc.data();
+      
+      // ⚡ SOLUCIÓN: Conversión segura de fechas de Firestore
+      const createdAt = data.createdAt?.toDate ? data.createdAt.toDate() : 
+                       data.createdAt ? new Date(data.createdAt) : new Date();
+      const updatedAt = data.updatedAt?.toDate ? data.updatedAt.toDate() : 
+                       data.updatedAt ? new Date(data.updatedAt) : new Date();
+      
+      return {
+        id: doc.id,
+        title: data.title || "",
+        slug: data.slug || "",
+        excerpt: data.excerpt || "",
+        content: data.content || "",
+        coverImage: data.coverImage || null,
+        author: data.author || "FireforgeRD",
+        tags: data.tags || [],
+        published: data.published || false,
+        createdAt,
+        updatedAt,
+      } as BlogPost;
+    });
+  },
+  ['blog-posts'],
+  { 
+    revalidate: 300, // 5 minutos
+    tags: ['blog-posts'] 
+  }
+);
 
 async function getPosts(): Promise<BlogPost[]> {
-  const snapshot = await adminDb
-    .collection("blog_posts")
-    .where("published", "==", true)
-    .orderBy("createdAt", "desc")
-    .get();
-
-  return snapshot.docs.map((doc) => {
-    const data = doc.data();
-    return {
-      id: doc.id,
-      title: data.title,
-      slug: data.slug,
-      excerpt: data.excerpt,
-      content: data.content,
-      coverImage: data.coverImage || null,
-      tags: data.tags || [],
-      published: data.published,
-      createdAt: data.createdAt?.toDate() || new Date(),
-      updatedAt: data.updatedAt?.toDate() || new Date(),
-    } as BlogPost;
-  });
+  return getCachedPosts();
 }
 
 export async function BlogList() {

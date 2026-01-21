@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { ImageUpload } from "./ImageUpload";
 import { RichTextEditor } from "./RichTextEditor";
+import { revalidateBlog } from "@/app/actions/blog";
 import type { BlogPost } from "@/types";
 
 export function BlogManager() {
@@ -93,6 +94,9 @@ export function BlogManager() {
         });
       }
 
+      // ⚡ SOLUCIÓN: Invalidar caché después de guardar
+      await revalidateBlog();
+
       setEditingPost(null);
       fetchPosts();
     } catch (error) {
@@ -106,6 +110,10 @@ export function BlogManager() {
     if (!confirm("¿Eliminar este post?")) return;
     try {
       await deleteDoc(doc(db, "blog_posts", id));
+      
+      // ⚡ SOLUCIÓN: Invalidar caché después de eliminar
+      await revalidateBlog();
+      
       fetchPosts();
     } catch (error) {
       console.error("Error deleting post:", error);
@@ -118,6 +126,10 @@ export function BlogManager() {
         published: !post.published,
         updatedAt: Timestamp.now(),
       });
+      
+      // ⚡ SOLUCIÓN: Invalidar caché después de cambiar estado
+      await revalidateBlog();
+      
       fetchPosts();
     } catch (error) {
       console.error("Error toggling publish:", error);

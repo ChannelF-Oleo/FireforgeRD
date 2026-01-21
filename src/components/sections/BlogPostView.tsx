@@ -12,12 +12,27 @@ interface Props {
 }
 
 export function BlogPostView({ post }: Props) {
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat("es-DO", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }).format(date);
+  const formatDate = (date: Date | string | null | undefined) => {
+    // ⚡ SOLUCIÓN: Validación robusta de fechas
+    if (!date) return "Fecha no disponible";
+    
+    try {
+      const dateObj = date instanceof Date ? date : new Date(date);
+      
+      // Verificar si la fecha es válida
+      if (isNaN(dateObj.getTime())) {
+        return "Fecha no válida";
+      }
+      
+      return new Intl.DateTimeFormat("es-DO", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }).format(dateObj);
+    } catch (error) {
+      console.error("Error formatting date:", error, date);
+      return "Fecha no disponible";
+    }
   };
 
   const estimateReadTime = (content: string) => {
