@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { BookOpen } from "lucide-react";
 
@@ -28,11 +28,16 @@ export function SafeImage({
   className = "",
   priority = false,
   quality = 75,
-  placeholder = 'blur',
-  blurDataURL = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=",
+  placeholder = 'empty',
+  blurDataURL,
 }: SafeImageProps) {
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Si no hay src o hubo error, mostrar fallback
   if (!src || hasError) {
@@ -53,10 +58,19 @@ export function SafeImage({
     setIsLoading(false);
   };
 
+  // Don't render the image until mounted to prevent hydration issues
+  if (!mounted) {
+    return (
+      <div className={`flex items-center justify-center bg-[#F9F8F6] ${className}`}>
+        <div className="w-8 h-8 border-2 border-[#FF4D00] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   return (
-    <>
+    <div className="relative w-full h-full">
       {isLoading && (
-        <div className={`absolute inset-0 flex items-center justify-center bg-[#F9F8F6] ${className}`}>
+        <div className={`absolute inset-0 flex items-center justify-center bg-[#F9F8F6] z-10`}>
           <div className="w-8 h-8 border-2 border-[#FF4D00] border-t-transparent rounded-full animate-spin" />
         </div>
       )}
@@ -72,8 +86,7 @@ export function SafeImage({
         blurDataURL={blurDataURL}
         onError={handleError}
         onLoad={handleLoad}
-        style={{ display: isLoading ? 'none' : 'block' }}
       />
-    </>
+    </div>
   );
 }

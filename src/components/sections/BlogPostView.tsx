@@ -17,7 +17,15 @@ export function BlogPostView({ post }: Props) {
     if (!date) return "Fecha no disponible";
     
     try {
-      const dateObj = date instanceof Date ? date : new Date(date);
+      let dateObj: Date;
+      
+      if (date instanceof Date) {
+        dateObj = date;
+      } else if (typeof date === 'string') {
+        dateObj = new Date(date);
+      } else {
+        return "Fecha no disponible";
+      }
       
       // Verificar si la fecha es válida
       if (isNaN(dateObj.getTime())) {

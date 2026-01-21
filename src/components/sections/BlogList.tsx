@@ -7,35 +7,40 @@ import { unstable_cache } from "next/cache";
 // ⚡ SOLUCIÓN: Cache optimizado con invalidación automática
 const getCachedPosts = unstable_cache(
   async (): Promise<BlogPost[]> => {
-    const snapshot = await adminDb
-      .collection("blog_posts")
-      .where("published", "==", true)
-      .orderBy("createdAt", "desc")
-      .get();
+    try {
+      const snapshot = await adminDb
+        .collection("blog_posts")
+        .where("published", "==", true)
+        .orderBy("createdAt", "desc")
+        .get();
 
-    return snapshot.docs.map((doc) => {
-      const data = doc.data();
-      
-      // ⚡ SOLUCIÓN: Conversión segura de fechas de Firestore
-      const createdAt = data.createdAt?.toDate ? data.createdAt.toDate() : 
-                       data.createdAt ? new Date(data.createdAt) : new Date();
-      const updatedAt = data.updatedAt?.toDate ? data.updatedAt.toDate() : 
-                       data.updatedAt ? new Date(data.updatedAt) : new Date();
-      
-      return {
-        id: doc.id,
-        title: data.title || "",
-        slug: data.slug || "",
-        excerpt: data.excerpt || "",
-        content: data.content || "",
-        coverImage: data.coverImage || null,
-        author: data.author || "FireforgeRD",
-        tags: data.tags || [],
-        published: data.published || false,
-        createdAt,
-        updatedAt,
-      } as BlogPost;
-    });
+      return snapshot.docs.map((doc) => {
+        const data = doc.data();
+        
+        // ⚡ SOLUCIÓN: Conversión segura de fechas de Firestore
+        const createdAt = data.createdAt?.toDate ? data.createdAt.toDate() : 
+                         data.createdAt ? new Date(data.createdAt) : new Date();
+        const updatedAt = data.updatedAt?.toDate ? data.updatedAt.toDate() : 
+                         data.updatedAt ? new Date(data.updatedAt) : new Date();
+        
+        return {
+          id: doc.id,
+          title: data.title || "",
+          slug: data.slug || "",
+          excerpt: data.excerpt || "",
+          content: data.content || "",
+          coverImage: data.coverImage || null,
+          author: data.author || "FireforgeRD",
+          tags: data.tags || [],
+          published: data.published || false,
+          createdAt,
+          updatedAt,
+        } as BlogPost;
+      });
+    } catch (error) {
+      console.error("Error fetching blog posts:", error);
+      return [];
+    }
   },
   ['blog-posts'],
   { 

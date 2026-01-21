@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { BlogList } from "@/components/sections/BlogList";
+import { BlogErrorBoundary } from "@/components/ui/BlogErrorBoundary";
 
 // ⚡ SOLUCIÓN: Revalidar cada 5 minutos para mostrar nuevos posts
 export const revalidate = 300; // 5 minutos
@@ -18,7 +19,9 @@ export const metadata: Metadata = {
 export default function BlogPage() {
   return (
     <div className="min-h-screen">
-      <BlogList />
+      <BlogErrorBoundary>
+        <BlogList />
+      </BlogErrorBoundary>
     </div>
   );
 }

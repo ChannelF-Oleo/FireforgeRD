@@ -63,33 +63,43 @@ async function getPost(slug: string): Promise<BlogPost | null> {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const post = await getPost(slug);
+  try {
+    const { slug } = await params;
+    const post = await getPost(slug);
 
-  if (!post) {
-    return { title: "Post no encontrado" };
-  }
+    if (!post) {
+      return { title: "Post no encontrado" };
+    }
 
-  return {
-    title: post.title,
-    description: post.excerpt,
-    openGraph: {
-      title: `${post.title} | FireforgeRD`,
+    return {
+      title: post.title,
       description: post.excerpt,
-      images: post.coverImage ? [post.coverImage] : [],
-      type: "article",
-      publishedTime: post.createdAt.toISOString(),
-    },
-  };
+      openGraph: {
+        title: `${post.title} | FireforgeRD`,
+        description: post.excerpt,
+        images: post.coverImage ? [post.coverImage] : [],
+        type: "article",
+        publishedTime: post.createdAt.toISOString(),
+      },
+    };
+  } catch (error) {
+    console.error("Error generating metadata:", error);
+    return { title: "Error" };
+  }
 }
 
 export default async function BlogPostPage({ params }: Props) {
-  const { slug } = await params;
-  const post = await getPost(slug);
+  try {
+    const { slug } = await params;
+    const post = await getPost(slug);
 
-  if (!post) {
+    if (!post) {
+      notFound();
+    }
+
+    return <BlogPostView post={post} />;
+  } catch (error) {
+    console.error("Error loading blog post:", error);
     notFound();
   }
-
-  return <BlogPostView post={post} />;
 }
