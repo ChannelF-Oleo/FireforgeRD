@@ -4,44 +4,54 @@ import { adminDb } from "@/lib/firebase-admin";
 import { ClientsGridUI } from "./ClientsGridUI";
 import type { Client } from "@/types";
 
+// ── Data fetching ─────────────────────────────────────────────────────────────
 async function getClients(): Promise<Client[]> {
   const snapshot = await adminDb
     .collection("clients")
     .orderBy("order", "asc")
     .get();
 
-  return snapshot.docs.map((doc) => {
-    const data = doc.data();
+  return snapshot.docs.map((doc): Client => {
+    const d = doc.data();
     return {
       id: doc.id,
-      name: data.name,
-      description: data.description,
-      category: data.category,
-      image: data.image || null,
-      websiteUrl: data.websiteUrl || null,
-      tag: data.tag || null,
-      featured: data.featured || false,
-      order: data.order || 0,
-      createdAt: data.createdAt?.toDate() || new Date(),
-    } as Client;
+      name: d.name,
+      description: d.description,
+      category: d.category,
+      image: d.image ?? null,
+      websiteUrl: d.websiteUrl ?? null,
+      tag: d.tag ?? null,
+      featured: d.featured ?? false,
+      order: d.order ?? 0,
+      createdAt: d.createdAt?.toDate() ?? new Date(),
+    };
   });
 }
 
+// ── Componente ────────────────────────────────────────────────────────────────
 export async function ClientsGrid() {
   const clients = await getClients();
 
   return (
-    <section className="py-24 bg-white relative overflow-hidden">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-b from-[#F9F8F6] to-transparent opacity-60 pointer-events-none" />
+    <section
+      className="clients-section"
+      aria-labelledby="clients-heading"
+    >
+      {/* Gradiente decorativo */}
+      <div className="clients-gradient" aria-hidden="true" />
 
       <div className="container mx-auto px-4 md:px-6 relative z-10">
+
         {/* Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-[#F9F8F6] border border-[#1A1818]/5 mb-6 text-[#FF4D00]">
+        <header className="clients-header">
+          <div className="clients-icon" aria-hidden="true">
             <Briefcase className="w-5 h-5" />
           </div>
 
-          <h1 className="font-display text-4xl md:text-5xl font-light text-[#1A1818] mb-6">
+          <h1
+            id="clients-heading"
+            className="font-display text-4xl md:text-5xl font-light text-[#1A1818]"
+          >
             Nuestros{" "}
             <span className="text-[#FF4D00] font-medium">Clientes</span>
           </h1>
@@ -50,22 +60,23 @@ export async function ClientsGrid() {
             Empresas que han confiado en nosotros para transformar su presencia
             digital.
           </p>
-        </div>
+        </header>
 
         <ClientsGridUI initialClients={clients} />
 
         {/* CTA */}
-        <div className="text-center mt-16">
-          <p className="text-[#5C5850] mb-4">
+        <footer className="clients-cta">
+          <p className="text-[#5C5850]">
             ¿Quieres que tu empresa esté aquí?
           </p>
           <Link
             href="/contacto"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[#1A1818] text-white rounded-full hover:bg-[#FF4D00] transition-colors font-medium"
+            className="clients-cta-link"
           >
             Hablemos de tu proyecto
           </Link>
-        </div>
+        </footer>
+
       </div>
     </section>
   );

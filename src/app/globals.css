@@ -9,15 +9,18 @@
   --color-primary-light: #ff6b2c;
   --color-text-main: #1a1818;
   --color-text-body: #3d3a36;
-  --color-text-muted: #5c5850; /* WCAG AA compliant (4.5:1 sobre #F9F8F6) */
-  --color-text-light: #706b63; /* WCAG AA compliant para texto grande */
+  --color-text-muted: #5c5850;
+  /* WCAG AA compliant (4.5:1 sobre #F9F8F6) */
+  --color-text-light: #706b63;
+  /* WCAG AA compliant para texto grande */
   --font-display: "Fraunces", Georgia, serif;
 }
 
 @layer base {
   body {
     background-color: #f9f8f6;
-    color: #5c5850; /* Mejorado para WCAG AA */
+    color: #5c5850;
+    /* Mejorado para WCAG AA */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
@@ -57,10 +60,12 @@
 }
 
 @keyframes ember-flow {
+
   0%,
   100% {
     background-position: 0% center;
   }
+
   50% {
     background-position: 100% center;
   }
@@ -119,12 +124,15 @@
 .blog-content h1 {
   font-size: 2.25rem;
 }
+
 .blog-content h2 {
   font-size: 1.75rem;
 }
+
 .blog-content h3 {
   font-size: 1.375rem;
 }
+
 .blog-content h4 {
   font-size: 1.125rem;
 }
@@ -261,9 +269,11 @@
   .blog-content h1 {
     font-size: 1.75rem;
   }
+
   .blog-content h2 {
     font-size: 1.5rem;
   }
+
   .blog-content h3 {
     font-size: 1.25rem;
   }
@@ -330,6 +340,7 @@ button:not([class]) {
 
 /* Reduced motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -456,4 +467,78 @@ button:not([class]) {
 
 .blog-content th {
   @apply bg-[#F9F8F6] font-medium text-[#1A1818];
+}
+
+/* ── ClientsGrid ─────────────────────────────────────────── */
+.clients-section {
+  position: relative;
+  overflow: hidden;
+  padding-block: 6rem;
+  background-color: #ffffff;
+}
+
+.clients-gradient {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  translate: -50% 0;
+  width: 800px;
+  height: 400px;
+  background: linear-gradient(to bottom, #F9F8F6, transparent);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.clients-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.5rem;
+  margin-bottom: 4rem;
+}
+
+.clients-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background-color: #F9F8F6;
+  border: 1px solid rgba(26, 24, 24, 0.05);
+  color: #FF4D00;
+  flex-shrink: 0;
+}
+
+.clients-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 4rem;
+  text-align: center;
+}
+
+.clients-cta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #1A1818;
+  color: #ffffff;
+  border-radius: 9999px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.25s ease;
+}
+
+.clients-cta-link:hover,
+.clients-cta-link:focus-visible {
+  background-color: #FF4D00;
+}
+
+.clients-cta-link:focus-visible {
+  outline: 2px solid #FF4D00;
+  outline-offset: 3px;
 }
