@@ -2,9 +2,11 @@
 
 import { LazyMotion, domAnimation, m } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { scrollToElement } from "@/lib/utils";
+import { useScrollToSection } from "@/lib/scroll-to-section";
 
 export function HeroSection() {
+  const scrollToSection = useScrollToSection();
+
   return (
     <LazyMotion features={domAnimation}>
       <section className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden bg-[#F9F8F6] py-12 md:py-0">
@@ -55,7 +57,7 @@ export function HeroSection() {
               className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full sm:w-auto px-4 sm:px-0"
             >
               <Button
-                onClick={() => scrollToElement("servicios")}
+                onClick={() => scrollToSection("servicios")}
                 size="lg"
                 className="w-full sm:w-auto text-base px-8 md:px-10 py-6 font-medium bg-[#FF4D00] hover:bg-[#E64500] text-white rounded-full shadow-lg hover:scale-105 transition-all"
               >
@@ -63,7 +65,7 @@ export function HeroSection() {
               </Button>
 
               <Button
-                onClick={() => scrollToElement("contact")}
+                onClick={() => scrollToSection("contact")}
                 variant="outline"
                 size="lg"
                 className="w-full sm:w-auto text-base px-8 md:px-10 py-6 font-medium bg-transparent text-[#1A1818] rounded-full border border-[#1A1818]/20 hover:border-[#FF4D00] hover:text-[#FF4D00] transition-all"

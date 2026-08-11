@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { FireLogo } from "@/components/ui/animated-logo";
 import { MobileMenu } from "./mobile-menu";
-import { scrollToElement } from "@/lib/utils";
+import { useScrollToSection } from "@/lib/scroll-to-section";
 import { styles } from "./header.styles";
 
 const navItems = [
@@ -29,6 +29,7 @@ export function Header() {
   const [activeSection, setActiveSection] = useState<string>("");
   const pathname = usePathname();
   const isHomePage = pathname === "/";
+  const scrollToSection = useScrollToSection();
 
   useEffect(() => {
     // Verificar que estamos en el cliente
@@ -42,19 +43,14 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleNavClick = useCallback((sectionId: string) => {
-    setIsMobileOpen(false);
-    setActiveSection(sectionId);
-
-    // Verificar que estamos en el cliente
-    if (typeof window === 'undefined') return;
-
-    if (sectionId === "hero") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
-      scrollToElement(sectionId);
-    }
-  }, []);
+  const handleNavClick = useCallback(
+    (sectionId: string) => {
+      setIsMobileOpen(false);
+      setActiveSection(sectionId);
+      scrollToSection(sectionId);
+    },
+    [scrollToSection],
+  );
 
   return (
     <>
