@@ -34,6 +34,8 @@ type FormDataSchema = z.infer<typeof formSchema>;
 export function ContactForm() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // Guardamos el nombre antes del reset() para poder saludar en el panel de éxito
+  const [submittedName, setSubmittedName] = useState("");
 
   const {
     register,
@@ -72,6 +74,7 @@ export function ContactForm() {
       const response = await submitContactForm(null, formData);
 
       if (response.success) {
+        setSubmittedName(data.clientName);
         setIsSuccess(true);
         reset();
       } else {
@@ -390,7 +393,7 @@ export function ContactForm() {
                       ¡Recibido!
                     </h3>
                     <p className="text-[#5C5850] mb-8 max-w-md mx-auto">
-                      ¡Gracias! <strong>{watch("clientName")}</strong>. Hemos
+                      ¡Gracias! <strong>{submittedName}</strong>. Hemos
                       enviado un e-mail de confirmación. Te contactaremos
                       pronto.
                     </p>
@@ -398,6 +401,7 @@ export function ContactForm() {
                     <button
                       onClick={() => {
                         setIsSuccess(false);
+                        setSubmittedName("");
                         reset();
                       }}
                       className="text-sm font-medium text-[#1A1818] underline underline-offset-4 hover:text-[#FF4D00] transition-colors"
