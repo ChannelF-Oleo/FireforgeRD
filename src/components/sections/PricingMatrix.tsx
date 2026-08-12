@@ -7,6 +7,7 @@ import {
   Check,
   X,
   Clock,
+  Flame,
   ArrowRight,
   Globe,
   ShoppingCart,
@@ -177,7 +178,10 @@ export function PricingMatrix() {
                 ref={containerRef}
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
-                className="relative rounded-3xl border border-white/50 bg-white/40 backdrop-blur-2xl shadow-sm pt-8 md:pt-0 group/spotlight overflow-hidden"
+                // pt-10 en md+: el badge "On Fire" cuelga -top-3 sobre la card
+                // y el contenedor tiene overflow-hidden, así que con pt-0
+                // quedaba recortado y no se veía en desktop.
+                className="relative rounded-3xl border border-white/50 bg-white/40 backdrop-blur-2xl shadow-sm pt-8 md:pt-10 group/spotlight overflow-hidden"
               >
                 {/* SPOTLIGHT GRADIENT OVERLAY (CSS VARS)
                   Usamos opacity-0 por defecto y transition-opacity para suavizar la entrada/salida
@@ -214,9 +218,11 @@ export function PricingMatrix() {
 
                       {plan.isRecommended && (
                         <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#1A1818] text-white pl-3 pr-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase flex items-center gap-2 shadow-[0_8px_20px_-5px_rgba(0,0,0,0.5)] whitespace-nowrap z-50 ring-4 ring-[#F9F8F6]">
-                          <span className="text-sm animate-[pulse_1.5s_ease-in-out_infinite]">
-                            🔥
-                          </span>
+                          <Flame
+                            size={14}
+                            className="text-[#FF4D00] animate-[pulse_1.5s_ease-in-out_infinite]"
+                            aria-hidden="true"
+                          />
                           On Fire
                         </div>
                       )}
