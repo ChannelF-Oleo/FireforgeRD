@@ -48,6 +48,18 @@ const formatUSD = (amount: number) => {
  * de precio cerrado. Devuelve null para el caso simple ("USD"), que es el de
  * 17 de los 18 planes.
  */
+/**
+ * Ancho de cada card en lg+ según cuántas tenga la categoría, elegido para
+ * que ninguna fila quede a medias. Casos reales: 2 (automation), 3
+ * (ecommerce y saas), 4 (web) y 5 (technical, que va 3 + 2 centradas).
+ * Cualquier otro N cae en tercios, que es el reparto más neutro.
+ */
+const anchoDeCard = (cantidad: number): string => {
+  if (cantidad === 2) return "lg:w-1/2";
+  if (cantidad === 4) return "lg:w-1/4";
+  return "lg:w-1/3";
+};
+
 const getPriceUnit = (currency: string): string | null => {
   const [, unit] = currency.split("/");
   return unit ? unit.trim().toLowerCase() : null;
@@ -59,6 +71,7 @@ export function PricingMatrix() {
     serviceCategories[0].id,
   );
   const activeData = serviceCategories.find((cat) => cat.id === activeCategory);
+  const anchoCard = anchoDeCard(activeData?.services.length ?? 0);
 
   // --- LÓGICA DE EVENTOS (Correcta y limpia) ---
   useEffect(() => {
@@ -200,17 +213,18 @@ export function PricingMatrix() {
                   }}
                 />
 
-                <div
-                  className={`relative z-10 grid grid-cols-1 divide-y divide-[#1A1818]/5 md:divide-y-0 md:divide-x ${
-                    activeData && activeData.services.length === 4
-                      ? "md:grid-cols-2 lg:grid-cols-4"
-                      : "md:grid-cols-2 lg:grid-cols-3"
-                  }`}
-                >
+                {/* Flex en vez de grid: con grid, una categoría cuyo total no
+                    llena la última fila deja celdas vacías al costado (pasaba
+                    con 5 y con 2). Acá la última fila se centra sola. */}
+                {/* px/pb en lg: la card recomendada lleva scale-[1.05] y -my-4,
+                    y el scale no ocupa espacio de layout, así que sin este
+                    margen el contenedor (overflow-hidden) le recortaba el
+                    borde inferior y el costado. */}
+                <div className="relative z-10 flex flex-wrap justify-center lg:px-6 lg:pb-8">
                   {activeData?.services.map((plan) => (
                     <div
                       key={plan.id}
-                      className={`group relative flex flex-col p-6 lg:p-5 xl:p-8 transition-all duration-500 ${
+                      className={`group relative flex flex-col p-6 lg:p-5 xl:p-8 transition-all duration-500 w-full md:w-1/2 ${anchoCard} ${
                         plan.isRecommended
                           ? "bg-white/80 z-20 shadow-xl border-y md:border-y-0 md:border-x border-[#FF4D00]/10 lg:scale-[1.05] lg:-my-4 lg:py-12 lg:rounded-2xl lg:shadow-[0_20px_50px_-12px_rgba(255,77,0,0.2)]"
                           : "hover:bg-white/60"
