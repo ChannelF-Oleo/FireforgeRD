@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { Flame } from "lucide-react";
 import {
   navItems,
   contactNavItem,
@@ -106,9 +107,10 @@ export function MobileMenu({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4 }}
-        className="absolute bottom-10 text-xs font-medium tracking-[0.15em] uppercase text-[#9C9890]"
+        className="absolute bottom-10 flex items-center gap-1.5 text-xs font-medium tracking-[0.15em] uppercase text-[#9C9890]"
       >
-        🔥 Ingeniería Premium
+        <Flame className="w-3.5 h-3.5 text-[#FF4D00]" aria-hidden="true" />
+        Ingeniería Premium
       </motion.p>
     </motion.div>
   );

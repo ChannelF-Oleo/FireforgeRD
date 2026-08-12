@@ -5,22 +5,29 @@ import { LazyMotion, domAnimation, m, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
   Check,
+  X,
+  Clock,
+  Flame,
   ArrowRight,
   Globe,
   ShoppingCart,
   Cpu,
   Bot,
+  Wrench,
   HelpCircle,
 } from "lucide-react";
 import { useScrollToSection } from "@/lib/scroll-to-section";
 import { serviceCategories } from "@/lib/services-data";
 
 // --- ICONOS ---
+// Fuente única de los íconos de categoría. Todas las claves de
+// serviceCategories deben estar acá: la que falte renderiza un tab sin ícono.
 const categoryIcons: Record<string, React.ReactNode> = {
   web: <Globe className="w-4 h-4 md:w-5 md:h-5" />,
   ecommerce: <ShoppingCart className="w-4 h-4 md:w-5 md:h-5" />,
   saas: <Cpu className="w-4 h-4 md:w-5 md:h-5" />,
   automation: <Bot className="w-4 h-4 md:w-5 md:h-5" />,
+  technical: <Wrench className="w-4 h-4 md:w-5 md:h-5" />,
 };
 
 const formatUSD = (amount: number) => {
@@ -41,6 +48,18 @@ const formatUSD = (amount: number) => {
  * de precio cerrado. Devuelve null para el caso simple ("USD"), que es el de
  * 17 de los 18 planes.
  */
+/**
+ * Ancho de cada card en lg+ según cuántas tenga la categoría, elegido para
+ * que ninguna fila quede a medias. Casos reales: 2 (automation), 3
+ * (ecommerce y saas), 4 (web) y 5 (technical, que va 3 + 2 centradas).
+ * Cualquier otro N cae en tercios, que es el reparto más neutro.
+ */
+const anchoDeCard = (cantidad: number): string => {
+  if (cantidad === 2) return "lg:w-1/2";
+  if (cantidad === 4) return "lg:w-1/4";
+  return "lg:w-1/3";
+};
+
 const getPriceUnit = (currency: string): string | null => {
   const [, unit] = currency.split("/");
   return unit ? unit.trim().toLowerCase() : null;
@@ -52,6 +71,7 @@ export function PricingMatrix() {
     serviceCategories[0].id,
   );
   const activeData = serviceCategories.find((cat) => cat.id === activeCategory);
+  const anchoCard = anchoDeCard(activeData?.services.length ?? 0);
 
   // --- LÓGICA DE EVENTOS (Correcta y limpia) ---
   useEffect(() => {
@@ -106,7 +126,9 @@ export function PricingMatrix() {
     <LazyMotion features={domAnimation}>
       <section
         id="precios"
-        className="relative overflow-hidden bg-[#F9F8F6] py-24 md:py-32"
+        // bg desde el token: el ring del badge usa el mismo, así que si el
+        // fondo cambia los dos se mueven juntos y no aparece un halo
+        className="relative overflow-hidden bg-background py-24 md:py-32"
       >
         {/* Fondos */}
         <div className="pointer-events-none absolute top-0 right-0 h-[800px] w-[800px] rounded-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[rgba(255,77,0,0.08)] via-transparent to-transparent blur-3xl" />
@@ -175,7 +197,10 @@ export function PricingMatrix() {
                 ref={containerRef}
                 onMouseMove={handleMouseMove}
                 onMouseLeave={handleMouseLeave}
-                className="relative rounded-3xl border border-white/50 bg-white/40 backdrop-blur-2xl shadow-sm pt-8 md:pt-0 group/spotlight overflow-hidden"
+                // pt-10 en md+: el badge "On Fire" cuelga -top-3 sobre la card
+                // y el contenedor tiene overflow-hidden, así que con pt-0
+                // quedaba recortado y no se veía en desktop.
+                className="relative rounded-3xl border border-white/50 bg-white/40 backdrop-blur-2xl shadow-sm pt-8 md:pt-10 group/spotlight overflow-hidden"
               >
                 {/* SPOTLIGHT GRADIENT OVERLAY (CSS VARS)
                   Usamos opacity-0 por defecto y transition-opacity para suavizar la entrada/salida
@@ -188,17 +213,18 @@ export function PricingMatrix() {
                   }}
                 />
 
-                <div
-                  className={`relative z-10 grid grid-cols-1 divide-y divide-[#1A1818]/5 md:divide-y-0 md:divide-x ${
-                    activeData && activeData.services.length === 4
-                      ? "md:grid-cols-2 lg:grid-cols-4"
-                      : "md:grid-cols-2 lg:grid-cols-3"
-                  }`}
-                >
+                {/* Flex en vez de grid: con grid, una categoría cuyo total no
+                    llena la última fila deja celdas vacías al costado (pasaba
+                    con 5 y con 2). Acá la última fila se centra sola. */}
+                {/* px/pb en lg: la card recomendada lleva scale-[1.05] y -my-4,
+                    y el scale no ocupa espacio de layout, así que sin este
+                    margen el contenedor (overflow-hidden) le recortaba el
+                    borde inferior y el costado. */}
+                <div className="relative z-10 flex flex-wrap justify-center lg:px-6 lg:pb-8">
                   {activeData?.services.map((plan) => (
                     <div
                       key={plan.id}
-                      className={`group relative flex flex-col p-6 lg:p-5 xl:p-8 transition-all duration-500 ${
+                      className={`group relative flex flex-col p-6 lg:p-5 xl:p-8 transition-all duration-500 w-full md:w-1/2 ${anchoCard} ${
                         plan.isRecommended
                           ? "bg-white/80 z-20 shadow-xl border-y md:border-y-0 md:border-x border-[#FF4D00]/10 lg:scale-[1.05] lg:-my-4 lg:py-12 lg:rounded-2xl lg:shadow-[0_20px_50px_-12px_rgba(255,77,0,0.2)]"
                           : "hover:bg-white/60"
@@ -211,10 +237,12 @@ export function PricingMatrix() {
                          ya que la lógica interna de la card estaba perfecta) */}
 
                       {plan.isRecommended && (
-                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#1A1818] text-white pl-3 pr-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase flex items-center gap-2 shadow-[0_8px_20px_-5px_rgba(0,0,0,0.5)] whitespace-nowrap z-50 ring-4 ring-[#F9F8F6]">
-                          <span className="text-sm animate-[pulse_1.5s_ease-in-out_infinite]">
-                            🔥
-                          </span>
+                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#1A1818] text-white pl-3 pr-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase flex items-center gap-2 shadow-[0_8px_20px_-5px_rgba(0,0,0,0.5)] whitespace-nowrap z-50 ring-4 ring-background">
+                          <Flame
+                            size={14}
+                            className="text-[#FF4D00] animate-[pulse_1.5s_ease-in-out_infinite]"
+                            aria-hidden="true"
+                          />
                           On Fire
                         </div>
                       )}
@@ -240,24 +268,71 @@ export function PricingMatrix() {
                               /{getPriceUnit(plan.currency)}
                             </span>
                           )}
+                          {plan.setupFee && (
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-[#9C9890]">
+                              Setup
+                              {plan.setupNote ? ` · ${plan.setupNote}` : ""}
+                            </span>
+                          )}
                         </div>
+
+                        {/* Cobro recurrente: misma posición en las 5 categorías,
+                            antes vivía como string suelto dentro de features */}
+                        {plan.recurringFee && (
+                          <p className="mt-1.5 text-[13px] text-[#5C5850]">
+                            + {formatUSD(plan.recurringFee.amount)}/
+                            {plan.recurringFee.period}
+                            {plan.recurringFee.label
+                              ? ` de ${plan.recurringFee.label.toLowerCase()}`
+                              : ""}
+                          </p>
+                        )}
+
+                        <p className="mt-3 flex items-center gap-1.5 text-[11px] text-[#9C9890]">
+                          <Clock size={12} aria-hidden="true" />
+                          Entrega: {plan.deliveryTime}
+                        </p>
                       </div>
 
-                      {/* Features loop ... */}
-                      <div className="flex-1 space-y-3 mb-8 relative z-10">
-                        {plan.features.map((f, i) => (
-                          <div
-                            key={i}
+                      {/* Features: lista real para que un lector de pantalla
+                          anuncie "lista de N elementos" */}
+                      <ul className="flex-1 space-y-3 mb-8 relative z-10">
+                        {plan.features.map((f) => (
+                          <li
+                            key={f.label}
                             className="flex items-start gap-2.5 text-sm text-[#5C5850]"
                           >
-                            <Check
-                              size={14}
-                              className="mt-0.5 text-[#FF4D00]"
-                            />
-                            <span className="text-[13px]">{f}</span>
-                          </div>
+                            {f.included ? (
+                              <Check
+                                size={14}
+                                className="mt-0.5 shrink-0 text-[#FF4D00]"
+                                aria-hidden="true"
+                              />
+                            ) : (
+                              <X
+                                size={14}
+                                className="mt-0.5 shrink-0 text-[#9C9890]"
+                                aria-hidden="true"
+                              />
+                            )}
+                            <span
+                              className={
+                                f.included
+                                  ? "text-[13px]"
+                                  : "text-[13px] text-[#9C9890] line-through"
+                              }
+                            >
+                              {f.label}
+                            </span>
+                            {/* Solo se anuncia la excepción: en una lista de
+                                "qué incluye el plan", repetir "incluido" en
+                                cada ítem es ruido para un lector de pantalla */}
+                            {!f.included && (
+                              <span className="sr-only">no incluido</span>
+                            )}
+                          </li>
                         ))}
-                      </div>
+                      </ul>
 
                       <div className="mt-auto pt-5 border-t border-[#1A1818]/5 relative z-10">
                         <Button

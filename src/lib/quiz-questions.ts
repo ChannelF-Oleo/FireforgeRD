@@ -412,6 +412,8 @@ export const solutionDescriptions = {
       "Captura de leads automática",
       "Integración con WhatsApp",
     ],
-    plans: ["El Portero", "Bot Captador", "NeuroBot"],
+    // OJO: esta lista es texto suelto, no referencia a services-data.
+    // Si se agrega o quita un plan del catálogo, hay que actualizarla a mano.
+    plans: ["El Portero", "Bot Captador"],
   },
 };

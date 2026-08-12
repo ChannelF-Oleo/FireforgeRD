@@ -1,11 +1,40 @@
 // Core Types
+
+/**
+ * Ítem de la lista de features de un plan.
+ * `included: false` está soportado por el render pero hoy ningún plan lo usa:
+ * qué excluye cada plan es una decisión de contenido, no de código.
+ */
+export interface PlanFeature {
+  label: string;
+  included: boolean;
+}
+
+/**
+ * Cobro recurrente asociado al plan (mantenimiento, soporte, mensualidad).
+ * Antes vivía embebido como string dentro de features
+ * ("Mantenimiento: USD $20"), lo que impedía formatearlo o ubicarlo de forma
+ * consistente entre categorías.
+ */
+export interface RecurringFee {
+  amount: number;
+  period: "hora" | "mes";
+  /** Matiz del cobro: "Mantenimiento", "Soporte"... Sin label se muestra solo el monto. */
+  label?: string;
+}
+
 export interface ServicePlan {
   id: string;
   name: string;
   price: number;
   currency: "RD$" | "USD" | "USD / Hora" | string; // Permitir flexibilidad para casos especiales
   idealFor: string;
-  features: string[];
+  features: PlanFeature[];
+  recurringFee?: RecurringFee;
+  /** true cuando `price` es el setup/inicial y no el total (saas y automation). */
+  setupFee?: boolean;
+  /** Matiz opcional junto a la leyenda "Setup", ej. "Pago único". */
+  setupNote?: string;
   isRecommended?: boolean;
   deliveryTime: string;
   category: "web" | "ecommerce" | "saas" | "automation" | "technical";
@@ -165,7 +194,6 @@ export interface ServiceCatalog {
   automation: {
     elPortero: ServicePlan;
     botCaptador: ServicePlan;
-    neuroBot: ServicePlan;
   };
   technical: {
     emailCorp: ServicePlan;

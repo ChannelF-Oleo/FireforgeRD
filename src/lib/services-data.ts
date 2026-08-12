@@ -22,7 +22,6 @@ export interface ServiceCatalog {
   automation: {
     elPortero: ServicePlan;
     botCaptador: ServicePlan;
-    neuroBot: ServicePlan;
   };
   technical: {
     emailCorp: ServicePlan;
@@ -37,9 +36,13 @@ export interface CategoryInfo {
   id: ServiceCategory;
   name: string;
   description: string;
-  icon: string;
   services: ServicePlan[];
 }
+
+// Helper de migración: la inmensa mayoría de los features están incluidos.
+// `included: false` se escribe explícito el día que se decida ese contenido.
+const incluidos = (...labels: string[]) =>
+  labels.map((label) => ({ label, included: true }));
 
 // Web Services
 export const webServices: ServicePlan[] = [
@@ -51,14 +54,14 @@ export const webServices: ServicePlan[] = [
     category: "web",
     idealFor: "Marcas Personales, Link-in-bio",
     deliveryTime: "5-7 días",
-    features: [
+    recurringFee: { amount: 10, period: "mes", label: "Mantenimiento" },
+    features: incluidos(
       "Landing Page única",
       "Next.js estático",
       "Dominio gratis por un año",
       "Hosting SSL incluido",
       "Diseño responsive",
-      "Mantenimiento: USD $10",
-    ],
+    ),
   },
   {
     id: "la-fragua",
@@ -68,14 +71,14 @@ export const webServices: ServicePlan[] = [
     category: "web",
     idealFor: "Pymes, Consultoras, Abogados",
     deliveryTime: "7-10 días",
-    features: [
+    recurringFee: { amount: 20, period: "mes", label: "Mantenimiento" },
+    features: incluidos(
       "Hasta 5 secciones",
       "Dominio .COM (1 año)",
       "Hosting SSL",
       "Google Maps integrado",
       "SEO Básico optimizado",
-      "Mantenimiento: USD $20",
-    ],
+    ),
   },
   {
     id: "acero",
@@ -86,15 +89,15 @@ export const webServices: ServicePlan[] = [
     idealFor: "Inmobiliarias, Seguros",
     deliveryTime: "10-15 días",
     isRecommended: true,
-    features: [
+    recurringFee: { amount: 25, period: "mes", label: "Mantenimiento" },
+    features: incluidos(
       "Correos Corporativos",
       "Dominio .COM (1 año)",
       "Base de datos",
       "Auto-respuesta (Resend)",
       "Diseño interactivo",
       "Formularios avanzados",
-      "Mantenimiento: USD $25",
-    ],
+    ),
   },
   {
     id: "hierro-forjado",
@@ -104,15 +107,15 @@ export const webServices: ServicePlan[] = [
     category: "web",
     idealFor: "Periódicos, Catálogos",
     deliveryTime: "15-20 días",
-    features: [
+    recurringFee: { amount: 40, period: "mes", label: "Mantenimiento" },
+    features: incluidos(
       "Panel Autogestionable (CMS)",
       "Dominio .COM (1 año)",
       "SEO Avanzado",
       "Capacitación incluida",
       "Next.js + Headless CMS",
       "Múltiples usuarios",
-      "Mantenimiento: USD $40",
-    ],
+    ),
   },
 ];
 
@@ -126,14 +129,14 @@ export const ecommerceServices: ServicePlan[] = [
     category: "ecommerce",
     idealFor: "Ropa, Accesorios, Productos Digitales",
     deliveryTime: "15-20 días",
-    features: [
+    recurringFee: { amount: 25, period: "mes", label: "Mantenimiento" },
+    features: incluidos(
       "PayPal/Stripe integrado",
       "Guest Checkout",
       "Panel de productos",
       "Notificaciones de venta",
       "Inventario básico",
-      "Mantenimiento: USD $25",
-    ],
+    ),
   },
   {
     id: "ecommerce-pro",
@@ -144,14 +147,14 @@ export const ecommerceServices: ServicePlan[] = [
     idealFor: "Tiendas Establecidas",
     deliveryTime: "20-30 días",
     isRecommended: true,
-    features: [
+    recurringFee: { amount: 40, period: "mes", label: "Mantenimiento" },
+    features: incluidos(
       "Login de Clientes",
       "Historial de pedidos",
-      "Mantenimiento: USD $40",
       "Pagos Locales (Azul/Cardnet)",
       "Sistema de cupones",
       "Lista de deseos (Wishlist)",
-    ],
+    ),
   },
   {
     id: "marketplace",
@@ -161,14 +164,14 @@ export const ecommerceServices: ServicePlan[] = [
     category: "ecommerce",
     idealFor: "B2B, Mayoristas",
     deliveryTime: "30-45 días",
-    features: [
+    recurringFee: { amount: 90, period: "mes", label: "Mantenimiento" },
+    features: incluidos(
       "Multi-vendedor",
-      "Mantenimiento: USD $90",
       "Precios dinámicos (Mayorista/Detalle)",
       "Lógica de envíos compleja",
       "Integración ERP",
       "Dashboard avanzado",
-    ],
+    ),
   },
 ];
 
@@ -182,13 +185,13 @@ export const saasServices: ServicePlan[] = [
     category: "saas",
     idealFor: "Booking y Reservas",
     deliveryTime: "15-20 días",
-    features: [
-      "Setup: USD $400",
-      "Mensual: USD $35",
+    setupFee: true,
+    recurringFee: { amount: 35, period: "mes" },
+    features: incluidos(
       "Reserva online",
       "Bloqueo automático",
       "Notificaciones SMS/Email",
-    ],
+    ),
   },
   {
     id: "gestion-pro",
@@ -199,13 +202,13 @@ export const saasServices: ServicePlan[] = [
     idealFor: "Agenda + CRM",
     deliveryTime: "20-30 días",
     isRecommended: true,
-    features: [
-      "Setup: USD $670",
-      "Mensual: USD $50",
+    setupFee: true,
+    recurringFee: { amount: 50, period: "mes" },
+    features: incluidos(
       "Expediente de clientes",
       "Historial de visitas",
       "Recordatorios automáticos 24h",
-    ],
+    ),
   },
   {
     id: "sistema-administrativo",
@@ -215,13 +218,13 @@ export const saasServices: ServicePlan[] = [
     category: "saas",
     idealFor: "Full ERP",
     deliveryTime: "45-60 días",
-    features: [
-      "Setup: USD $1,500",
-      "Mensual: USD $80",
+    setupFee: true,
+    recurringFee: { amount: 80, period: "mes" },
+    features: incluidos(
       "Multiusuario/Roles",
       "Caja chica",
       "Reportes avanzados",
-    ],
+    ),
   },
 ];
 
@@ -236,13 +239,14 @@ export const automationServices: ServicePlan[] = [
     category: "automation",
     idealFor: "Menú Digital & FAQ",
     deliveryTime: "5-7 días",
-    features: [
-      "Setup: USD $150 (Pago Único)",
-      "Mantenimiento: USD $25/mes", // Agregado
+    setupFee: true,
+    setupNote: "Pago único",
+    recurringFee: { amount: 25, period: "mes", label: "Mantenimiento" },
+    features: incluidos(
       "Chatbot de reglas",
       "Menú de botones interactivo",
-      "Soporte Tecnico", // Justificación del pago mensual
-    ],
+      "Soporte Técnico",
+    ),
   },
   {
     id: "bot-captador",
@@ -253,31 +257,14 @@ export const automationServices: ServicePlan[] = [
     idealFor: "CRM Automatizado",
     deliveryTime: "7-10 días",
     isRecommended: true,
-    features: [
-      "Setup: USD $300 (Pago Único)",
-      "Soporte: USD $50/mes", // Agregado
+    setupFee: true,
+    setupNote: "Pago único",
+    recurringFee: { amount: 50, period: "mes", label: "Soporte" },
+    features: incluidos(
       "Cualificación y Filtro de Leads",
       "Conexión a Notion/Sheets/Google",
       "Reporte mensual de conversaciones", // Valor agregado mensual
-    ],
-  },
-  {
-    id: "neuro-bot",
-    name: "Neuro-Bot IA",
-    price: 600, // Setup fee
-    currency: "USD",
-    category: "automation",
-    idealFor: "Atención al Cliente Inteligente",
-    deliveryTime: "10-15 días",
-    features: [
-      "Setup: USD $600 (Pago Único)",
-      "Fee Mensual: Desde USD $80*", // Asterisco por consumo de tokens
-      "Conexión AI (GPT-4o / Gemini)",
-      "Manejo de objeciones natural",
-      "Conversaciones inteligentes",
-      "Entrenamiento con PDFs del negocio",
-      "Gestión de costos y Mantenimiento", // Tú manejas la tarjeta de crédito de OpenAI
-    ],
+    ),
   },
 ];
 
@@ -294,12 +281,12 @@ export const technicalServices: ServicePlan[] = [
     category: "technical",
     idealFor: "Profesionales, Nuevos Negocios",
     deliveryTime: "24-48 horas",
-    features: [
+    features: incluidos(
       "Configuración DNS/MX",
       "Alta en servidor",
       "Validación SPF/DKIM",
       "Pruebas de entregabilidad",
-    ],
+    ),
   },
   {
     id: "vcard-digital",
@@ -309,13 +296,13 @@ export const technicalServices: ServicePlan[] = [
     category: "technical",
     idealFor: "Networking, Ventas",
     deliveryTime: "3-5 días",
-    features: [
+    features: incluidos(
       "Landing Page mini (Perfil)",
       "Código QR personalizado",
       "Botón 'Guardar Contacto' (vcf)",
       "Iconos de Redes Sociales",
       "Foto de perfil optimizada",
-    ],
+    ),
   },
   {
     id: "identidad-tecnica",
@@ -325,12 +312,12 @@ export const technicalServices: ServicePlan[] = [
     category: "technical",
     idealFor: "Marca Personal",
     deliveryTime: "24 horas",
-    features: [
+    features: incluidos(
       "Configuración Gravatar Global",
       "Firma HTML para correos",
       "Unificación de avatares",
       "Asesoría de imagen digital",
-    ],
+    ),
   },
   {
     id: "copywriting-seo",
@@ -340,13 +327,13 @@ export const technicalServices: ServicePlan[] = [
     category: "technical",
     idealFor: "Blogs, Landing Pages",
     deliveryTime: "3-5 días",
-    features: [
+    features: incluidos(
       "Redacción por sección (600 palabras)",
       "Investigación de Palabras Clave",
       "Estructura H1, H2, H3",
       "Meta Títulos y Descripciones",
       "Optimización para lectura web",
-    ],
+    ),
   },
   {
     id: "mantenimiento-rescate",
@@ -356,13 +343,13 @@ export const technicalServices: ServicePlan[] = [
     category: "technical",
     idealFor: "Sitios Hackeados, Bugs",
     deliveryTime: "Inmediato / Urgente",
-    features: [
+    features: incluidos(
       "Limpieza de Virus/Malware",
       "Actualización de Plugins/Core",
       "Corrección de errores críticos",
       "Restauración de copias de seguridad",
       "Diagnóstico de seguridad",
-    ],
+    ),
   },
 ];
 
@@ -389,7 +376,6 @@ export const serviceCatalog: ServiceCatalog = {
   automation: {
     elPortero: automationServices[0],
     botCaptador: automationServices[1],
-    neuroBot: automationServices[2],
   },
   // Added Technical Services to Catalog
   technical: {
@@ -416,28 +402,24 @@ export const serviceCategories = [
     id: "web",
     name: "Desarrollo Web",
     description: "Sitios web corporativos y landing pages de alto rendimiento",
-    icon: "🌐",
     services: webServices,
   },
   {
     id: "ecommerce",
     name: "E-Commerce",
     description: "Tiendas online con pasarelas de pago seguras",
-    icon: "🛒",
     services: ecommerceServices,
   },
   {
     id: "saas",
     name: "Sistemas SaaS",
     description: "Software a medida para gestión empresarial",
-    icon: "⚙️",
     services: saasServices,
   },
   {
     id: "automation",
     name: "Automatización",
     description: "Chatbots y automatización con IA",
-    icon: "🤖",
     services: automationServices,
   },
   // Added Technical Category
@@ -445,7 +427,6 @@ export const serviceCategories = [
     id: "technical",
     name: "Servicios Técnicos",
     description: "Soluciones puntuales, mantenimiento y optimización",
-    icon: "🛠️",
     services: technicalServices,
   },
 ] as const;
