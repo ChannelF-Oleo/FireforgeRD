@@ -124,7 +124,8 @@ export default function RootLayout({
     name: "FireforgeRD",
     image: "https://fireforgerd.com/og-image.jpg",
     description: "Desarrollo web, sistemas a medida y automatización con IA.",
-    url: "https://fireforgerd.com",
+    // www para coincidir con el canonical y con el redirect 308 de next.config
+    url: "https://www.fireforgerd.com",
     telephone: "+18094202288",
     priceRange: "$$$",
     address: {
