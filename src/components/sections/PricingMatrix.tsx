@@ -245,6 +245,7 @@ export function PricingMatrix() {
                           {plan.setupFee && (
                             <span className="text-[10px] font-bold uppercase tracking-wider text-[#9C9890]">
                               Setup
+                              {plan.setupNote ? ` · ${plan.setupNote}` : ""}
                             </span>
                           )}
                         </div>

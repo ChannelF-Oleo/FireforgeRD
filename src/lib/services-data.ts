@@ -241,11 +241,12 @@ export const automationServices: ServicePlan[] = [
     idealFor: "Menú Digital & FAQ",
     deliveryTime: "5-7 días",
     setupFee: true,
+    setupNote: "Pago único",
     recurringFee: { amount: 25, period: "mes", label: "Mantenimiento" },
     features: incluidos(
       "Chatbot de reglas",
       "Menú de botones interactivo",
-      "Soporte Tecnico", // Justificación del pago mensual
+      "Soporte Técnico",
     ),
   },
   {
@@ -258,6 +259,7 @@ export const automationServices: ServicePlan[] = [
     deliveryTime: "7-10 días",
     isRecommended: true,
     setupFee: true,
+    setupNote: "Pago único",
     recurringFee: { amount: 50, period: "mes", label: "Soporte" },
     features: incluidos(
       "Cualificación y Filtro de Leads",

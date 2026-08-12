@@ -33,6 +33,8 @@ export interface ServicePlan {
   recurringFee?: RecurringFee;
   /** true cuando `price` es el setup/inicial y no el total (saas y automation). */
   setupFee?: boolean;
+  /** Matiz opcional junto a la leyenda "Setup", ej. "Pago único". */
+  setupNote?: string;
   isRecommended?: boolean;
   deliveryTime: string;
   category: "web" | "ecommerce" | "saas" | "automation" | "technical";
