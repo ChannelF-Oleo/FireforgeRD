@@ -20,11 +20,14 @@ const inter = Inter({
 // Se conserva el eje opsz porque .font-display usa font-optical-sizing: auto
 // y el h1 del Hero (LCP) se renderiza a 72px: con instancias estáticas
 // perdería el eje óptico y cambiaría de aspecto.
+// WONK se pide solo para poder apagarlo puntualmente en el ampersand del Hero
+// (ver HeroSection): a opsz alto la forma por defecto lleva un lazo cerrado.
+// Cuesta ~100 bytes y no cambia nada mientras no se use.
 const fraunces = Fraunces({
   subsets: ["latin"],
   variable: "--font-fraunces",
   display: "swap",
-  axes: ["opsz"],
+  axes: ["opsz", "WONK"],
 });
 
 // EMBER GLASS: Viewport con tema claro

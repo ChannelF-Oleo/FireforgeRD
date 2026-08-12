@@ -33,7 +33,12 @@ export function HeroSection() {
             <h1 className="font-display text-4xl sm:text-5xl md:text-7xl lg:text-8xl xl:text-[4.5rem] font-light tracking-tight text-[#1A1818] mb-4 md:mb-6 leading-[1.1] md:leading-[0.95]">
               Desarrollo Web.
               <span className="block mt-2 mx-auto text-center text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-[1.2] md:leading-[1] max-w-5xl whitespace-normal sm:whitespace-nowrap bg-gradient-to-r from-[#FF4D00] via-[#FF6B2C] to-[#FF4D00] bg-clip-text text-transparent bg-[length:200%_auto] animate-[ember-flow_3s_ease-in-out_infinite]">
-                Sistemas & Automatización.
+                Sistemas{" "}
+                {/* WONK 0 solo acá: a este tamaño el ampersand por defecto de
+                    Fraunces trae un lazo cerrado. El eje se apaga únicamente en
+                    este glifo, así ninguna otra letra del titular cambia. */}
+                <span style={{ fontVariationSettings: "'WONK' 0" }}>&</span>{" "}
+                Automatización.
               </span>
             </h1>
 
