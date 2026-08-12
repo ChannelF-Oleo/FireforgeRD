@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,6 +19,11 @@ interface ClientDetailModalProps {
  * Compartido por el grid de /clientes y el carrusel de destacados del home.
  */
 export function ClientDetailModal({ client, onClose }: ClientDetailModalProps) {
+  // createPortal necesita document, que no existe durante el render del
+  // servidor: se monta recién en el cliente.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   // Cerrar modal con Escape
   useEffect(() => {
     // Verificar que estamos en el cliente
@@ -30,14 +36,19 @@ export function ClientDetailModal({ client, onClose }: ClientDetailModalProps) {
     return () => document.removeEventListener("keydown", handleEscape);
   }, [onClose]);
 
-  return (
+  const contenido = (
     <AnimatePresence>
       {client && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
+          // z-[60] para quedar por encima del header (z-50). Sin el portal
+          // de abajo este número no alcanzaría: el modal se renderiza dentro
+          // de <main class="relative z-10">, que abre su propio contexto de
+          // apilamiento, así que a nivel documento competiría main (10)
+          // contra header (50) y el botón de cerrar quedaría tapado.
+          className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4"
           onClick={onClose}
           role="dialog"
           aria-modal="true"
@@ -48,11 +59,14 @@ export function ClientDetailModal({ client, onClose }: ClientDetailModalProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: "spring", duration: 0.5 }}
-            className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl"
+            className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Imagen Header */}
-            <div className="relative aspect-video bg-[#F9F8F6]">
+            {/* Imagen Header.
+                shrink-0 para que el flex no la aplaste cuando el texto es
+                largo; el scroll va en el bloque de contenido, así el botón
+                de cerrar queda siempre visible. */}
+            <div className="relative aspect-video shrink-0 bg-[#F9F8F6]">
               {client.image ? (
                 <Image
                   src={client.image}
@@ -86,8 +100,11 @@ export function ClientDetailModal({ client, onClose }: ClientDetailModalProps) {
               )}
             </div>
 
-            {/* Content */}
-            <div className="p-6 sm:p-8">
+            {/* Content.
+                min-h-0 es lo que permite que este hijo flex se encoja por
+                debajo de su altura natural; sin eso overflow-y-auto no
+                llega a activarse nunca. */}
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-6 sm:p-8">
               <span className="text-xs font-bold text-[#FF4D00] uppercase tracking-wider">
                 {client.category}
               </span>
@@ -135,4 +152,8 @@ export function ClientDetailModal({ client, onClose }: ClientDetailModalProps) {
       )}
     </AnimatePresence>
   );
+
+  if (!mounted) return null;
+
+  return createPortal(contenido, document.body);
 }
