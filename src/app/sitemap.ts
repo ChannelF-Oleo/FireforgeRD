@@ -1,14 +1,20 @@
 import { MetadataRoute } from "next";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "@/lib/firebase";
 
 async function getBlogSlugs(): Promise<string[]> {
   try {
+    // Import dinámico: si falta la config de Firebase, el módulo lanza al
+    // cargarse y tumbaría el build entero en vez de degradar el sitemap.
+    const { collection, query, where, getDocs } = await import(
+      "firebase/firestore"
+    );
+    const { db } = await import("@/lib/firebase");
+
     const postsRef = collection(db, "blog_posts");
     const q = query(postsRef, where("published", "==", true));
     const snapshot = await getDocs(q);
     return snapshot.docs.map((doc) => doc.data().slug as string);
-  } catch {
+  } catch (error) {
+    console.warn("[sitemap] No se pudieron cargar los posts del blog:", error);
     return [];
   }
 }
