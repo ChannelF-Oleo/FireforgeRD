@@ -109,7 +109,9 @@ export function PricingMatrix() {
     <LazyMotion features={domAnimation}>
       <section
         id="precios"
-        className="relative overflow-hidden bg-[#F9F8F6] py-24 md:py-32"
+        // bg desde el token: el ring del badge usa el mismo, así que si el
+        // fondo cambia los dos se mueven juntos y no aparece un halo
+        className="relative overflow-hidden bg-background py-24 md:py-32"
       >
         {/* Fondos */}
         <div className="pointer-events-none absolute top-0 right-0 h-[800px] w-[800px] rounded-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[rgba(255,77,0,0.08)] via-transparent to-transparent blur-3xl" />
@@ -217,7 +219,7 @@ export function PricingMatrix() {
                          ya que la lógica interna de la card estaba perfecta) */}
 
                       {plan.isRecommended && (
-                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#1A1818] text-white pl-3 pr-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase flex items-center gap-2 shadow-[0_8px_20px_-5px_rgba(0,0,0,0.5)] whitespace-nowrap z-50 ring-4 ring-[#F9F8F6]">
+                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#1A1818] text-white pl-3 pr-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase flex items-center gap-2 shadow-[0_8px_20px_-5px_rgba(0,0,0,0.5)] whitespace-nowrap z-50 ring-4 ring-background">
                           <Flame
                             size={14}
                             className="text-[#FF4D00] animate-[pulse_1.5s_ease-in-out_infinite]"
