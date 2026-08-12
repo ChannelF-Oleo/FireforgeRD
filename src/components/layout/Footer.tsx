@@ -1,27 +1,35 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { FireLogo } from "@/components/ui/animated-logo";
 import { footerExploreItems } from "@/lib/nav-items";
 import { Instagram, Github, MessageCircle, MapPin, Mail } from "lucide-react";
 
-// Componente del mapa con efecto grayscale
+const MAPS_PLACE_URL =
+  "https://www.google.com/maps/place/FireforgeRD/@18.498882,-69.9297735,17z";
+
+// URL del embed de Google Maps para FireforgeRD
+const MAP_EMBED_URL =
+  "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3783.6637935566773!2d-69.92977352480885!3d18.498882082590516!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8eaf893f7b632bf9%3A0x36bc55434309055c!2sFireforgeRD!5e0!3m2!1ses-419!2sdo!4v1768481974792!5m2!1ses-419!2sdo";
+
+/**
+ * Mapa de ubicación con fachada estática.
+ *
+ * El iframe de Google Maps arrastra su propio JS, tiles y fuentes, y estaba
+ * montado en todas las visitas aunque casi nadie interactúa con un mapa en el
+ * pie. Ahora solo se monta al pulsar "Ver mapa interactivo"; hasta entonces se
+ * muestra un bloque liviano que igual enlaza a Maps para quien prefiera
+ * abrirlo directo sin cargar nada.
+ */
 function LocationMap() {
-  // URL del embed de Google Maps para FireforgeRD
-  const mapEmbedUrl =
-    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3783.6637935566773!2d-69.92977352480885!3d18.498882082590516!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8eaf893f7b632bf9%3A0x36bc55434309055c!2sFireforgeRD!5e0!3m2!1ses-419!2sdo!4v1768481974792!5m2!1ses-419!2sdo";
+  const [mapaActivo, setMapaActivo] = useState(false);
 
   return (
     <div className="relative w-full h-48 rounded-2xl overflow-hidden border border-white/10 group">
-      <a
-        href="https://www.google.com/maps/place/FireforgeRD/@18.498882,-69.9297735,17z"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block w-full h-full"
-        aria-label="Ver ubicación de FireforgeRD en Google Maps"
-      >
+      {mapaActivo ? (
         <iframe
-          src={mapEmbedUrl}
+          src={MAP_EMBED_URL}
           width="100%"
           height="100%"
           style={{ border: 0 }}
@@ -29,16 +37,46 @@ function LocationMap() {
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
           title="Ubicación de FireforgeRD"
-          className="grayscale brightness-75 contrast-125 group-hover:grayscale-0 group-hover:brightness-100 group-hover:contrast-100 transition-all duration-500 pointer-events-none"
+          className="grayscale brightness-75 contrast-125 group-hover:grayscale-0 group-hover:brightness-100 group-hover:contrast-100 transition-all duration-500"
         />
-      </a>
-      {/* Badge de ubicación */}
-      <div className="absolute bottom-3 left-3 flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1A1818]/80 backdrop-blur-sm border border-white/10 pointer-events-none">
-        <MapPin className="w-3 h-3 text-[#FF4D00]" aria-hidden="true" />
-        <span className="text-[10px] text-white font-medium uppercase tracking-wider">
-          Santo Domingo, RD
-        </span>
-      </div>
+      ) : (
+        <>
+          {/* El <a> cubre el bloque: abre Maps sin cargar el embed.
+              El botón va como hermano y no dentro, porque anidar un button
+              dentro de un anchor es HTML inválido y el click seguiría el link. */}
+          <a
+            href={MAPS_PLACE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-gradient-to-b from-[#252121] to-[#1A1818] transition-colors hover:from-[#2C2727] hover:to-[#1F1C1C]"
+            aria-label="Ver ubicación de FireforgeRD en Google Maps"
+          >
+            <MapPin className="w-7 h-7 text-[#FF4D00]" aria-hidden="true" />
+            <span className="text-sm font-medium text-white">
+              Santo Domingo, RD
+            </span>
+          </a>
+
+          <button
+            type="button"
+            onClick={() => setMapaActivo(true)}
+            className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-[11px] font-medium uppercase tracking-wider text-white backdrop-blur-sm transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF4D00]"
+          >
+            Ver mapa interactivo
+          </button>
+        </>
+      )}
+
+      {/* Badge de ubicación: solo con el mapa cargado, si no duplica el texto
+          que ya muestra la fachada. */}
+      {mapaActivo && (
+        <div className="absolute bottom-3 left-3 flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1A1818]/80 backdrop-blur-sm border border-white/10 pointer-events-none">
+          <MapPin className="w-3 h-3 text-[#FF4D00]" aria-hidden="true" />
+          <span className="text-[10px] text-white font-medium uppercase tracking-wider">
+            Santo Domingo, RD
+          </span>
+        </div>
+      )}
     </div>
   );
 }
