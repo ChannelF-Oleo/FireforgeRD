@@ -20,6 +20,17 @@ const buttonVariants = cva(
           hover:scale-[1.02]
         `,
 
+        // Botón hero - CTA principal de los puntos de entrada (Hero y header).
+        // Mismo lenguaje que "default" pero con más presencia: glow más amplio
+        // y hover:scale-105, que es el gesto que ya tenía el Hero.
+        hero: `
+          bg-primary text-white font-medium tracking-wide
+          rounded-full
+          shadow-[0_8px_30px_rgba(255,77,0,0.3)]
+          hover:bg-primary-hover hover:shadow-[0_12px_40px_rgba(255,77,0,0.4)]
+          hover:scale-105
+        `,
+
         // Botón outline - Cristal con borde sutil
         outline: `
           bg-transparent text-text-main font-medium tracking-wide
