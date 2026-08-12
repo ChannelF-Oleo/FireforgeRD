@@ -52,15 +52,22 @@ export const contactNavItem: LinkNavItem = {
 };
 
 /**
- * Overrides de label del item de contacto.
- * Son intencionales (copy más directo en las superficies de conversión), por
- * eso viven acá y no como arrays duplicados en cada componente.
+ * Overrides de label por superficie.
+ * Son variantes de copy intencionales, no duplicación: por eso viven acá
+ * junto al item canónico y no como arrays paralelos en cada componente.
  */
 export const CONTACT_LABEL_HEADER = "Hablemos";
 export const CONTACT_LABEL_MOBILE_MENU = "Contactar";
+export const CLIENTS_LABEL_FOOTER = "Nuestros Clientes";
 
 /** Links del bloque "Explorar" del footer: las rutas propias + contacto. */
 export const footerExploreItems: LinkNavItem[] = [
-  ...navItems.filter((item): item is LinkNavItem => item.type === "link"),
+  ...navItems
+    .filter((item): item is LinkNavItem => item.type === "link")
+    .map((item) =>
+      item.id === "clientes"
+        ? { ...item, label: CLIENTS_LABEL_FOOTER }
+        : item,
+    ),
   contactNavItem,
 ];
