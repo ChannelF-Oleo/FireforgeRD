@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Fraunces } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 
@@ -11,6 +11,20 @@ const inter = Inter({
   subsets: ["latin"],
   variable: "--font-geist",
   display: "swap",
+});
+
+// EMBER GLASS: Serif de display (titulares).
+// Auditoría de uso: font-display aparece solo con font-light (300),
+// font-medium (500) y sin clase de peso (400). Cero itálicas, así que se
+// descarta la mitad de lo que pedía el @import anterior.
+// Se conserva el eje opsz porque .font-display usa font-optical-sizing: auto
+// y el h1 del Hero (LCP) se renderiza a 72px: con instancias estáticas
+// perdería el eje óptico y cambiaría de aspecto.
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-fraunces",
+  display: "swap",
+  axes: ["opsz"],
 });
 
 // EMBER GLASS: Viewport con tema claro
@@ -163,13 +177,9 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=2" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2" />
         
-        {/* Preconnect para recursos críticos - mejora LCP */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
+        {/* Sin preconnect a fonts.googleapis/gstatic: next/font descarga las
+            fuentes en build y las sirve desde el propio dominio, así que ya no
+            hay origen de terceros al que adelantarse. */}
 
         {/* Google Tag Manager - improved loading */}
         <Script id="gtm-script" strategy="afterInteractive">
@@ -181,7 +191,7 @@ export default function RootLayout({
         </Script>
       </head>
       <body
-        className={`${inter.className} bg-background text-text-muted min-h-screen flex flex-col antialiased`}
+        className={`${inter.className} ${fraunces.variable} bg-background text-text-muted min-h-screen flex flex-col antialiased`}
       >
         {/* Google Tag Manager (noscript) */}
         <noscript>

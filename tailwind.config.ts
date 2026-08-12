@@ -60,7 +60,7 @@ const config: Config = {
       },
 
       fontFamily: {
-        display: ["Fraunces", "Georgia", "serif"],
+        display: ["var(--font-fraunces)", "Georgia", "serif"],
       },
 
       animation: {

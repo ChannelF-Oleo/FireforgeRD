@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap");
 @import "tailwindcss";
 
 @theme {
@@ -13,7 +12,7 @@
   /* WCAG AA compliant (4.5:1 sobre #F9F8F6) */
   --color-text-light: #706b63;
   /* WCAG AA compliant para texto grande */
-  --font-display: "Fraunces", Georgia, serif;
+  --font-display: var(--font-fraunces), Georgia, serif;
 }
 
 @layer base {
@@ -33,7 +32,7 @@
 }
 
 .font-display {
-  font-family: "Fraunces", Georgia, serif;
+  font-family: var(--font-fraunces), Georgia, serif;
   font-optical-sizing: auto;
 }
 
@@ -113,7 +112,7 @@
 .blog-content h4,
 .blog-content h5,
 .blog-content h6 {
-  font-family: "Fraunces", Georgia, serif;
+  font-family: var(--font-fraunces), Georgia, serif;
   color: #1a1818;
   font-weight: 500;
   margin-top: 2em;
