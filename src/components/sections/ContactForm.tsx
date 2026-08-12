@@ -36,6 +36,12 @@ export function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   // Guardamos el nombre antes del reset() para poder saludar en el panel de éxito
   const [submittedName, setSubmittedName] = useState("");
+  // Fallo del envío: guarda el link de WhatsApp ya armado y si el popup abrió,
+  // para poder decirle al usuario qué hacer en cada caso.
+  const [submitError, setSubmitError] = useState<{
+    whatsappUrl: string;
+    popupAbierto: boolean;
+  } | null>(null);
 
   const {
     register,
@@ -60,6 +66,9 @@ export function ContactForm() {
 
   const onSubmit = async (data: FormDataSchema) => {
     setIsSubmitting(true);
+    // Se limpia en cada intento para que un error viejo no quede pegado si el
+    // reintento funciona.
+    setSubmitError(null);
 
     const formData = new FormData();
     formData.append("clientName", data.clientName);
@@ -84,14 +93,17 @@ export function ContactForm() {
       console.error("Error en envío:", error);
       // Fallback
       const msg = `Hola, soy ${data.clientName} de ${data.companyName}. Tuve un error en el formulario web. Me interesa el servicio de ${data.serviceType}.`;
-      
+      const whatsappUrl = `https://wa.me/18498534067?text=${encodeURIComponent(msg)}`;
+
       // Verificar que estamos en el cliente
-      if (typeof window !== 'undefined') {
-        window.open(
-          `https://wa.me/18498534067?text=${encodeURIComponent(msg)}`,
-          "_blank",
-        );
+      let popupAbierto = false;
+      if (typeof window !== "undefined") {
+        // window.open devuelve null si el navegador bloqueó el popup; sin esto
+        // el usuario se quedaba sin señal de que algo falló.
+        popupAbierto = window.open(whatsappUrl, "_blank") !== null;
       }
+
+      setSubmitError({ whatsappUrl, popupAbierto });
     } finally {
       setIsSubmitting(false);
     }
@@ -362,6 +374,39 @@ export function ContactForm() {
                         className="w-full px-4 py-3 rounded-xl bg-[#F9F8F6] border border-transparent focus:bg-white focus:border-[#FF4D00]/30 focus:ring-4 focus:ring-[#FF4D00]/5 outline-none transition-all text-sm resize-none"
                       />
                     </div>
+
+                    {/* ERROR DE ENVÍO */}
+                    {submitError && (
+                      <div
+                        role="alert"
+                        className="rounded-xl border border-red-500/30 bg-red-50 px-4 py-3 text-sm text-red-700"
+                      >
+                        <p className="font-medium">
+                          No pudimos enviar tu solicitud automáticamente.
+                        </p>
+                        <p className="mt-1 text-red-600">
+                          {submitError.popupAbierto ? (
+                            <>
+                              Te abrimos WhatsApp en otra pestaña. Si no se
+                              abrió,{" "}
+                            </>
+                          ) : (
+                            <>
+                              Tu navegador bloqueó la ventana de WhatsApp.{" "}
+                            </>
+                          )}
+                          <a
+                            href={submitError.whatsappUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-medium underline underline-offset-2 hover:text-red-800"
+                          >
+                            escribinos directo por WhatsApp
+                          </a>{" "}
+                          o volvé a intentarlo.
+                        </p>
+                      </div>
+                    )}
 
                     {/* BOTÓN */}
                     <button
