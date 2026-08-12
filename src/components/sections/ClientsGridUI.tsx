@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useCallback } from "react";
+import { motion } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
-import { ExternalLink, Briefcase, X, ChevronRight } from "lucide-react";
+import { Briefcase, ChevronRight } from "lucide-react";
+import { ClientDetailModal } from "./ClientDetailModal";
 import type { Client } from "@/types";
 
 interface ClientsGridUIProps {
@@ -15,17 +15,7 @@ export function ClientsGridUI({ initialClients }: ClientsGridUIProps) {
   const [filter, setFilter] = useState<string>("todos");
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
 
-  // Cerrar modal con Escape
-  useEffect(() => {
-    // Verificar que estamos en el cliente
-    if (typeof document === 'undefined') return;
-    
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelectedClient(null);
-    };
-    document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
-  }, []);
+  const closeModal = useCallback(() => setSelectedClient(null), []);
 
   const categories = [
     "todos",
@@ -125,109 +115,7 @@ export function ClientsGridUI({ initialClients }: ClientsGridUIProps) {
       )}
 
       {/* Modal de Detalles */}
-      <AnimatePresence>
-        {selectedClient && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
-            onClick={() => setSelectedClient(null)}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="modal-title"
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: "spring", duration: 0.5 }}
-              className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Imagen Header */}
-              <div className="relative aspect-video bg-[#F9F8F6]">
-                {selectedClient.image ? (
-                  <Image
-                    src={selectedClient.image}
-                    alt={selectedClient.name}
-                    fill
-                    sizes="(max-width: 640px) 100vw, 640px"
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <Briefcase
-                      className="w-16 h-16 text-[#9C9890]"
-                      aria-hidden="true"
-                    />
-                  </div>
-                )}
-
-                {/* Close Button */}
-                <button
-                  onClick={() => setSelectedClient(null)}
-                  className="absolute top-4 right-4 p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-colors"
-                  aria-label="Cerrar modal"
-                >
-                  <X className="w-5 h-5 text-[#1A1818]" aria-hidden="true" />
-                </button>
-
-                {selectedClient.featured && (
-                  <div className="absolute top-4 left-4 px-3 py-1.5 bg-[#FF4D00] text-white text-xs font-bold rounded-full">
-                    Proyecto Destacado
-                  </div>
-                )}
-              </div>
-
-              {/* Content */}
-              <div className="p-6 sm:p-8">
-                <span className="text-xs font-bold text-[#FF4D00] uppercase tracking-wider">
-                  {selectedClient.category}
-                </span>
-
-                <h2
-                  id="modal-title"
-                  className="font-display text-2xl sm:text-3xl font-medium text-[#1A1818] mt-2 mb-4"
-                >
-                  {selectedClient.name}
-                </h2>
-
-                {selectedClient.tag && (
-                  <div className="inline-block px-3 py-1 bg-[#F9F8F6] rounded-full text-sm text-[#5C5850] mb-4">
-                    {selectedClient.tag}
-                  </div>
-                )}
-
-                <p className="text-[#3D3A36] leading-relaxed mb-6">
-                  {selectedClient.description || "Sin descripción disponible."}
-                </p>
-
-                {/* Actions */}
-                <div className="flex flex-col sm:flex-row gap-3">
-                  {selectedClient.websiteUrl && (
-                    <Link
-                      href={selectedClient.websiteUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-[#1A1818] text-white rounded-xl font-medium hover:bg-[#FF4D00] transition-colors"
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                      Visitar Sitio Web
-                    </Link>
-                  )}
-                  <Link
-                    href="/contacto"
-                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-[#F9F8F6] text-[#1A1818] rounded-xl font-medium hover:bg-[#1A1818]/5 transition-colors"
-                  >
-                    Quiero algo similar
-                  </Link>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <ClientDetailModal client={selectedClient} onClose={closeModal} />
     </>
   );
 }
