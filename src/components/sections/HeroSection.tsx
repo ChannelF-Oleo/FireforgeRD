@@ -92,10 +92,10 @@ export function HeroSection() {
                 href="/diagnostico"
                 className="group inline-block text-center text-sm text-[#5C5850] hover:text-[#FF4D00] transition-colors"
               >
-                ¿No sabés cuál plan?{" "}
+                ¿No sabes cuál plan?{" "}
                 {/* nowrap para que la flecha nunca quede sola en la línea siguiente */}
                 <span className="whitespace-nowrap">
-                  Hacé el diagnóstico gratis
+                  Haz el diagnóstico gratis
                   <ArrowRight
                     className="inline-block w-4 h-4 ml-1.5 align-[-3px] transition-transform group-hover:translate-x-1"
                     aria-hidden="true"

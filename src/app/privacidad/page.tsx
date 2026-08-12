@@ -20,7 +20,7 @@ export default function PrivacidadPage() {
   return (
     <LegalPageShell
       title="Política de Privacidad"
-      intro="Qué datos recogemos a través de este sitio, para qué los usamos y cómo podés ejercer tus derechos."
+      intro="Qué datos recogemos a través de este sitio, para qué los usamos y cómo puedes ejercer tus derechos."
     >
       <p>
         <strong className="text-[#1A1818]">
@@ -28,7 +28,7 @@ export default function PrivacidadPage() {
         </strong>{" "}
         Estamos redactando la versión definitiva de la política de privacidad.
         Mientras tanto, resumimos acá el tratamiento que damos hoy a los datos
-        que nos dejás.
+        que nos dejas.
       </p>
       <p>
         <strong className="text-[#1A1818]">Qué recogemos.</strong> Únicamente
@@ -48,9 +48,9 @@ export default function PrivacidadPage() {
         agregada.
       </p>
       <p>
-        <strong className="text-[#1A1818]">Tus derechos.</strong> Podés
+        <strong className="text-[#1A1818]">Tus derechos.</strong> Puedes
         pedirnos en cualquier momento acceder, rectificar o eliminar los datos
-        que tengamos sobre vos escribiendo a hola@fireforgerd.com.
+        que tengamos sobre ti escribiendo a hola@fireforgerd.com.
       </p>
     </LegalPageShell>
   );

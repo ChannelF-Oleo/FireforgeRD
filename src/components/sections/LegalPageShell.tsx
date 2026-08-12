@@ -37,7 +37,7 @@ export function LegalPageShell({
               Datos de contacto
             </h2>
             <p className="text-sm text-[#5C5850] mb-5">
-              Para cualquier consulta sobre este documento, escribinos por
+              Para cualquier consulta sobre este documento, escríbenos por
               alguno de estos medios:
             </p>
 

@@ -42,8 +42,8 @@ export default function AvisoLegalPage() {
         propuesta correspondiente antes de iniciar cualquier trabajo.
       </p>
       <p>
-        Si necesitás una versión formal de este documento antes de que la
-        publiquemos, escribinos y te la hacemos llegar.
+        Si necesitas una versión formal de este documento antes de que la
+        publiquemos, escríbenos y te la hacemos llegar.
       </p>
     </LegalPageShell>
   );
