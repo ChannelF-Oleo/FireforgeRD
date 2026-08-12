@@ -130,7 +130,7 @@ export default function RootLayout({
     description: "Desarrollo web, sistemas a medida y automatización con IA.",
     // www para coincidir con el canonical y con el redirect 308 de next.config
     url: "https://www.fireforgerd.com",
-    telephone: "+18094202288",
+    telephone: "+18498534067",
     priceRange: "$$$",
     address: {
       "@type": "PostalAddress",
