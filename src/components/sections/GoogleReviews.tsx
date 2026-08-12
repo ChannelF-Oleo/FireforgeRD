@@ -1,26 +1,7 @@
-"use client";
-
-import { useEffect } from "react";
+import Script from "next/script";
 import { Star } from "lucide-react";
 
 export function GoogleReviews() {
-  useEffect(() => {
-    // Verificar que estamos en el cliente
-    if (typeof window === 'undefined' || typeof document === 'undefined') return;
-    
-    // Cargar el script de Elfsight solo una vez
-    if (
-      !document.querySelector(
-        'script[src="https://static.elfsight.com/platform/platform.js"]',
-      )
-    ) {
-      const script = document.createElement("script");
-      script.src = "https://static.elfsight.com/platform/platform.js";
-      script.async = true;
-      document.body.appendChild(script);
-    }
-  }, []);
-
   return (
     <section className="py-20 bg-[#F9F8F6]">
       <div className="container mx-auto px-4 md:px-6">
@@ -40,13 +21,24 @@ export function GoogleReviews() {
           </p>
         </div>
 
-        {/* Widget de Elfsight Google Reviews */}
+        {/* Widget de Elfsight Google Reviews.
+            Son dos mecanismos distintos y no se pisan: data-elfsight-app-lazy
+            es el lazy interno del widget (difiere la inicialización hasta que
+            entra en viewport), mientras que strategy="lazyOnload" solo decide
+            cuándo se inyecta platform.js. next/script además deduplica por src,
+            así que ya no hace falta el chequeo manual de "cargar una sola vez"
+            que tenía el useEffect anterior. */}
         <div className="max-w-5xl mx-auto">
           <div
             className="elfsight-app-df23be39-2807-4e2f-8500-472a12fef93c"
             data-elfsight-app-lazy
           />
         </div>
+
+        <Script
+          src="https://static.elfsight.com/platform/platform.js"
+          strategy="lazyOnload"
+        />
       </div>
     </section>
   );
