@@ -54,8 +54,8 @@ export function Footer() {
       { name: "Automatización", href: "/#servicios" },
     ],
     legal: [
-      { name: "Aviso Legal", href: "#" },
-      { name: "Privacidad", href: "#" },
+      { name: "Aviso Legal", href: "/aviso-legal" },
+      { name: "Privacidad", href: "/privacidad" },
     ],
   };
 
@@ -209,13 +209,13 @@ export function Footer() {
             <span className="hidden md:inline text-[#A8A49E] text-xs">•</span>
             <div className="flex gap-4">
               {links.legal.map((link) => (
-                <a
+                <Link
                   key={link.name}
                   href={link.href}
                   className="text-[#A8A49E] hover:text-white text-xs transition-colors"
                 >
                   {link.name}
-                </a>
+                </Link>
               ))}
             </div>
           </div>
