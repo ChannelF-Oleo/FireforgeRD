@@ -297,9 +297,12 @@ export function PricingMatrix() {
                             >
                               {f.label}
                             </span>
-                            <span className="sr-only">
-                              {f.included ? "incluido" : "no incluido"}
-                            </span>
+                            {/* Solo se anuncia la excepción: en una lista de
+                                "qué incluye el plan", repetir "incluido" en
+                                cada ítem es ruido para un lector de pantalla */}
+                            {!f.included && (
+                              <span className="sr-only">no incluido</span>
+                            )}
                           </li>
                         ))}
                       </ul>
