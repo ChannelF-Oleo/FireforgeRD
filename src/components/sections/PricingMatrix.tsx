@@ -5,6 +5,7 @@ import { LazyMotion, domAnimation, m, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
   Check,
+  X,
   ArrowRight,
   Globe,
   ShoppingCart,
@@ -240,24 +241,62 @@ export function PricingMatrix() {
                               /{getPriceUnit(plan.currency)}
                             </span>
                           )}
+                          {plan.setupFee && (
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-[#9C9890]">
+                              Setup
+                            </span>
+                          )}
                         </div>
+
+                        {/* Cobro recurrente: misma posición en las 5 categorías,
+                            antes vivía como string suelto dentro de features */}
+                        {plan.recurringFee && (
+                          <p className="mt-1.5 text-[13px] text-[#5C5850]">
+                            + {formatUSD(plan.recurringFee.amount)}/
+                            {plan.recurringFee.period}
+                            {plan.recurringFee.label
+                              ? ` de ${plan.recurringFee.label.toLowerCase()}`
+                              : ""}
+                          </p>
+                        )}
                       </div>
 
-                      {/* Features loop ... */}
-                      <div className="flex-1 space-y-3 mb-8 relative z-10">
-                        {plan.features.map((f, i) => (
-                          <div
-                            key={i}
+                      {/* Features: lista real para que un lector de pantalla
+                          anuncie "lista de N elementos" */}
+                      <ul className="flex-1 space-y-3 mb-8 relative z-10">
+                        {plan.features.map((f) => (
+                          <li
+                            key={f.label}
                             className="flex items-start gap-2.5 text-sm text-[#5C5850]"
                           >
-                            <Check
-                              size={14}
-                              className="mt-0.5 text-[#FF4D00]"
-                            />
-                            <span className="text-[13px]">{f}</span>
-                          </div>
+                            {f.included ? (
+                              <Check
+                                size={14}
+                                className="mt-0.5 shrink-0 text-[#FF4D00]"
+                                aria-hidden="true"
+                              />
+                            ) : (
+                              <X
+                                size={14}
+                                className="mt-0.5 shrink-0 text-[#9C9890]"
+                                aria-hidden="true"
+                              />
+                            )}
+                            <span
+                              className={
+                                f.included
+                                  ? "text-[13px]"
+                                  : "text-[13px] text-[#9C9890] line-through"
+                              }
+                            >
+                              {f.label}
+                            </span>
+                            <span className="sr-only">
+                              {f.included ? "incluido" : "no incluido"}
+                            </span>
+                          </li>
                         ))}
-                      </div>
+                      </ul>
 
                       <div className="mt-auto pt-5 border-t border-[#1A1818]/5 relative z-10">
                         <Button
