@@ -36,7 +36,6 @@ export interface CategoryInfo {
   id: ServiceCategory;
   name: string;
   description: string;
-  icon: string;
   services: ServicePlan[];
 }
 
@@ -403,28 +402,24 @@ export const serviceCategories = [
     id: "web",
     name: "Desarrollo Web",
     description: "Sitios web corporativos y landing pages de alto rendimiento",
-    icon: "🌐",
     services: webServices,
   },
   {
     id: "ecommerce",
     name: "E-Commerce",
     description: "Tiendas online con pasarelas de pago seguras",
-    icon: "🛒",
     services: ecommerceServices,
   },
   {
     id: "saas",
     name: "Sistemas SaaS",
     description: "Software a medida para gestión empresarial",
-    icon: "⚙️",
     services: saasServices,
   },
   {
     id: "automation",
     name: "Automatización",
     description: "Chatbots y automatización con IA",
-    icon: "🤖",
     services: automationServices,
   },
   // Added Technical Category
@@ -432,7 +427,6 @@ export const serviceCategories = [
     id: "technical",
     name: "Servicios Técnicos",
     description: "Soluciones puntuales, mantenimiento y optimización",
-    icon: "🛠️",
     services: technicalServices,
   },
 ] as const;

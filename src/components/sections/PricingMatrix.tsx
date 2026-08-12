@@ -13,17 +13,21 @@ import {
   ShoppingCart,
   Cpu,
   Bot,
+  Wrench,
   HelpCircle,
 } from "lucide-react";
 import { useScrollToSection } from "@/lib/scroll-to-section";
 import { serviceCategories } from "@/lib/services-data";
 
 // --- ICONOS ---
+// Fuente única de los íconos de categoría. Todas las claves de
+// serviceCategories deben estar acá: la que falte renderiza un tab sin ícono.
 const categoryIcons: Record<string, React.ReactNode> = {
   web: <Globe className="w-4 h-4 md:w-5 md:h-5" />,
   ecommerce: <ShoppingCart className="w-4 h-4 md:w-5 md:h-5" />,
   saas: <Cpu className="w-4 h-4 md:w-5 md:h-5" />,
   automation: <Bot className="w-4 h-4 md:w-5 md:h-5" />,
+  technical: <Wrench className="w-4 h-4 md:w-5 md:h-5" />,
 };
 
 const formatUSD = (amount: number) => {
