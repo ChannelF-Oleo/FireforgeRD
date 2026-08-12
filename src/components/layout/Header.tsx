@@ -111,7 +111,11 @@ export function Header() {
             {/* ACCIONES */}
             <div className={styles.actions}>
               <Link href={contactNavItem.href}>
-                <Button size="default" className={styles.ctaButton}>
+                <Button
+                  variant="hero"
+                  size="default"
+                  className={styles.ctaButton}
+                >
                   {CONTACT_LABEL_HEADER}
                 </Button>
               </Link>

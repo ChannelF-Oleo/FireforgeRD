@@ -12,7 +12,8 @@ export const styles = {
     }
   `,
 
-  container: "h-full w-full max-w-[1440px] mx-auto px-6 md:px-12",
+  // px-4 en móvil: ahí conviven logo + CTA + toggle y el espacio es justo
+  container: "h-full w-full max-w-[1440px] mx-auto px-4 md:px-12",
 
   wrapper: "h-full flex items-center justify-between",
 
@@ -22,7 +23,7 @@ export const styles = {
   logoIcon:
     "relative z-10 transition-transform duration-400 ease-out group-hover:scale-110 group-active:scale-95",
   logoText: `
-    text-[#1A1818] font-semibold text-xl tracking-tight 
+    text-[#1A1818] font-semibold text-lg md:text-xl tracking-tight whitespace-nowrap
     group-hover:text-[#FF4D00] transition-colors duration-300
   `,
 
@@ -38,23 +39,17 @@ export const styles = {
     ${isActive ? "after:w-full" : "after:w-0 hover:after:w-full"}
   `,
 
-  // Acciones
-  actions: "flex items-center gap-5",
+  // Acciones. Gap chico en móvil: ahí conviven el CTA y el toggle del menú.
+  actions: "flex items-center gap-2 md:gap-5",
 
-  // CTA Button - Píldora con glow
-  ctaButton: `
-    hidden md:inline-flex cursor-pointer
-    bg-[#FF4D00] hover:bg-[#E64500] text-white font-medium tracking-wide
-    rounded-full px-6 h-11
-    shadow-[0_4px_20px_rgba(255,77,0,0.25)]
-    hover:shadow-[0_8px_30px_rgba(255,77,0,0.35)]
-    transition-all duration-300 
-    hover:scale-[1.02] active:scale-[0.98]
-  `,
+  // CTA Button - Solo dimensiones. El color, la forma y el hover vienen de
+  // variant="hero" en button.tsx, compartida con el CTA principal del Hero.
+  // Visible también en móvil: es la única vía de conversión sin abrir el menú.
+  ctaButton: "h-10 px-3 text-xs md:h-11 md:px-6 md:text-sm",
 
   // Toggle móvil
   mobileToggle: `
-    md:hidden p-3 text-[#1A1818] rounded-full 
+    md:hidden p-2.5 text-[#1A1818] rounded-full shrink-0
     hover:bg-[#1A1818]/5 active:bg-[#1A1818]/10 transition-colors 
     border border-transparent hover:border-[#1A1818]/10
   `,
