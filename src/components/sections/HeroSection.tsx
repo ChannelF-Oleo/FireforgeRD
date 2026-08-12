@@ -1,10 +1,14 @@
 "use client";
 
 import { LazyMotion, domAnimation, m } from "framer-motion";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { scrollToElement } from "@/lib/utils";
+import { useScrollToSection } from "@/lib/scroll-to-section";
 
 export function HeroSection() {
+  const scrollToSection = useScrollToSection();
+
   return (
     <LazyMotion features={domAnimation}>
       <section className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden bg-[#F9F8F6] py-12 md:py-0">
@@ -54,22 +58,50 @@ export function HeroSection() {
               transition={{ delay: 0.6, duration: 0.8 }}
               className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full sm:w-auto px-4 sm:px-0"
             >
+              {/* Primario primero: en móvil los botones se apilan, así que el
+                  orden del DOM define cuál queda arriba. */}
               <Button
-                onClick={() => scrollToElement("servicios")}
+                onClick={() => scrollToSection("contact")}
+                variant="hero"
                 size="lg"
-                className="w-full sm:w-auto text-base px-8 md:px-10 py-6 font-medium bg-[#FF4D00] hover:bg-[#E64500] text-white rounded-full shadow-lg hover:scale-105 transition-all"
-              >
-                Nuestras Soluciones
-              </Button>
-
-              <Button
-                onClick={() => scrollToElement("contact")}
-                variant="outline"
-                size="lg"
-                className="w-full sm:w-auto text-base px-8 md:px-10 py-6 font-medium bg-transparent text-[#1A1818] rounded-full border border-[#1A1818]/20 hover:border-[#FF4D00] hover:text-[#FF4D00] transition-all"
+                className="w-full sm:w-auto"
               >
                 Agendar Consultoría
               </Button>
+
+              <Button
+                onClick={() => scrollToSection("servicios")}
+                variant="outline"
+                size="lg"
+                className="w-full sm:w-auto"
+              >
+                Nuestras Soluciones
+              </Button>
+            </m.div>
+
+            {/* CTA TERCIARIO: ruta de baja fricción para quien no sabe qué pedir */}
+            <m.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.75, duration: 0.8 }}
+              className="mt-6 flex justify-center px-4"
+            >
+              {/* La flecha va dentro del flujo del texto: en móvil el copy
+                  parte en dos líneas y con flex quedaba flotando al costado. */}
+              <Link
+                href="/diagnostico"
+                className="group inline-block text-center text-sm text-[#5C5850] hover:text-[#FF4D00] transition-colors"
+              >
+                ¿No sabes cuál plan?{" "}
+                {/* nowrap para que la flecha nunca quede sola en la línea siguiente */}
+                <span className="whitespace-nowrap">
+                  Haz el diagnóstico gratis
+                  <ArrowRight
+                    className="inline-block w-4 h-4 ml-1.5 align-[-3px] transition-transform group-hover:translate-x-1"
+                    aria-hidden="true"
+                  />
+                </span>
+              </Link>
             </m.div>
 
             {/* FOOTER */}

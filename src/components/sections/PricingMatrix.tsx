@@ -12,7 +12,7 @@ import {
   Bot,
   HelpCircle,
 } from "lucide-react";
-import { scrollToElement } from "@/lib/utils";
+import { useScrollToSection } from "@/lib/scroll-to-section";
 import { serviceCategories } from "@/lib/services-data";
 
 // --- ICONOS ---
@@ -33,6 +33,7 @@ const formatUSD = (amount: number) => {
 };
 
 export function PricingMatrix() {
+  const scrollToSection = useScrollToSection();
   const [activeCategory, setActiveCategory] = useState<string>(
     serviceCategories[0].id,
   );
@@ -241,7 +242,7 @@ export function PricingMatrix() {
 
                       <div className="mt-auto pt-5 border-t border-[#1A1818]/5 relative z-10">
                         <Button
-                          onClick={() => scrollToElement("contact")}
+                          onClick={() => scrollToSection("contact")}
                           className={`w-full transition-all duration-300 ${plan.isRecommended ? "bg-gradient-to-r from-[#FF4D00] to-[#FF6B2C] text-white hover:shadow-[0_8px_30px_-5px_rgba(255,77,0,0.5)] hover:scale-[1.02]" : "bg-[#F0EFED] text-[#1A1818] hover:bg-transparent hover:border hover:border-[#FF4D00] hover:text-[#FF4D00]"}`}
                         >
                           Solicitar Ahora{" "}
@@ -258,7 +259,7 @@ export function PricingMatrix() {
           {/* FOOTER */}
           <div className="mt-16 flex flex-col items-center justify-center gap-6 text-center">
             <button
-              onClick={() => scrollToElement("faq")}
+              onClick={() => scrollToSection("faq")}
               className="group flex items-center gap-2 rounded-full border border-[#1A1818]/10 bg-white px-5 py-2.5 text-sm font-medium text-[#5C5850] transition-all hover:border-[#FF4D00]/30 hover:bg-[#fff5f0] hover:text-[#FF4D00] hover:shadow-md"
             >
               <HelpCircle className="w-4 h-4" />

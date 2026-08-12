@@ -2,7 +2,7 @@
 
 import { LazyMotion, domAnimation, m } from "framer-motion";
 import { Globe, Cpu, Bot, ArrowRight } from "lucide-react";
-import { scrollToElement } from "@/lib/utils";
+import { useScrollToSection } from "@/lib/scroll-to-section";
 import type { Variants } from "framer-motion";
 
 /* ------------------ TYPES & DATA ------------------ */
@@ -53,8 +53,10 @@ const fadeUp: Variants = {
 
 /* ------------------ COMPONENT ------------------ */
 export function ServicesGrid() {
+  const scrollToSection = useScrollToSection();
+
   const handleNavigation = (tabId: string) => {
-    scrollToElement("precios");
+    scrollToSection("precios");
     if (typeof window !== "undefined") {
       window.dispatchEvent(
         new CustomEvent("changePricingTab", { detail: tabId }),

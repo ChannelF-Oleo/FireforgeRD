@@ -7,21 +7,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { FireLogo } from "@/components/ui/animated-logo";
 import { MobileMenu } from "./mobile-menu";
-import { scrollToElement } from "@/lib/utils";
+import { useScrollToSection } from "@/lib/scroll-to-section";
+import {
+  navItems,
+  contactNavItem,
+  CONTACT_LABEL_HEADER,
+} from "@/lib/nav-items";
 import { styles } from "./header.styles";
-
-const navItems = [
-  { id: "servicios", label: "Servicios", type: "scroll" },
-  { id: "precios", label: "Precios", type: "scroll" },
-  {
-    id: "diagnostico",
-    label: "Diagnóstico",
-    type: "link",
-    href: "/diagnostico",
-  },
-  { id: "clientes", label: "Clientes", type: "link", href: "/clientes" },
-  { id: "blog", label: "Blog", type: "link", href: "/blog" },
-];
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -29,6 +21,7 @@ export function Header() {
   const [activeSection, setActiveSection] = useState<string>("");
   const pathname = usePathname();
   const isHomePage = pathname === "/";
+  const scrollToSection = useScrollToSection();
 
   useEffect(() => {
     // Verificar que estamos en el cliente
@@ -42,19 +35,14 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleNavClick = useCallback((sectionId: string) => {
-    setIsMobileOpen(false);
-    setActiveSection(sectionId);
-
-    // Verificar que estamos en el cliente
-    if (typeof window === 'undefined') return;
-
-    if (sectionId === "hero") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
-      scrollToElement(sectionId);
-    }
-  }, []);
+  const handleNavClick = useCallback(
+    (sectionId: string) => {
+      setIsMobileOpen(false);
+      setActiveSection(sectionId);
+      scrollToSection(sectionId);
+    },
+    [scrollToSection],
+  );
 
   return (
     <>
@@ -87,7 +75,7 @@ export function Header() {
                   return (
                     <Link
                       key={item.id}
-                      href={item.href!}
+                      href={item.href}
                       className={styles.navLink(isActive)}
                     >
                       {item.label}
@@ -122,9 +110,13 @@ export function Header() {
 
             {/* ACCIONES */}
             <div className={styles.actions}>
-              <Link href="/contacto">
-                <Button size="default" className={styles.ctaButton}>
-                  Hablemos
+              <Link href={contactNavItem.href}>
+                <Button
+                  variant="hero"
+                  size="default"
+                  className={styles.ctaButton}
+                >
+                  {CONTACT_LABEL_HEADER}
                 </Button>
               </Link>
 

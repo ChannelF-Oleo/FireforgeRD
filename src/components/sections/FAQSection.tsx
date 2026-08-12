@@ -177,7 +177,8 @@ export function FAQSection() {
                               onClick={() => toggleItem(itemId)}
                               aria-expanded={isOpen} // Accesibilidad
                               aria-controls={`faq-answer-${itemId}`}
-                              className="w-full px-6 py-5 text-left flex justify-between items-start md:items-center gap-4 focus:outline-none"
+                              // Mismos tokens de foco que el Button base
+                              className="w-full px-6 py-5 text-left flex justify-between items-start md:items-center gap-4 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-2"
                             >
                               <span
                                 className={`text-sm md:text-base font-medium transition-colors text-balance ${isOpen ? "text-[#1A1818]" : "text-[#5C5850] group-hover:text-[#1A1818]"}`}

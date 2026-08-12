@@ -69,16 +69,19 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/Icon.png", // Next.js buscará opengraph-image en src/app si usas file conventions
-        width: 1200,
-        height: 630,
+        // Dimensiones reales del archivo. Pendiente: asset 1200x630 dedicado
+        // para que las tarjetas no recorten el logo en Twitter/LinkedIn.
+        url: "/Icon.png",
+        width: 500,
+        height: 500,
         alt: "FireforgeRD Digital Infrastructure",
       },
     ],
   },
 
   twitter: {
-    card: "summary_large_image",
+    // summary (no summary_large_image) porque hoy la imagen es cuadrada
+    card: "summary",
     title: "FireforgeRD | Agencia de Desarrollo Web",
     description:
       "Desarrollo web, sistemas a medida y automatizacion con IA. Alto rendimiento para empresas líderes.",
@@ -122,10 +125,12 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
     name: "FireforgeRD",
-    image: "https://fireforgerd.com/og-image.jpg",
+    // og-image.jpg no existe en /public; se apunta al asset real
+    image: "https://www.fireforgerd.com/Icon.png",
     description: "Desarrollo web, sistemas a medida y automatización con IA.",
-    url: "https://fireforgerd.com",
-    telephone: "+18094202288",
+    // www para coincidir con el canonical y con el redirect 308 de next.config
+    url: "https://www.fireforgerd.com",
+    telephone: "+18498534067",
     priceRange: "$$$",
     address: {
       "@type": "PostalAddress",
