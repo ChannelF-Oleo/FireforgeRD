@@ -2,6 +2,12 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import {
+  navItems,
+  contactNavItem,
+  CONTACT_LABEL_MOBILE_MENU,
+  type NavItem,
+} from "@/lib/nav-items";
 
 interface MobileMenuProps {
   onClose: () => void;
@@ -9,24 +15,11 @@ interface MobileMenuProps {
   isHomePage?: boolean;
 }
 
-const menuItems = [
-  { id: "servicios", label: "Servicios", type: "scroll" },
-  { id: "precios", label: "Planes y Precios", type: "scroll" },
-  {
-    id: "diagnostico",
-    label: "Diagnóstico Gratis",
-    type: "link",
-    href: "/diagnostico",
-  },
-  { id: "clientes", label: "Clientes", type: "link", href: "/clientes" },
-  { id: "blog", label: "Blog", type: "link", href: "/blog" },
-  {
-    id: "contact",
-    label: "Contactar",
-    type: "link",
-    href: "/contacto",
-    highlight: true,
-  },
+// La navegación viene de @/lib/nav-items; acá solo se agrega el contacto al
+// final con su label propio y marcado como acción destacada del menú.
+const menuItems: (NavItem & { highlight?: boolean })[] = [
+  ...navItems,
+  { ...contactNavItem, label: CONTACT_LABEL_MOBILE_MENU, highlight: true },
 ];
 
 export function MobileMenu({
@@ -67,7 +60,7 @@ export function MobileMenu({
                 transition={{ delay: idx * 0.08, ease: [0.25, 0.1, 0.25, 1] }}
               >
                 <Link
-                  href={item.href!}
+                  href={item.href}
                   onClick={onClose}
                   className={`block ${baseClasses}`}
                 >

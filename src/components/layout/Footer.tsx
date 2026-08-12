@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FireLogo } from "@/components/ui/animated-logo";
+import { footerExploreItems } from "@/lib/nav-items";
 import { Instagram, Github, MessageCircle, MapPin, Mail } from "lucide-react";
 
 // Componente del mapa con efecto grayscale
@@ -51,12 +52,6 @@ export function Footer() {
       { name: "Tiendas Online", href: "/#servicios" },
       { name: "Sistemas a Medida", href: "/#servicios" },
       { name: "Automatización", href: "/#servicios" },
-    ],
-    pages: [
-      { name: "Diagnóstico Gratis", href: "/diagnostico" },
-      { name: "Nuestros Clientes", href: "/clientes" },
-      { name: "Blog", href: "/blog" },
-      { name: "Contacto", href: "/contacto" },
     ],
     legal: [
       { name: "Aviso Legal", href: "#" },
@@ -120,14 +115,14 @@ export function Footer() {
               Explorar
             </h4>
             <ul className="space-y-3">
-              {links.pages.map((link) => (
-                <li key={link.name}>
+              {footerExploreItems.map((item) => (
+                <li key={item.id}>
                   <Link
-                    href={link.href}
+                    href={item.href}
                     className="text-[#A8A49E] hover:text-[#FF4D00] transition-colors text-sm flex items-center gap-2 group"
                   >
                     <span className="w-0 group-hover:w-2 transition-all duration-300 h-[1px] bg-[#FF4D00]"></span>
-                    {link.name}
+                    {item.label}
                   </Link>
                 </li>
               ))}
