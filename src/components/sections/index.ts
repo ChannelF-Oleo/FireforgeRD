@@ -10,3 +10,6 @@ export { BlogListUI } from "./BlogListUI";
 export { BlogPostView } from "./BlogPostView";
 export { ClientsGrid } from "./ClientsGrid";
 export { ClientsGridUI } from "./ClientsGridUI";
+export { ClientDetailModal } from "./ClientDetailModal";
+export { FeaturedClientsCarousel } from "./FeaturedClientsCarousel";
+export { FeaturedClientsCarouselUI } from "./FeaturedClientsCarouselUI";

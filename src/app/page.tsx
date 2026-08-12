@@ -1,6 +1,8 @@
 import dynamic from "next/dynamic";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { ServicesGrid } from "@/components/sections/ServicesGrid";
+// Server Component con fetch a Firestore: se importa directo, no vía dynamic().
+import { FeaturedClientsCarousel } from "@/components/sections/FeaturedClientsCarousel";
 
 // Componentes below-the-fold cargados dinámicamente para reducir TBT
 const PricingMatrix = dynamic(
@@ -42,6 +44,7 @@ export default function Home() {
       <ServicesGrid />
       <PricingMatrix />
       <PortfolioCTA />
+      <FeaturedClientsCarousel />
       <FAQSection />
       <ContactForm />
     </>
