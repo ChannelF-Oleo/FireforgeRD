@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import {
   Check,
   X,
+  Clock,
   ArrowRight,
   Globe,
   ShoppingCart,
@@ -259,6 +260,11 @@ export function PricingMatrix() {
                               : ""}
                           </p>
                         )}
+
+                        <p className="mt-3 flex items-center gap-1.5 text-[11px] text-[#9C9890]">
+                          <Clock size={12} aria-hidden="true" />
+                          Entrega: {plan.deliveryTime}
+                        </p>
                       </div>
 
                       {/* Features: lista real para que un lector de pantalla
