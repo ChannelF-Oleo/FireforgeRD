@@ -32,6 +32,20 @@ const formatUSD = (amount: number) => {
   }).format(amount);
 };
 
+/**
+ * Unidad de cobro a mostrar junto al precio.
+ *
+ * El catálogo expresa los cobros por unidad en el propio currency
+ * ("USD / Hora"), pero el precio se renderizaba solo con formatUSD, así que
+ * "Mantenimiento/Rescate" ($40 la hora) se leía "$40" — idéntico a los planes
+ * de precio cerrado. Devuelve null para el caso simple ("USD"), que es el de
+ * 17 de los 18 planes.
+ */
+const getPriceUnit = (currency: string): string | null => {
+  const [, unit] = currency.split("/");
+  return unit ? unit.trim().toLowerCase() : null;
+};
+
 export function PricingMatrix() {
   const [activeCategory, setActiveCategory] = useState<string>(
     serviceCategories[0].id,
@@ -220,6 +234,11 @@ export function PricingMatrix() {
                           <span className="text-3xl lg:text-3xl xl:text-4xl font-light tracking-tight text-[#1A1818]">
                             {formatUSD(plan.price)}
                           </span>
+                          {getPriceUnit(plan.currency) && (
+                            <span className="text-base lg:text-lg font-light text-[#5C5850]">
+                              /{getPriceUnit(plan.currency)}
+                            </span>
+                          )}
                         </div>
                       </div>
 
