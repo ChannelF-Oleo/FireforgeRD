@@ -1,0 +1,15 @@
+node_modules
+.next
+.git
+.env
+.env.local
+.env.*.local
+npm-debug.log*
+.DS_Store
+Dockerfile
+.dockerignore
+README.md
+BLOG_FIXES.md
+HYDRATION_FIXES.md
+.claude
+.kiro
