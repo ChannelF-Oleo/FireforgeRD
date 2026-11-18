@@ -54,3 +54,20 @@ export function storedSlugCandidates(slug: string): string[] {
   const legacy = Object.hasOwn(storedByPublic, slug) ? storedByPublic[slug] : undefined;
   return legacy ? [slug, legacy] : [slug];
 }
+
+/**
+ * Un documento por slug público. Si conviven el viejo ("p-gina-...") y uno
+ * nuevo guardado ya con el slug limpio (el admin ahora quita las tildes y
+ * genera justo ese slug), gana el que lo tiene guardado tal cual. Mantiene el
+ * orden de la primera aparición.
+ */
+export function uniqueByPublicSlug<T>(items: T[], storedSlug: (item: T) => string): T[] {
+  const chosen = new Map<string, T>();
+  for (const item of items) {
+    const stored = storedSlug(item);
+    const pub = publicSlug(stored);
+    const current = chosen.get(pub);
+    if (!current || (stored === pub && storedSlug(current) !== pub)) chosen.set(pub, item);
+  }
+  return [...chosen.values()];
+}

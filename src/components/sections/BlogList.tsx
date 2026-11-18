@@ -4,7 +4,7 @@ import type { BlogPost } from "@/types";
 import { unstable_cache } from "next/cache";
 import { SectionHeader } from "@/components/ds/SectionHeader";
 import { container } from "@/components/ds/ui";
-import { publicSlug } from "@/lib/blog-slugs";
+import { publicSlug, uniqueByPublicSlug } from "@/lib/blog-slugs";
 
 // ⚡ SOLUCIÓN: Cache optimizado con invalidación automática
 // Sin try/catch: si Firestore falla, devolver [] dejaba cacheado un blog vacío
@@ -18,7 +18,9 @@ const getCachedPosts = unstable_cache(
       .orderBy("createdAt", "desc")
       .get();
 
-    return snapshot.docs.map((doc) => {
+    // Un artículo por URL: ver uniqueByPublicSlug.
+    const docs = uniqueByPublicSlug(snapshot.docs, (d) => d.data().slug ?? "");
+    return docs.map((doc) => {
       const data = doc.data();
       
       // ⚡ SOLUCIÓN: Conversión segura de fechas de Firestore

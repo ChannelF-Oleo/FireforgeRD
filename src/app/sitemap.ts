@@ -13,7 +13,8 @@ async function getBlogSlugs(): Promise<string[]> {
     const postsRef = collection(db, "blog_posts");
     const q = query(postsRef, where("published", "==", true));
     const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => publicSlug(doc.data().slug as string));
+    // Sin URLs repetidas si conviven el slug viejo y el nuevo de un artículo.
+    return [...new Set(snapshot.docs.map((doc) => publicSlug(doc.data().slug as string)))];
   } catch (error) {
     console.warn("[sitemap] No se pudieron cargar los posts del blog:", error);
     return [];

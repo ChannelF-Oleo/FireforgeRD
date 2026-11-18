@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { startTransition, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AlertTriangle, Home, RefreshCw } from "lucide-react";
 import { dsRoot } from "@/components/ds/fonts";
@@ -14,6 +15,16 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  // reset() solo vuelve a renderizar con el payload que ya trae el error (por
+  // ejemplo, un fallo de Firestore en el servidor): sin router.refresh() el
+  // botón repetía el mismo error.
+  const router = useRouter();
+  const retry = () =>
+    startTransition(() => {
+      router.refresh();
+      reset();
+    });
+
   useEffect(() => {
     // Sin servicio de monitoreo todavía (TODO: Sentry): queda en la consola.
     console.error("Application error:", {
@@ -51,7 +62,7 @@ export default function Error({
             )}
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <button type="button" onClick={reset} className={ctaAccent}>
+              <button type="button" onClick={retry} className={ctaAccent}>
                 <RefreshCw className="size-4" aria-hidden />
                 Intentar de nuevo
               </button>

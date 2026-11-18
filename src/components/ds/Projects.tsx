@@ -16,7 +16,21 @@ const categoryLabels: Record<string, string> = {
   chatbot: "Chatbot",
 };
 
+// La URL la escribe el admin a mano: sin protocolo ("www.cliente.com") el
+// enlace era relativo y daba 404; se completa con https://. Solo http(s).
+function externalUrl(raw: string | null | undefined): string | null {
+  const value = raw?.trim();
+  if (!value) return null;
+  try {
+    const url = new URL(/^[a-z][a-z0-9+.-]*:/i.test(value) ? value : `https://${value}`);
+    return url.protocol === "https:" || url.protocol === "http:" ? url.href : null;
+  } catch {
+    return null;
+  }
+}
+
 function ProjectCard({ client }: { client: Client }) {
+  const websiteUrl = externalUrl(client.websiteUrl);
   return (
     <article className="flex h-full flex-col border border-(--ds-border) bg-(--ds-card)">
       <div className="relative aspect-video border-b border-(--ds-border) bg-(--ds-muted)">
@@ -37,9 +51,9 @@ function ProjectCard({ client }: { client: Client }) {
             Quiero algo similar
             <span className="sr-only"> a {client.name}</span>
           </Link>
-          {client.websiteUrl && (
+          {websiteUrl && (
             <a
-              href={client.websiteUrl}
+              href={websiteUrl}
               target="_blank"
               rel="noopener noreferrer"
               className={`inline-flex min-h-11 cursor-pointer items-center gap-1 text-sm font-medium hover:text-(--ds-primary-text) ${focusRing}`}

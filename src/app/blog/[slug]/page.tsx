@@ -5,7 +5,7 @@ import { BlogPostView } from "@/components/sections/BlogPostView";
 import type { BlogPost } from "@/types";
 import { unstable_cache } from "next/cache";
 import { dsRoot } from "@/components/ds/fonts";
-import { publicSlug, renamedSlug, storedSlugCandidates } from "@/lib/blog-slugs";
+import { publicSlug, renamedSlug, storedSlugCandidates, uniqueByPublicSlug } from "@/lib/blog-slugs";
 import { defaultOgImage } from "@/lib/og";
 
 // ⚡ SOLUCIÓN: Revalidar cada 10 minutos para posts individuales
@@ -26,12 +26,13 @@ const getCachedPost = unstable_cache(
       .collection("blog_posts")
       .where("slug", "in", storedSlugCandidates(slug))
       .where("published", "==", true)
-      .limit(1)
+      .limit(2)
       .get();
 
     if (snapshot.empty) return null;
 
-    const doc = snapshot.docs[0];
+    // Con el slug viejo y uno nuevo idéntico al público, gana el nuevo.
+    const [doc] = uniqueByPublicSlug(snapshot.docs, (d) => d.data().slug ?? "");
     const data = doc.data();
 
     // ⚡ SOLUCIÓN: Conversión segura de fechas de Firestore

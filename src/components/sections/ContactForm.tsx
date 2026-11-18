@@ -20,7 +20,7 @@ const formSchema = z.object({
   clientName: z.string().trim().min(2, "Tu nombre es requerido"),
   companyName: z.string().trim().min(2, "Nombre de empresa requerido"),
   email: z.string().trim().email("Correo inválido"),
-  whatsapp: z.string().min(8, "WhatsApp inválido (mínimo 8 dígitos)"),
+  whatsapp: z.string().trim().min(8, "WhatsApp inválido (mínimo 8 dígitos)"),
   serviceType: z.string().min(1, "Selecciona una categoría"),
   plan: z.string().optional(),
   notes: z.string().optional(),
