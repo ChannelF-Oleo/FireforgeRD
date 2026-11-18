@@ -103,7 +103,7 @@ export async function Projects() {
               </p>
             </>
           )}
-          <div className={`${hasClients ? "mt-8" : ""} border border-(--ds-border) bg-(--ds-card) p-4 sm:p-6" aria-labelledby={hasClients ? "resenas-title" : "proyectos-title"} role="region">
+          <div className={`${hasClients ? "mt-8" : ""} border border-(--ds-border) bg-(--ds-card) p-4 sm:p-6`} aria-labelledby={hasClients ? "resenas-title" : "proyectos-title"} role="region">
             <GoogleReviewsWidget />
           </div>
         </div>
