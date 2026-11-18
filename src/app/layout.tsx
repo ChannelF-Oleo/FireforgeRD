@@ -150,7 +150,8 @@ export default function RootLayout({
         {/* INYECCIÓN JSON-LD */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}
+          // "<" escapado: un nombre de plan no puede cerrar el <script>.
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd).replace(/</g, "\\u003c") }}
         />
 
         <PublicLayout>{children}</PublicLayout>

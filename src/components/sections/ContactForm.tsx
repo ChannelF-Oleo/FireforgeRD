@@ -136,8 +136,10 @@ export function ContactForm() {
       }
     } catch (error) {
       console.error("Error en envío:", error);
-      // Fallback
-      const msg = `Hola, soy ${data.clientName} de ${data.companyName}. Tuve un error en el formulario web. Me interesa el servicio de ${data.serviceType}.`;
+      // Fallback por WhatsApp, con el nombre legible de la categoría (no su id).
+      const serviceName =
+        serviceCategories.find((c) => c.id === data.serviceType)?.name ?? data.serviceType;
+      const msg = `Hola, soy ${data.clientName} de ${data.companyName}. Tuve un error en el formulario web. Me interesa el servicio de ${serviceName}${data.plan ? ` (${data.plan})` : ""}.`;
       const whatsappUrl = `${whatsappHref}?text=${encodeURIComponent(msg)}`;
 
       // Verificar que estamos en el cliente

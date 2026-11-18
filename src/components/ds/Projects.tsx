@@ -60,35 +60,50 @@ export async function Projects() {
   // regeneración, el error deja servir la versión anterior; devolver [] la
   // reemplazaba por una sección de proyectos vacía.
   const clients = await getClients();
+  const hasClients = clients.length > 0;
 
   return (
     <section id="proyectos" aria-labelledby="proyectos-title" className="scroll-mt-20 bg-(--ds-muted) py-24">
       <div className={container}>
-        <SectionHeader
-          id="proyectos-title"
-          eyebrow="Clientes"
-          title="Proyectos entregados"
-          intro="Sitios y sistemas que ya están funcionando para negocios dominicanos."
-        />
-
-        {clients.length > 0 && (
-          <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {clients.map((client) => (
-              <li key={client.id}>
-                <ProjectCard client={client} />
-              </li>
-            ))}
-          </ul>
+        {/* Sin clientes en Firestore no se anuncia "Proyectos entregados" sobre
+            una lista vacía: la sección queda solo con las reseñas. */}
+        {hasClients ? (
+          <>
+            <SectionHeader
+              id="proyectos-title"
+              eyebrow="Clientes"
+              title="Proyectos entregados"
+              intro="Sitios y sistemas que ya están funcionando para negocios dominicanos."
+            />
+            <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {clients.map((client) => (
+                <li key={client.id}>
+                  <ProjectCard client={client} />
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : (
+          <SectionHeader
+            id="proyectos-title"
+            eyebrow="Clientes"
+            title="Lo que dicen nuestros clientes"
+            intro="Reseñas reales de clientes en nuestro perfil de Google."
+          />
         )}
 
-        <div className="mt-20">
-          <h3 id="resenas-title" className={`${heading} text-2xl font-semibold tracking-tight`}>
-            Lo que dicen en Google
-          </h3>
-          <p className="mt-2 max-w-[65ch] text-(--ds-muted-fg)">
-            Reseñas reales de clientes en nuestro perfil de Google.
-          </p>
-          <div className="mt-8 border border-(--ds-border) bg-(--ds-card) p-4 sm:p-6" aria-labelledby="resenas-title" role="region">
+        <div className={hasClients ? "mt-20" : "mt-12"}>
+          {hasClients && (
+            <>
+              <h3 id="resenas-title" className={`${heading} text-2xl font-semibold tracking-tight`}>
+                Lo que dicen en Google
+              </h3>
+              <p className="mt-2 max-w-[65ch] text-(--ds-muted-fg)">
+                Reseñas reales de clientes en nuestro perfil de Google.
+              </p>
+            </>
+          )}
+          <div className={`${hasClients ? "mt-8" : ""} border border-(--ds-border) bg-(--ds-card) p-4 sm:p-6" aria-labelledby={hasClients ? "resenas-title" : "proyectos-title"} role="region">
             <GoogleReviewsWidget />
           </div>
         </div>
