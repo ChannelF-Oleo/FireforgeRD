@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { BookOpen } from "lucide-react";
+import { canOptimizeImage } from "@/lib/image-utils";
 
 interface SafeImageProps {
   src: string | null | undefined;
@@ -32,7 +33,6 @@ export function SafeImage({
   blurDataURL,
 }: SafeImageProps) {
   const [hasError, setHasError] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   // Si no hay src o hubo error, mostrar fallback
   if (!src || hasError) {
@@ -46,23 +46,16 @@ export function SafeImage({
   const handleError = () => {
     console.warn(`Failed to load image: ${src}`);
     setHasError(true);
-    setIsLoading(false);
-  };
-
-  const handleLoad = () => {
-    setIsLoading(false);
   };
 
   // La imagen va en el HTML del servidor (antes se esperaba a la hidratación y
   // en /blog el navegador tardaba ~5 s en empezar a descargar la portada, que
-  // es el LCP). next/image renderiza igual en servidor y cliente, y si la
-  // imagen ya cargó antes de hidratar igual dispara onLoad.
+  // es el LCP). Sin capa de "cargando" encima: llegaba en ese mismo HTML y
+  // tapaba la portada hasta que React hidrataba y corría onLoad (y sin JS no
+  // se quitaba nunca). Mientras carga se ve el fondo del contenedor.
 
   return (
-    <div className="relative w-full h-full">
-      {isLoading && (
-        <div className="absolute inset-0 z-10 bg-(--ds-muted) motion-safe:animate-pulse" aria-hidden />
-      )}
+    <div className="relative w-full h-full bg-(--ds-muted)">
       <Image
         src={src}
         alt={alt}
@@ -76,8 +69,8 @@ export function SafeImage({
         // error boundary. Sin miniatura disponible se usa "empty".
         placeholder={placeholder === "blur" && !blurDataURL ? "empty" : placeholder}
         blurDataURL={blurDataURL}
+        unoptimized={!canOptimizeImage(src)}
         onError={handleError}
-        onLoad={handleLoad}
       />
     </div>
   );

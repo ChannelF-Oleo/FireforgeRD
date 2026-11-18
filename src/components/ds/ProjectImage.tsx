@@ -3,22 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Briefcase } from "lucide-react";
-
-// Hosts de images.remotePatterns en next.config.ts (mantener en sincronía).
-// Con cualquier otro, next/image lanza al renderizar y tumbaría el home entero
-// (la URL la pega el admin a mano); para esos casos se sirve sin optimizar.
-const OPTIMIZABLE_HOSTS = [/^firebasestorage\.googleapis\.com$/, /\.firebasestorage\.app$/, /^storage\.googleapis\.com$/];
-
-function canOptimize(src: string): boolean {
-  // Ruta local ("/x.png"), pero no una URL sin protocolo ("//host/x.png").
-  if (src.startsWith("/") && !src.startsWith("//")) return true;
-  try {
-    const { protocol, hostname } = new URL(src);
-    return protocol === "https:" && OPTIMIZABLE_HOSTS.some((re) => re.test(hostname));
-  } catch {
-    return false;
-  }
-}
+import { canOptimizeImage } from "@/lib/image-utils";
 
 function Placeholder() {
   return (
@@ -40,7 +25,7 @@ export function ProjectImage({ src, alt }: { src: string | null; alt: string }) 
       fill
       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
       className="object-cover"
-      unoptimized={!canOptimize(src)}
+      unoptimized={!canOptimizeImage(src)}
       onError={() => setFailed(true)}
     />
   );

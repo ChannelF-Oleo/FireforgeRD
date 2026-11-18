@@ -67,11 +67,19 @@ async function getPost(slug: string): Promise<BlogPost | null> {
   // fechas vuelven como string. Sin esto, createdAt.toISOString() fallaba en
   // generateMetadata y cada artículo publicaba la metadata genérica de reserva
   // (sin su título, descripción ni imagen para compartir).
+  // Una fecha que no se puede leer cae en "ahora" (igual que una que falta):
+  // toISOString() lanza con una fecha inválida y tumbaría el artículo.
+  const createdAt = validDate(post.createdAt);
   return {
     ...post,
-    createdAt: new Date(post.createdAt),
-    updatedAt: new Date(post.updatedAt),
+    createdAt,
+    updatedAt: validDate(post.updatedAt, createdAt),
   };
+}
+
+function validDate(value: Date | string, fallback = new Date()): Date {
+  const date = new Date(value);
+  return isNaN(date.getTime()) ? fallback : date;
 }
 
 const SITE = "https://www.fireforgerd.com";
@@ -120,6 +128,8 @@ function postJsonLd(post: BlogPost) {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
+  // URL vieja: la página redirige, no hace falta consultar Firestore.
+  if (renamedSlug(slug)) return {};
   const post = await getPost(slug);
 
   if (!post) {
@@ -148,6 +158,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
+      creator: "@fireforgerd",
       title: post.title,
       description: post.excerpt,
       images,

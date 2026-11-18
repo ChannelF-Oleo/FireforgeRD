@@ -60,7 +60,9 @@ export function DiagnosticoQuiz() {
   const progress = ((currentStep + 1) / quizQuestions.length) * 100;
   const isLastQuestion = currentStep === quizQuestions.length - 1;
 
-  const screen = results ? "results" : showEmailCapture ? "email" : isCalculating ? "calculating" : "quiz";
+  // isCalculating solo es true con el formulario de email abierto: el spinner
+  // está en su botón, no en una pantalla aparte.
+  const screen = results ? "results" : showEmailCapture ? "email" : "quiz";
 
   // Al cambiar de pantalla, volver arriba para que se vea el inicio.
   useEffect(() => {
@@ -450,14 +452,6 @@ export function DiagnosticoQuiz() {
           </form>
         </div>
       </motion.div>
-    );
-  } else if (isCalculating) {
-    // Pantalla de cálculo
-    content = (
-      <div key="calculating" role="status" className="flex min-h-[50vh] flex-col items-center justify-center gap-4 text-center">
-        <Loader2 className="size-10 animate-spin text-(--ds-primary) motion-reduce:animate-none" aria-hidden />
-        <p className="text-(--ds-muted-fg)">Analizando tus respuestas...</p>
-      </div>
     );
   } else {
     // Quiz principal

@@ -127,12 +127,14 @@ export function Services() {
           intro="Desde un Perfil de Google hasta un sistema administrativo completo. Elige por dónde empezar."
         />
         <StaggerGrid className="mt-12 grid gap-px border border-(--ds-border) bg-(--ds-border) sm:grid-cols-2 lg:grid-cols-3">
-          {serviceCategories.map((cat) => {
+          {serviceCategories.flatMap((cat) => {
             const Icon = categoryIcons[cat.id] ?? Code2;
             // "setup" solo si el plan más barato es un setup: en Subservicios
             // el mínimo es un pago único aunque otros planes sí cobren setup.
+            // Una categoría sin planes no se pinta (flatMap con [] y no null:
+            // StaggerGrid envolvería el null en un <li> vacío).
             const base = cheapest(cat.services);
-            if (!base) return null;
+            if (!base) return [];
             const min = base.price;
             const isSetup = Boolean(base.setupFee);
             return (

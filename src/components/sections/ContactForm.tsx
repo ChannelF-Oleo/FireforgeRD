@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { Fragment, useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -334,11 +334,13 @@ export function ContactForm() {
                                         ))}
                                       </optgroup>
                                     ) : (
-                                      group.plans.map((plan) => (
-                                        <option key={plan.id} value={plan.name}>
-                                          {planLabel(plan)}
-                                        </option>
-                                      ))
+                                      <Fragment key="sin-grupo">
+                                        {group.plans.map((plan) => (
+                                          <option key={plan.id} value={plan.name}>
+                                            {planLabel(plan)}
+                                          </option>
+                                        ))}
+                                      </Fragment>
                                     ),
                                   )}
                               </select>
