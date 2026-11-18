@@ -11,6 +11,9 @@ const inter = Inter({
   subsets: ["latin"],
   variable: "--font-geist",
   display: "swap",
+  // Solo la usa el admin: el sitio público va con Outfit/Work Sans (dsRoot).
+  // Sin preload, las páginas públicas no la descargan.
+  preload: false,
 });
 
 // Serif de display del diseño anterior. El sitio público ya usa Outfit/Work
@@ -23,6 +26,7 @@ const fraunces = Fraunces({
   variable: "--font-fraunces",
   display: "swap",
   axes: ["opsz"],
+  preload: false,
 });
 
 // EMBER GLASS: Viewport con tema claro

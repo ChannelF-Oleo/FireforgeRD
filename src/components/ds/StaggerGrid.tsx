@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion, type Variants } from "framer-motion";
+import { MotionConfig, motion, type Variants } from "framer-motion";
 import type { ReactNode } from "react";
 
 // Preset "Stagger List (Standard)" del design system (--motion 4).
@@ -30,14 +30,13 @@ export function StaggerGrid({
   children: ReactNode[];
   className?: string;
 }) {
-  const reduce = useReducedMotion();
-
-  // prefers-reduced-motion: se renderiza el estado final sin animar.
-  if (reduce) {
-    return <ul className={className}>{children.map((c, i) => <li key={i}>{c}</li>)}</ul>;
-  }
-
+  // Siempre el mismo marcado: antes, con prefers-reduced-motion se cambiaba a un
+  // <ul> plano, pero el servidor no conoce esa preferencia y renderizaba el
+  // estado "hidden" (opacity 0); al hidratar el cliente tomaba la otra rama,
+  // React no corregía el estilo y las tarjetas quedaban invisibles.
+  // reducedMotion="user" quita el desplazamiento y la escala y deja el fundido.
   return (
+    <MotionConfig reducedMotion="user">
     <motion.ul
       className={className}
       variants={container}
@@ -51,5 +50,6 @@ export function StaggerGrid({
         </motion.li>
       ))}
     </motion.ul>
+    </MotionConfig>
   );
 }

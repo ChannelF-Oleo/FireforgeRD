@@ -57,12 +57,7 @@ function planGroups(categoryId: string, plans: readonly ServicePlan[]) {
   ];
 }
 
-export function ContactForm({
-  initialNotes,
-}: {
-  /** Texto con el que arranca el campo de notas (p. ej. "Quiero algo similar a …"). */
-  initialNotes?: string;
-} = {}) {
+export function ContactForm() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   // Guardamos el nombre antes del reset() para poder saludar en el panel de éxito
@@ -84,8 +79,17 @@ export function ContactForm({
     reset,
   } = useForm<FormDataSchema>({
     resolver: zodResolver(formSchema),
-    defaultValues: { notes: initialNotes ?? "" },
+    defaultValues: { notes: "" },
   });
+
+  // /contacto?similar=<proyecto> llega desde "Quiero algo similar" en las
+  // tarjetas de proyectos: la nota arranca con esa referencia. Se aplica con
+  // setValue (no en defaultValues) para que reset() tras enviar deje la nota
+  // vacía y no arrastre el proyecto a una segunda consulta.
+  useEffect(() => {
+    const nombre = new URLSearchParams(window.location.search).get("similar")?.trim().slice(0, 120);
+    if (nombre) setValue("notes", `Quiero algo similar a "${nombre}".`);
+  }, [setValue]);
 
   const selectedServiceId = watch("serviceType");
   const availablePlans: readonly ServicePlan[] = selectedServiceId

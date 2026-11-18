@@ -5,7 +5,7 @@ import { BlogPostView } from "@/components/sections/BlogPostView";
 import type { BlogPost } from "@/types";
 import { unstable_cache } from "next/cache";
 import { dsRoot } from "@/components/ds/fonts";
-import { blogSlugRenames, publicSlug, storedSlugCandidates } from "@/lib/blog-slugs";
+import { publicSlug, renamedSlug, storedSlugCandidates } from "@/lib/blog-slugs";
 
 // ⚡ SOLUCIÓN: Revalidar cada 10 minutos para posts individuales
 export const revalidate = 600; // 10 minutos
@@ -136,11 +136,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         title: `${post.title} | FireforgeRD`,
         description: post.excerpt,
         url,
-        images: post.coverImage ? [post.coverImage] : [],
+        // Sin portada se omite (no []): así se usa la imagen general del sitio.
+        ...(post.coverImage ? { images: [post.coverImage] } : {}),
         type: "article",
         publishedTime: post.createdAt.toISOString(),
         modifiedTime: post.updatedAt.toISOString(),
         tags: post.tags,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: post.title,
+        description: post.excerpt,
+        ...(post.coverImage ? { images: [post.coverImage] } : {}),
       },
     };
   } catch (error) {
@@ -152,7 +159,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function BlogPostPage({ params }: Props) {
   // URL vieja (de antes de corregir las tildes): 308 a la nueva.
   const { slug: requested } = await params;
-  const renamed = blogSlugRenames[requested];
+  const renamed = renamedSlug(requested);
   if (renamed) permanentRedirect(`/blog/${renamed}`);
 
   // El JSX se construye fuera del try/catch (regla react-hooks/error-boundaries);

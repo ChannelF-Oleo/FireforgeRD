@@ -18,6 +18,20 @@ async function loadClients(): Promise<Client[]> {
   }
 }
 
+// Hosts que next.config acepta en images.remotePatterns. Con cualquier otro,
+// next/image lanza al renderizar y tumbaría el home entero (la imagen la pega
+// el admin a mano); para esos casos se sirve la imagen sin optimizar.
+const OPTIMIZABLE_HOSTS = [/^firebasestorage\.googleapis\.com$/, /\.firebasestorage\.app$/, /^storage\.googleapis\.com$/];
+
+function canOptimize(src: string): boolean {
+  try {
+    const { protocol, hostname } = new URL(src);
+    return protocol === "https:" && OPTIMIZABLE_HOSTS.some((re) => re.test(hostname));
+  } catch {
+    return src.startsWith("/");
+  }
+}
+
 function ProjectCard({ client }: { client: Client }) {
   return (
     <article className="flex h-full flex-col border border-(--ds-border) bg-(--ds-card)">
@@ -29,6 +43,7 @@ function ProjectCard({ client }: { client: Client }) {
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="object-cover"
+            unoptimized={!canOptimize(client.image)}
           />
         ) : (
           <div className="flex h-full items-center justify-center">

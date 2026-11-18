@@ -38,11 +38,19 @@ const storedByPublic: Record<string, string> = Object.fromEntries(
 
 /** Slug que se usa en las URLs públicas para un slug guardado en Firestore. */
 export function publicSlug(stored: string): string {
-  return blogSlugRenames[stored] ?? stored;
+  return renamedSlug(stored) ?? stored;
+}
+
+/**
+ * Slug nuevo si `stored` es uno de los viejos. Object.hasOwn evita que
+ * /blog/constructor o /blog/toString lean propiedades de Object.prototype.
+ */
+export function renamedSlug(stored: string): string | undefined {
+  return Object.hasOwn(blogSlugRenames, stored) ? blogSlugRenames[stored] : undefined;
 }
 
 /** Slugs con los que puede estar guardado en Firestore un slug público. */
 export function storedSlugCandidates(slug: string): string[] {
-  const legacy = storedByPublic[slug];
+  const legacy = Object.hasOwn(storedByPublic, slug) ? storedByPublic[slug] : undefined;
   return legacy ? [slug, legacy] : [slug];
 }

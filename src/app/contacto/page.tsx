@@ -17,22 +17,13 @@ export const metadata: Metadata = {
   },
 };
 
-// /contacto?similar=<proyecto> llega desde "Quiero algo similar" en las
-// tarjetas de proyectos del home: la nota arranca con esa referencia.
-function notaInicial(similar: string | string[] | undefined): string | undefined {
-  const nombre = (Array.isArray(similar) ? similar[0] : similar)?.trim().slice(0, 120);
-  return nombre ? `Quiero algo similar a "${nombre}".` : undefined;
-}
-
-export default async function ContactoPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ similar?: string | string[] }>;
-}) {
-  const { similar } = await searchParams;
+// /contacto?similar=<proyecto> (desde "Quiero algo similar" en el home) lo
+// lee ContactForm en el cliente: leer searchParams aquí hacía dinámica toda
+// la página solo para rellenar un campo.
+export default function ContactoPage() {
   return (
     <div className={`${dsRoot} min-h-screen bg-(--ds-bg)`}>
-      <ContactForm initialNotes={notaInicial(similar)} />
+      <ContactForm />
     </div>
   );
 }

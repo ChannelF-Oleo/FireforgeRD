@@ -32,7 +32,7 @@ export default function PrivacidadPage() {
       </p>
       <p>
         <strong>Qué recogemos.</strong> Únicamente
-        los datos que nos enviás voluntariamente por el formulario de contacto
+        los datos que nos envías voluntariamente por el formulario de contacto
         o por el diagnóstico gratuito: nombre, empresa, correo electrónico,
         WhatsApp y el detalle del proyecto que nos cuentes.
       </p>
@@ -44,8 +44,10 @@ export default function PrivacidadPage() {
       </p>
       <p>
         <strong>Analítica.</strong> El sitio usa
-        Google Analytics vía Google Tag Manager para medir tráfico de forma
-        agregada.
+        Google Analytics para medir el tráfico de forma agregada. La sección
+        de reseñas del inicio muestra opiniones de nuestro perfil de Google a
+        través de Elfsight, un servicio externo que se carga solo cuando llegas
+        a esa sección.
       </p>
       <p>
         <strong>Tus derechos.</strong> Puedes
