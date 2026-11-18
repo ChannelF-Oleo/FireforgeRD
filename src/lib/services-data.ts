@@ -232,8 +232,9 @@ export const subServices: ServicePlan[] = [
       "Menú QR con tu marca (primer año)",
       "Alta en Uber Eats y PedidosYa",
       "Perfil de Google configurado",
-      "Gestión de delivery aparte, desde US$60/mes",
     ),
+    // No va en features: ahí se muestra con check de "incluido".
+    notes: ["La gestión mensual de delivery no está incluida: desde US$60/mes."],
   },
   {
     id: "perfil-google",

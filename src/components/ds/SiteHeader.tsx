@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { FireMark } from "@/components/ui/fire-mark";
 import { dsRoot } from "./fonts";
@@ -13,6 +14,16 @@ import { container, ctaAccent, focusRing, heading } from "./ui";
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const panelId = useId();
+
+  // Cierra el panel al cambiar de ruta también con atrás/adelante del
+  // navegador (el header vive en el layout y no se vuelve a montar). Se ajusta
+  // durante el render, el patrón que recomienda React en vez de un efecto.
+  const pathname = usePathname();
+  const [lastPathname, setLastPathname] = useState(pathname);
+  if (pathname !== lastPathname) {
+    setLastPathname(pathname);
+    setOpen(false);
+  }
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
@@ -20,9 +31,8 @@ export function SiteHeader() {
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
-  // Todo link del header cierra el panel al hacer clic (también el logo y el
-  // CTA, que están fuera del panel): el header vive en el layout y no se
-  // vuelve a montar al cambiar de ruta.
+  // Además, todo link del header cierra el panel al hacer clic: los anclas del
+  // home ("/#servicios") no cambian la ruta si ya se está en "/".
   const close = () => setOpen(false);
   return (
     <header className={`${dsRoot} sticky top-0 z-40 border-b border-(--ds-border) bg-(--ds-bg)`}>

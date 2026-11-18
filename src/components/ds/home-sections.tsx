@@ -305,6 +305,11 @@ export function Subservices() {
                   </li>
                 ))}
               </ul>
+              {kit.notes?.map((n) => (
+                <p key={n} className="mt-4 text-sm text-(--ds-muted-fg)">
+                  {n}
+                </p>
+              ))}
               <Link
                 href="/contacto"
                 className={`mt-6 self-start ${kit.isRecommended ? ctaAccent : ctaSecondary}`}

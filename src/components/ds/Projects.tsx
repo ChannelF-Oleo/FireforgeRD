@@ -7,6 +7,15 @@ import { ProjectImage } from "./ProjectImage";
 import { SectionHeader } from "./SectionHeader";
 import { container, ctaAccent, focusRing, heading } from "./ui";
 
+// Valores del select de categoría en ClientsManager. Sin tag se mostraba el
+// valor interno ("chatbot", "sistema") como rótulo de la tarjeta.
+const categoryLabels: Record<string, string> = {
+  web: "Sitio web",
+  ecommerce: "E-commerce",
+  sistema: "Sistema",
+  chatbot: "Chatbot",
+};
+
 function ProjectCard({ client }: { client: Client }) {
   return (
     <article className="flex h-full flex-col border border-(--ds-border) bg-(--ds-card)">
@@ -15,7 +24,7 @@ function ProjectCard({ client }: { client: Client }) {
       </div>
       <div className="flex flex-1 flex-col p-6">
         <p className="text-xs font-semibold uppercase tracking-wider text-(--ds-primary-text)">
-          {client.tag || client.category}
+          {client.tag || categoryLabels[client.category] || client.category}
         </p>
         <h3 className={`${heading} mt-2 text-xl font-semibold`}>{client.name}</h3>
         {/* Descripción completa: ya no hay modal de detalle donde leerla. */}

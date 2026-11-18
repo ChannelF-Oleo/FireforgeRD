@@ -81,7 +81,7 @@ export function getBlogImageProps(
   };
 }
 // Hosts de images.remotePatterns en next.config.ts (mantener en sincronía).
-const OPTIMIZABLE_HOSTS = [/^firebasestorage\.googleapis\.com$/, /\.firebasestorage\.app$/, /^storage\.googleapis\.com$/];
+const OPTIMIZABLE_HOSTS = [/^firebasestorage\.googleapis\.com$/, /^[^.]+\.firebasestorage\.app$/, /^storage\.googleapis\.com$/];
 
 /**
  * Si next/image puede optimizar esta URL. Con un host fuera de remotePatterns

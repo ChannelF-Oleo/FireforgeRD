@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { quizQuestions, solutionDescriptions } from "@/lib/quiz-questions";
 import { submitQuizResults } from "@/app/actions";
+import { regexes } from "zod/v4/core";
 import Link from "next/link";
 import { SectionHeader } from "@/components/ds/SectionHeader";
 import { container, ctaAccent, ctaSecondary, focusRing, heading } from "@/components/ds/ui";
@@ -36,7 +37,10 @@ const inputBase = `min-h-11 w-full border bg-(--ds-card) px-4 py-3 text-base tex
 const disabledBtn =
   "disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-(--ds-fg)";
 
-const EMAIL_RE = /^\S+@\S+\.\S+$/;
+// La misma validación que quizSchema en el servidor: con una regex más laxa el
+// formulario dejaba pasar emails que el servidor rechazaba y el lead se perdía.
+// (z.string().email() usa esta misma regex; se importa sola para no cargar zod).
+const isValidEmail = (value: string) => regexes.email.test(value.trim());
 
 export function DiagnosticoQuiz() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -199,7 +203,7 @@ export function DiagnosticoQuiz() {
       : null;
   const emailError = !email.trim()
     ? "Escribe tu email."
-    : !EMAIL_RE.test(email.trim())
+    : !isValidEmail(email)
       ? "Revisa el email: debe tener el formato tu@email.com."
       : null;
 

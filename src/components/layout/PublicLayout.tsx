@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/ds/SiteHeader";
 import { SiteFooter } from "@/components/ds/SiteFooter";
 import { FloatingWhatsApp } from "./FloatingWhatsApp";
 import { ClientOnly } from "@/components/ui/ClientOnly";
+import { dsRoot } from "@/components/ds/fonts";
 
 export function PublicLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -20,7 +21,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       {/* Skip link para navegación por teclado */}
       <a
         href="#main-content"
-        className="skip-link sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[#1A1818] focus:text-white focus:outline-none"
+        className={`${dsRoot} skip-link sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[#1A1818] focus:text-white focus:outline-none`}
       >
         Saltar al contenido principal
       </a>
@@ -31,9 +32,13 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <SiteFooter />
-      <ClientOnly>
-        <FloatingWhatsApp />
-      </ClientOnly>
+      {/* Con la fuente del sitio (dsRoot): heredaba Inter del <body>, que solo
+          usa el admin, y la descargaba en cada página pública. */}
+      <div className={dsRoot}>
+        <ClientOnly>
+          <FloatingWhatsApp />
+        </ClientOnly>
+      </div>
     </>
   );
 }
