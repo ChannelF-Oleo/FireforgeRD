@@ -23,7 +23,17 @@ export async function getClients(): Promise<Client[]> {
       tag: d.tag ?? null,
       featured: d.featured ?? false,
       order: d.order ?? 0,
-      createdAt: d.createdAt?.toDate() ?? new Date(),
+      // Sin try/catch en el home: un createdAt que no sea Timestamp (string o
+      // número de una importación) no debe tumbar la página.
+      createdAt: toDate(d.createdAt),
     };
   });
+}
+
+function toDate(value: unknown): Date {
+  if (value && typeof (value as { toDate?: unknown }).toDate === "function") {
+    return (value as { toDate: () => Date }).toDate();
+  }
+  const date = new Date(value as string | number);
+  return value != null && !isNaN(date.getTime()) ? date : new Date();
 }

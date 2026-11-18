@@ -22,7 +22,8 @@ function externalUrl(raw: string | null | undefined): string | null {
   const value = raw?.trim();
   if (!value) return null;
   try {
-    const url = new URL(/^[a-z][a-z0-9+.-]*:/i.test(value) ? value : `https://${value}`);
+    // Con "://" ya trae protocolo; "cliente.com:8080" no (es host y puerto).
+    const url = new URL(/^[a-z][a-z0-9+.-]*:\/\//i.test(value) ? value : `https://${value}`);
     return url.protocol === "https:" || url.protocol === "http:" ? url.href : null;
   } catch {
     return null;
