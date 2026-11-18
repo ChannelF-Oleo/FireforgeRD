@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Fraunces } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 
 import { PublicLayout } from "@/components/layout/PublicLayout";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { siteJsonLd } from "@/lib/site-schema";
 
 // EMBER GLASS: Sans-serif geométrica para UI
 const inter = Inter({
@@ -13,21 +13,16 @@ const inter = Inter({
   display: "swap",
 });
 
-// EMBER GLASS: Serif de display (titulares).
-// Auditoría de uso: font-display aparece solo con font-light (300),
-// font-medium (500) y sin clase de peso (400). Cero itálicas, así que se
-// descarta la mitad de lo que pedía el @import anterior.
-// Se conserva el eje opsz porque .font-display usa font-optical-sizing: auto
-// y el h1 del Hero (LCP) se renderiza a 72px: con instancias estáticas
-// perdería el eje óptico y cambiaría de aspecto.
-// WONK se pide solo para poder apagarlo puntualmente en el ampersand del Hero
-// (ver HeroSection): a opsz alto la forma por defecto lleva un lazo cerrado.
-// Cuesta ~100 bytes y no cambia nada mientras no se use.
+// Serif de display del diseño anterior. El sitio público ya usa Outfit/Work
+// Sans (src/components/ds/fonts.ts); Fraunces queda solo para el panel de
+// administración (.font-display). Se conserva opsz porque .font-display usa
+// font-optical-sizing: auto. El eje WONK ya no hace falta: solo servía para el
+// ampersand del hero anterior.
 const fraunces = Fraunces({
   subsets: ["latin"],
   variable: "--font-fraunces",
   display: "swap",
-  axes: ["opsz", "WONK"],
+  axes: ["opsz"],
 });
 
 // EMBER GLASS: Viewport con tema claro
@@ -49,7 +44,7 @@ export const metadata: Metadata = {
   },
 
   description:
-    "Ingeniería web, sistemas a medida y automatización con IA. Desarrollamos soluciones escalables para empresas que buscan control total y crecimiento.",
+    "Desarrollo web, tiendas online y sistemas a medida. Desarrollamos soluciones escalables para empresas que buscan control total y crecimiento.",
 
   keywords: [
     "Desarrollo Web República Dominicana",
@@ -57,7 +52,8 @@ export const metadata: Metadata = {
     "Programación a medida",
     "Next.js Expertos",
     "Sistemas CRM",
-    "Automatización IA",
+    "Tiendas online República Dominicana",
+    "Perfil de Google para negocios",
     "Diseño Web Premium",
     "E-commerce avanzado",
     "Paginas web",
@@ -71,39 +67,28 @@ export const metadata: Metadata = {
   creator: "FireforgeRD",
   publisher: "FireforgeRD",
 
-  // URL canónica alternativa
-  alternates: {
-    canonical: "https://www.fireforgerd.com",
-  },
+  // Sin canonical aquí: se heredaba a toda página sin canonical propia (el blog
+  // y cada artículo declaraban el home como canónica, y Google no los
+  // indexaba). Cada página define la suya; la del home está en app/page.tsx.
 
   openGraph: {
     title: "FireforgeRD | Forjando el Futuro Digital",
     description:
-      "Desarrollo Web, sistemas a medida y automatizacion con IA en Republica Dominicana, RD.",
+      "Desarrollo web, tiendas online y sistemas a medida en República Dominicana.",
     url: "https://www.fireforgerd.com",
     siteName: "FireforgeRD",
     locale: "es_DO",
     type: "website",
-    images: [
-      {
-        // Dimensiones reales del archivo. Pendiente: asset 1200x630 dedicado
-        // para que las tarjetas no recorten el logo en Twitter/LinkedIn.
-        url: "/Icon.png",
-        width: 500,
-        height: 500,
-        alt: "FireforgeRD Digital Infrastructure",
-      },
-    ],
+    // La imagen (1200x630) la genera src/app/opengraph-image.tsx.
   },
 
   twitter: {
-    // summary (no summary_large_image) porque hoy la imagen es cuadrada
-    card: "summary",
+    // Tarjeta grande: la imagen 1200x630 sale de src/app/twitter-image.tsx.
+    card: "summary_large_image",
     title: "FireforgeRD | Agencia de Desarrollo Web",
     description:
-      "Desarrollo web, sistemas a medida y automatizacion con IA. Alto rendimiento para empresas líderes.",
+      "Desarrollo web, tiendas online y sistemas a medida. Alto rendimiento para empresas líderes.",
     creator: "@fireforgerd",
-    images: ["/Icon.png"],
   },
 
   robots: {
@@ -136,41 +121,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // DATOS ESTRUCTURADOS (Schema.org)
-  // Definidos DENTRO del componente para ser inyectados
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ProfessionalService",
-    name: "FireforgeRD",
-    // og-image.jpg no existe en /public; se apunta al asset real
-    image: "https://www.fireforgerd.com/Icon.png",
-    description: "Desarrollo web, sistemas a medida y automatización con IA.",
-    // www para coincidir con el canonical y con el redirect 308 de next.config
-    url: "https://www.fireforgerd.com",
-    telephone: "+18498534067",
-    priceRange: "$$$",
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Santo Domingo",
-      addressCountry: "DO",
-    },
-    geo: {
-      "@type": "GeoCoordinates",
-      latitude: 18.4861,
-      longitude: -69.9312,
-    },
-    openingHoursSpecification: {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-      opens: "09:00",
-      closes: "18:00",
-    },
-    sameAs: [
-      "https://instagram.com/fireforgerd",
-      "https://linkedin.com/company/fireforgerd",
-    ],
-  };
-
   return (
     <html lang="es">
       <head>
@@ -184,34 +134,19 @@ export default function RootLayout({
             fuentes en build y las sirve desde el propio dominio, así que ya no
             hay origen de terceros al que adelantarse. */}
 
-        {/* Google Tag Manager - improved loading */}
-        <Script id="gtm-script" strategy="afterInteractive">
-          {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-          new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-          j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-          'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-          })(window,document,'script','dataLayer','GTM-PHGP7H7M');`}
-        </Script>
       </head>
       <body
         className={`${inter.className} ${fraunces.variable} bg-background text-text-muted min-h-screen flex flex-col antialiased`}
       >
-        {/* Google Tag Manager (noscript) */}
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-PHGP7H7M"
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-          />
-        </noscript>
-
+        {/* Analítica: solo GA4 (gtag). Tag Manager se quitó: no enviaba nada a
+            Analytics, solo tenía el vinculador de conversiones de Google Ads
+            (que no se usa) y costaba ~0,9 s de bloqueo en móvil. */}
         <GoogleAnalytics />
 
         {/* INYECCIÓN JSON-LD */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}
         />
 
         <PublicLayout>{children}</PublicLayout>

@@ -1,4 +1,5 @@
 import { MetadataRoute } from "next";
+import { publicSlug } from "@/lib/blog-slugs";
 
 async function getBlogSlugs(): Promise<string[]> {
   try {
@@ -12,7 +13,7 @@ async function getBlogSlugs(): Promise<string[]> {
     const postsRef = collection(db, "blog_posts");
     const q = query(postsRef, where("published", "==", true));
     const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => doc.data().slug as string);
+    return snapshot.docs.map((doc) => publicSlug(doc.data().slug as string));
   } catch (error) {
     console.warn("[sitemap] No se pudieron cargar los posts del blog:", error);
     return [];
@@ -41,12 +42,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${baseUrl}/diagnostico`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/clientes`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
       priority: 0.8,
     },
     {

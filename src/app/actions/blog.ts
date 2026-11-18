@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { publicSlug } from '@/lib/blog-slugs';
 
 /**
  * Invalida el caché del blog después de crear/editar/eliminar posts
@@ -27,7 +28,7 @@ export async function revalidateBlog() {
  */
 export async function revalidateBlogPost(slug: string) {
   try {
-    revalidatePath(`/blog/${slug}`);
+    revalidatePath(`/blog/${publicSlug(slug)}`);
     revalidatePath('/blog');
     
     return { success: true };
