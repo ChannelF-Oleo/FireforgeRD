@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { AlertTriangle, Home, RefreshCw } from "lucide-react";
 import { dsRoot } from "@/components/ds/fonts";
+import { whatsappHref } from "@/components/ds/nav";
 import { container, ctaAccent, ctaSecondary, focusRing, heading } from "@/components/ds/ui";
 
 export default function Error({
@@ -63,7 +64,7 @@ export default function Error({
             <p className="mt-10 border-t border-(--ds-border) pt-6 text-(--ds-muted-fg)">
               ¿Necesitas ayuda ahora?{" "}
               <a
-                href="https://wa.me/18498534067?text=Hola,%20tuve%20un%20error%20en%20la%20página%20web"
+                href={`${whatsappHref}?text=${encodeURIComponent("Hola, tuve un error en la página web")}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`font-medium text-(--ds-primary-text) underline underline-offset-4 ${focusRing}`}

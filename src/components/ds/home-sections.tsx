@@ -129,8 +129,11 @@ export function Services() {
         <StaggerGrid className="mt-12 grid gap-px border border-(--ds-border) bg-(--ds-border) sm:grid-cols-2 lg:grid-cols-3">
           {serviceCategories.map((cat) => {
             const Icon = categoryIcons[cat.id] ?? Code2;
-            const min = Math.min(...cat.services.map((s) => s.price));
-            const isSetup = cat.services.some((s) => s.setupFee);
+            // "setup" solo si el plan más barato es un setup: en Subservicios
+            // el mínimo es un pago único aunque otros planes sí cobren setup.
+            const cheapest = cat.services.reduce((a, b) => (b.price < a.price ? b : a));
+            const min = cheapest.price;
+            const isSetup = Boolean(cheapest.setupFee);
             return (
               <article key={cat.id} className="flex h-full flex-col bg-(--ds-card) p-8">
                 <Icon className="size-6 text-(--ds-primary)" aria-hidden />

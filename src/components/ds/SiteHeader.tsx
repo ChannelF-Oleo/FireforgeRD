@@ -20,12 +20,14 @@ export function SiteHeader() {
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
-  // Cada link del panel lo cierra al hacer clic (onClick), así que no hace
-  // falta escuchar cambios de ruta.
+  // Todo link del header cierra el panel al hacer clic (también el logo y el
+  // CTA, que están fuera del panel): el header vive en el layout y no se
+  // vuelve a montar al cambiar de ruta.
+  const close = () => setOpen(false);
   return (
     <header className={`${dsRoot} sticky top-0 z-40 border-b border-(--ds-border) bg-(--ds-bg)`}>
       <div className={`${container} flex h-16 items-center justify-between gap-4`}>
-        <Link href="/" className={`${heading} inline-flex shrink-0 items-center gap-2 text-xl font-bold tracking-tight ${focusRing}`}>
+        <Link href="/" onClick={close} className={`${heading} inline-flex shrink-0 items-center gap-2 text-xl font-bold tracking-tight ${focusRing}`}>
           <FireMark className="size-7" />
           FireforgeRD
         </Link>
@@ -46,7 +48,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Link href={contactHref} className={`${ctaAccent} px-4 text-sm`}>
+          <Link href={contactHref} onClick={close} className={`${ctaAccent} px-4 text-sm`}>
             <span className="sm:hidden">Cotiza</span>
             <span className="hidden sm:inline">Cotiza tu proyecto</span>
           </Link>
@@ -74,7 +76,7 @@ export function SiteHeader() {
             <li key={l.href} className="border-b border-(--ds-border) last:border-b-0">
               <Link
                 href={l.href}
-                onClick={() => setOpen(false)}
+                onClick={close}
                 className={`flex min-h-12 cursor-pointer items-center text-base font-medium ${focusRing}`}
               >
                 {l.label}

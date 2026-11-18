@@ -1,7 +1,7 @@
 "use client";
 
-import { MotionConfig, motion, type Variants } from "framer-motion";
-import type { ReactNode } from "react";
+import { MotionConfig, motion, useAnimationControls, useInView, type Variants } from "framer-motion";
+import { useEffect, useLayoutEffect, useRef, type ReactNode } from "react";
 
 // Preset "Stagger List (Standard)" del design system (--motion 4).
 // La skill lo entrega en GSAP: gsap.from('.grid-item', { opacity: 0, scale: 0.92,
@@ -30,26 +30,39 @@ export function StaggerGrid({
   children: ReactNode[];
   className?: string;
 }) {
-  // Siempre el mismo marcado: antes, con prefers-reduced-motion se cambiaba a un
-  // <ul> plano, pero el servidor no conoce esa preferencia y renderizaba el
-  // estado "hidden" (opacity 0); al hidratar el cliente tomaba la otra rama,
-  // React no corregía el estilo y las tarjetas quedaban invisibles.
-  // reducedMotion="user" quita el desplazamiento y la escala y deja el fundido.
+  const ref = useRef<HTMLUListElement>(null);
+  const controls = useAnimationControls();
+  const inView = useInView(ref, { once: true, amount: 0.2 });
+
+  // El HTML del servidor sale con las tarjetas visibles (initial={false}): con
+  // initial="hidden" llevaban opacity 0 en línea y, sin JS, con la hidratación
+  // lenta o con un error de hidratación, el grid quedaba vacío. Ya en el
+  // cliente, si el grid está por debajo de la pantalla se ocultan antes de
+  // pintar para animarlas al entrar; si ya está a la vista se dejan como están.
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (el && el.getBoundingClientRect().top > window.innerHeight) {
+      controls.set("hidden");
+    }
+  }, [controls]);
+
+  useEffect(() => {
+    if (inView) void controls.start("show");
+  }, [inView, controls]);
+
+  // Siempre el mismo marcado en servidor y cliente (antes, con
+  // prefers-reduced-motion se cambiaba a un <ul> plano y la hidratación dejaba
+  // las tarjetas invisibles). reducedMotion="user" quita el desplazamiento y la
+  // escala y deja el fundido.
   return (
     <MotionConfig reducedMotion="user">
-    <motion.ul
-      className={className}
-      variants={container}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, amount: 0.2 }}
-    >
-      {children.map((c, i) => (
-        <motion.li key={i} variants={item}>
-          {c}
-        </motion.li>
-      ))}
-    </motion.ul>
+      <motion.ul ref={ref} className={className} variants={container} initial={false} animate={controls}>
+        {children.map((c, i) => (
+          <motion.li key={i} variants={item}>
+            {c}
+          </motion.li>
+        ))}
+      </motion.ul>
     </MotionConfig>
   );
 }

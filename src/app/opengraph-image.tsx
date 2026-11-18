@@ -2,11 +2,12 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { CORE_PATH, FLAME_PATH } from "@/components/ui/fire-mark";
+import { OG_IMAGE_ALT, OG_IMAGE_SIZE } from "@/lib/og";
 
 // Imagen para compartir (Open Graph y Twitter) de 1200×630, generada en build.
 // Reemplaza al Icon.png cuadrado de 500×500, que las tarjetas recortaban.
-export const alt = "FireforgeRD — Desarrollo web, tiendas online y software a medida en República Dominicana";
-export const size = { width: 1200, height: 630 };
+export const alt = OG_IMAGE_ALT;
+export const size = OG_IMAGE_SIZE;
 export const contentType = "image/png";
 
 export default async function OpengraphImage() {

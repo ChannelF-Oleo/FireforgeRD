@@ -1,9 +1,9 @@
-import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Briefcase } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { getClients } from "@/lib/clients";
 import type { Client } from "@/types";
 import { GoogleReviewsWidget } from "./GoogleReviewsWidget";
+import { ProjectImage } from "./ProjectImage";
 import { SectionHeader } from "./SectionHeader";
 import { container, ctaAccent, focusRing, heading } from "./ui";
 
@@ -18,38 +18,11 @@ async function loadClients(): Promise<Client[]> {
   }
 }
 
-// Hosts que next.config acepta en images.remotePatterns. Con cualquier otro,
-// next/image lanza al renderizar y tumbaría el home entero (la imagen la pega
-// el admin a mano); para esos casos se sirve la imagen sin optimizar.
-const OPTIMIZABLE_HOSTS = [/^firebasestorage\.googleapis\.com$/, /\.firebasestorage\.app$/, /^storage\.googleapis\.com$/];
-
-function canOptimize(src: string): boolean {
-  try {
-    const { protocol, hostname } = new URL(src);
-    return protocol === "https:" && OPTIMIZABLE_HOSTS.some((re) => re.test(hostname));
-  } catch {
-    return src.startsWith("/");
-  }
-}
-
 function ProjectCard({ client }: { client: Client }) {
   return (
     <article className="flex h-full flex-col border border-(--ds-border) bg-(--ds-card)">
       <div className="relative aspect-video border-b border-(--ds-border) bg-(--ds-muted)">
-        {client.image ? (
-          <Image
-            src={client.image}
-            alt={`Captura del proyecto de ${client.name}`}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover"
-            unoptimized={!canOptimize(client.image)}
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center">
-            <Briefcase className="size-10 text-(--ds-muted-fg)" aria-hidden />
-          </div>
-        )}
+        <ProjectImage src={client.image} alt={`Captura del proyecto de ${client.name}`} />
       </div>
       <div className="flex flex-1 flex-col p-6">
         <p className="text-xs font-semibold uppercase tracking-wider text-(--ds-primary-text)">

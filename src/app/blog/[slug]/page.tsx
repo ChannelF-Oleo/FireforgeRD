@@ -6,6 +6,7 @@ import type { BlogPost } from "@/types";
 import { unstable_cache } from "next/cache";
 import { dsRoot } from "@/components/ds/fonts";
 import { publicSlug, renamedSlug, storedSlugCandidates } from "@/lib/blog-slugs";
+import { defaultOgImage } from "@/lib/og";
 
 // ⚡ SOLUCIÓN: Revalidar cada 10 minutos para posts individuales
 export const revalidate = 600; // 10 minutos
@@ -15,44 +16,43 @@ interface Props {
 }
 
 // ⚡ SOLUCIÓN: Cache optimizado para posts individuales
+// Sin try/catch: un error de Firestore debe propagarse. Si se devolviera null,
+// unstable_cache guardaría "no existe" 10 minutos y el artículo daría 404; al
+// lanzar, no se cachea nada y en una regeneración ISR se sigue sirviendo la
+// versión anterior de la página.
 const getCachedPost = unstable_cache(
   async (slug: string): Promise<BlogPost | null> => {
-    try {
-      const snapshot = await adminDb
-        .collection("blog_posts")
-        .where("slug", "in", storedSlugCandidates(slug))
-        .where("published", "==", true)
-        .limit(1)
-        .get();
+    const snapshot = await adminDb
+      .collection("blog_posts")
+      .where("slug", "in", storedSlugCandidates(slug))
+      .where("published", "==", true)
+      .limit(1)
+      .get();
 
-      if (snapshot.empty) return null;
+    if (snapshot.empty) return null;
 
-      const doc = snapshot.docs[0];
-      const data = doc.data();
+    const doc = snapshot.docs[0];
+    const data = doc.data();
 
-      // ⚡ SOLUCIÓN: Conversión segura de fechas de Firestore
-      const createdAt = data.createdAt?.toDate ? data.createdAt.toDate() : 
-                       data.createdAt ? new Date(data.createdAt) : new Date();
-      const updatedAt = data.updatedAt?.toDate ? data.updatedAt.toDate() : 
-                       data.updatedAt ? new Date(data.updatedAt) : new Date();
+    // ⚡ SOLUCIÓN: Conversión segura de fechas de Firestore
+    const createdAt = data.createdAt?.toDate ? data.createdAt.toDate() : 
+                     data.createdAt ? new Date(data.createdAt) : new Date();
+    const updatedAt = data.updatedAt?.toDate ? data.updatedAt.toDate() : 
+                     data.updatedAt ? new Date(data.updatedAt) : new Date();
 
-      return {
-        id: doc.id,
-        title: data.title || "",
-        slug: publicSlug(data.slug || ""),
-        excerpt: data.excerpt || "",
-        content: data.content || "",
-        coverImage: data.coverImage || null,
-        author: data.author || "FireforgeRD",
-        tags: data.tags || [],
-        published: data.published || false,
-        createdAt,
-        updatedAt,
-      } as BlogPost;
-    } catch (error) {
-      console.error("Error fetching post:", error);
-      return null;
-    }
+    return {
+      id: doc.id,
+      title: data.title || "",
+      slug: publicSlug(data.slug || ""),
+      excerpt: data.excerpt || "",
+      content: data.content || "",
+      coverImage: data.coverImage || null,
+      author: data.author || "FireforgeRD",
+      tags: data.tags || [],
+      published: data.published || false,
+      createdAt,
+      updatedAt,
+    } as BlogPost;
   },
   ['blog-post'],
   { 
@@ -119,41 +119,40 @@ function postJsonLd(post: BlogPost) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  try {
-    const { slug } = await params;
-    const post = await getPost(slug);
+  const { slug } = await params;
+  const post = await getPost(slug);
 
-    if (!post) {
-      return { title: "Post no encontrado" };
-    }
+  if (!post) {
+    return { title: "Post no encontrado" };
+  }
 
-    const url = postUrl(post.slug);
-    return {
+  const url = postUrl(post.slug);
+  // Sin portada se usa la imagen general del sitio: el openGraph/twitter de
+  // la página reemplaza al del layout, así que hay que declararla aquí.
+  const images = post.coverImage ? [post.coverImage] : [defaultOgImage];
+  return {
+    title: post.title,
+    description: post.excerpt,
+    alternates: { canonical: url },
+    openGraph: {
+      title: `${post.title} | FireforgeRD`,
+      description: post.excerpt,
+      url,
+      siteName: "FireforgeRD",
+      locale: "es_DO",
+      images,
+      type: "article",
+      publishedTime: post.createdAt.toISOString(),
+      modifiedTime: post.updatedAt.toISOString(),
+      tags: post.tags,
+    },
+    twitter: {
+      card: "summary_large_image",
       title: post.title,
       description: post.excerpt,
-      alternates: { canonical: url },
-      openGraph: {
-        title: `${post.title} | FireforgeRD`,
-        description: post.excerpt,
-        url,
-        // Sin portada se omite (no []): así se usa la imagen general del sitio.
-        ...(post.coverImage ? { images: [post.coverImage] } : {}),
-        type: "article",
-        publishedTime: post.createdAt.toISOString(),
-        modifiedTime: post.updatedAt.toISOString(),
-        tags: post.tags,
-      },
-      twitter: {
-        card: "summary_large_image",
-        title: post.title,
-        description: post.excerpt,
-        ...(post.coverImage ? { images: [post.coverImage] } : {}),
-      },
-    };
-  } catch (error) {
-    console.error("Error generating metadata:", error);
-    return { title: "Error" };
-  }
+      images,
+    },
+  };
 }
 
 export default async function BlogPostPage({ params }: Props) {
@@ -162,15 +161,10 @@ export default async function BlogPostPage({ params }: Props) {
   const renamed = renamedSlug(requested);
   if (renamed) permanentRedirect(`/blog/${renamed}`);
 
-  // El JSX se construye fuera del try/catch (regla react-hooks/error-boundaries);
-  // cualquier error al cargar el post sigue terminando en notFound().
-  let post: BlogPost | null = null;
-  try {
-    const { slug } = await params;
-    post = await getPost(slug);
-  } catch (error) {
-    console.error("Error loading blog post:", error);
-  }
+  // Solo un post inexistente da 404. Un error de Firestore se propaga: lo
+  // muestra error.tsx y, en una regeneración ISR, se conserva la página anterior
+  // en vez de reemplazarla por un 404.
+  const post = await getPost(requested);
 
   if (!post) {
     notFound();

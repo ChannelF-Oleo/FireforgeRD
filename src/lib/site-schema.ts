@@ -9,15 +9,33 @@ const GOOGLE_MAPS = "https://www.google.com/maps?cid=4727497463848598662";
 
 function offer(plan: ServicePlan) {
   const hourly = plan.currency.includes("Hora");
+  const base = {
+    "@type": "UnitPriceSpecification",
+    price: plan.price,
+    priceCurrency: "USD",
+    ...(hourly ? { unitText: "hora" } : {}),
+  };
+  // En los planes con setup, `price` es solo el alta: la cuota mensual es
+  // obligatoria y se publica como un segundo componente del precio.
+  const priceSpecification =
+    plan.setupFee && plan.recurringFee
+      ? [
+          { ...base, priceComponentType: "https://schema.org/ActivationFee" },
+          {
+            "@type": "UnitPriceSpecification",
+            price: plan.recurringFee.amount,
+            priceCurrency: "USD",
+            priceComponentType: "https://schema.org/Subscription",
+            ...(plan.recurringFee.period === "mes"
+              ? { billingDuration: "P1M", unitCode: "MON" }
+              : { unitText: "hora" }),
+          },
+        ]
+      : base;
   return {
     "@type": "Offer",
     itemOffered: { "@type": "Service", name: plan.name, description: plan.idealFor },
-    priceSpecification: {
-      "@type": "UnitPriceSpecification",
-      price: plan.price,
-      priceCurrency: "USD",
-      ...(hourly ? { unitText: "hora" } : {}),
-    },
+    priceSpecification,
   };
 }
 

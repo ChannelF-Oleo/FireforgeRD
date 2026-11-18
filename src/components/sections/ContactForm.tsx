@@ -136,7 +136,7 @@ export function ContactForm() {
       console.error("Error en envío:", error);
       // Fallback
       const msg = `Hola, soy ${data.clientName} de ${data.companyName}. Tuve un error en el formulario web. Me interesa el servicio de ${data.serviceType}.`;
-      const whatsappUrl = `https://wa.me/18498534067?text=${encodeURIComponent(msg)}`;
+      const whatsappUrl = `${whatsappHref}?text=${encodeURIComponent(msg)}`;
 
       // Verificar que estamos en el cliente
       let popupAbierto = false;

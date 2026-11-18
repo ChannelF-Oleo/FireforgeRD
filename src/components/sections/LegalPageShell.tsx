@@ -3,6 +3,7 @@ import { MessageCircle, Mail, MapPin } from "lucide-react";
 import { dsRoot } from "@/components/ds/fonts";
 import { SectionHeader } from "@/components/ds/SectionHeader";
 import { container, focusRing, heading } from "@/components/ds/ui";
+import { email, whatsappHref } from "@/components/ds/nav";
 
 interface LegalPageShellProps {
   title: string;
@@ -39,13 +40,13 @@ export function LegalPageShell({ title, intro, children }: LegalPageShellProps) 
               <ul className="mt-4">
                 <li className="flex items-center gap-3">
                   <Mail className="size-4 shrink-0 text-(--ds-primary)" aria-hidden />
-                  <a href="mailto:hola@fireforgerd.com" className={linkClass}>
-                    hola@fireforgerd.com
+                  <a href={`mailto:${email}`} className={linkClass}>
+                    {email}
                   </a>
                 </li>
                 <li className="flex items-center gap-3">
                   <MessageCircle className="size-4 shrink-0 text-(--ds-primary)" aria-hidden />
-                  <a href="https://wa.me/18498534067" target="_blank" rel="noopener noreferrer" className={linkClass}>
+                  <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className={linkClass}>
                     WhatsApp: +1 (849) 853-4067
                   </a>
                 </li>
