@@ -1,4 +1,3 @@
-export { Button } from "./button";
 export { Card, CardHeader, CardContent, CardFooter } from "./card";
 export { Input } from "./Input";
 export { Textarea } from "./Textarea";

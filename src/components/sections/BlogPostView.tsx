@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { Calendar, Clock, ArrowLeft, Share2, BookOpen } from "lucide-react";
+import { Calendar, Clock, ArrowLeft, ArrowRight, Share2, Check } from "lucide-react";
 import { SafeMarkdown } from "@/components/ui/SafeMarkdown";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { container, ctaAccent, focusRing, heading } from "@/components/ds/ui";
 import type { BlogPost } from "@/types";
 
 interface Props {
@@ -12,6 +13,9 @@ interface Props {
 }
 
 export function BlogPostView({ post }: Props) {
+  // Aviso accesible en vez de alert() cuando se copia el enlace.
+  const [copied, setCopied] = useState(false);
+
   const formatDate = (date: Date | string | null | undefined) => {
     // ⚡ SOLUCIÓN: Validación robusta de fechas
     if (!date) return "Fecha no disponible";
@@ -32,10 +36,14 @@ export function BlogPostView({ post }: Props) {
         return "Fecha no válida";
       }
       
+      // Zona fija: el servidor corre en UTC y el visitante en hora de RD; sin
+      // esto un artículo publicado de noche mostraba otro día en cada lado y
+      // la hidratación fallaba (React #418).
       return new Intl.DateTimeFormat("es-DO", {
         day: "numeric",
         month: "long",
         year: "numeric",
+        timeZone: "America/Santo_Domingo",
       }).format(dateObj);
     } catch (error) {
       console.error("Error formatting date:", error, date);
@@ -68,7 +76,8 @@ export function BlogPostView({ post }: Props) {
     } else {
       try {
         await navigator.clipboard.writeText(window.location.href);
-        alert("Enlace copiado al portapapeles");
+        setCopied(true);
+        window.setTimeout(() => setCopied(false), 2500);
       } catch {
         // Fallback si clipboard no está disponible
         console.log('No se pudo copiar al portapapeles');
@@ -76,82 +85,89 @@ export function BlogPostView({ post }: Props) {
     }
   };
 
+  const author = post.author || "FireforgeRD";
+
   return (
-    <article className="py-16 md:py-24 bg-white">
-      <div className="container mx-auto px-4 md:px-6">
-        {/* Back Link */}
+    <article aria-labelledby="post-title" className="py-16 md:py-24">
+      <div className={container}>
         <Link
           href="/blog"
-          className="inline-flex items-center gap-2 text-[#5C5850] hover:text-[#FF4D00] transition-colors mb-8"
+          className={`inline-flex min-h-11 cursor-pointer items-center gap-2 font-medium text-(--ds-muted-fg) transition-colors duration-200 hover:text-(--ds-fg) ${focusRing}`}
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="size-4" aria-hidden />
           Volver al blog
         </Link>
 
-        <div className="max-w-3xl mx-auto">
-          {/* Header */}
-          <header className="mb-8 md:mb-10">
-            {/* Tags */}
+        <div className="mx-auto mt-8 max-w-3xl">
+          <header className="border-t border-(--ds-fg) pt-6">
             {post.tags && post.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-4">
+              <ul className="flex flex-wrap gap-x-4 gap-y-1" aria-label="Etiquetas">
                 {post.tags.map((tag) => (
-                  <span
+                  <li
                     key={tag}
-                    className="px-3 py-1 bg-[#F9F8F6] text-[#FF4D00] text-xs font-bold uppercase tracking-wider rounded-full"
+                    className="text-sm font-medium uppercase tracking-wider text-(--ds-primary-text)"
                   >
                     {tag}
-                  </span>
+                  </li>
                 ))}
-              </div>
+              </ul>
             )}
 
-            <h1 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light text-[#1A1818] mb-4 md:mb-6 leading-tight">
+            <h1
+              id="post-title"
+              className={`${heading} mt-4 text-3xl font-bold leading-tight tracking-tight text-balance sm:text-4xl md:text-5xl`}
+            >
               {post.title}
             </h1>
 
             {post.excerpt && (
-              <p className="text-lg md:text-xl text-[#5C5850] mb-6">
+              <p className="mt-6 max-w-[65ch] text-lg leading-relaxed text-(--ds-muted-fg) md:text-xl">
                 {post.excerpt}
               </p>
             )}
 
-            {/* Meta */}
-            <div className="flex flex-wrap items-center gap-3 md:gap-4 text-sm text-[#9C9890]">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-[#FF4D00] flex items-center justify-center text-white text-xs font-bold">
-                  {post.author?.charAt(0) || "F"}
-                </div>
-                <span className="text-[#1A1818] font-medium">
-                  {post.author || "FireforgeRD"}
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 border-y border-(--ds-border) py-3 text-sm text-(--ds-muted-fg)">
+              <span className="flex items-center gap-2">
+                <span
+                  className="flex size-8 items-center justify-center bg-(--ds-accent) text-xs font-bold text-(--ds-on-accent)"
+                  aria-hidden
+                >
+                  {author.charAt(0)}
                 </span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Calendar className="w-4 h-4" />
-                <span>{formatDate(post.createdAt)}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Clock className="w-4 h-4" />
-                <span>{estimateReadTime(post.content)} min</span>
-              </div>
+                <span className="font-medium text-(--ds-fg)">{author}</span>
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Calendar className="size-4" aria-hidden />
+                <time dateTime={toIso(post.createdAt)}>{formatDate(post.createdAt)}</time>
+              </span>
+              <span className="flex items-center gap-1.5 tabular-nums">
+                <Clock className="size-4" aria-hidden />
+                {estimateReadTime(post.content)} min
+                <span className="sr-only">de lectura</span>
+              </span>
               <button
+                type="button"
                 onClick={handleShare}
-                className="flex items-center gap-1 hover:text-[#FF4D00] transition-colors ml-auto"
+                className={`ml-auto inline-flex min-h-11 cursor-pointer items-center gap-1.5 font-medium text-(--ds-fg) transition-colors duration-200 hover:text-(--ds-primary-text) ${focusRing}`}
               >
-                <Share2 className="w-4 h-4" />
-                <span className="hidden sm:inline">Compartir</span>
+                {copied ? <Check className="size-4" aria-hidden /> : <Share2 className="size-4" aria-hidden />}
+                <span className="hidden sm:inline">{copied ? "Enlace copiado" : "Compartir"}</span>
+                <span className="sr-only sm:hidden">{copied ? "Enlace copiado" : "Compartir"}</span>
               </button>
+              <span className="sr-only" role="status">
+                {copied ? "Enlace copiado al portapapeles" : ""}
+              </span>
             </div>
           </header>
 
-          {/* Cover Image */}
           {post.coverImage && (
-            <div className="relative aspect-video rounded-xl md:rounded-2xl overflow-hidden mb-8 md:mb-10 bg-[#F9F8F6]">
+            <div className="relative mt-10 aspect-video overflow-hidden border border-(--ds-border) bg-(--ds-muted)">
               <SafeImage
                 src={post.coverImage}
                 alt={post.title}
                 fill
                 sizes="(max-width: 768px) 100vw, 768px"
-                className="object-cover"
+                className="h-full object-cover"
                 priority
                 quality={75}
                 placeholder="blur"
@@ -159,31 +175,35 @@ export function BlogPostView({ post }: Props) {
             </div>
           )}
 
-          {/* Content - Usando SafeMarkdown para evitar hydration mismatch */}
-          <SafeMarkdown 
-            content={post.content} 
-            className="prose prose-lg max-w-none"
-          />
+          {/* SafeMarkdown evita el hydration mismatch; los estilos están en .blog-content (globals.css) */}
+          <SafeMarkdown content={post.content} className="mt-10" />
 
-          {/* Footer CTA */}
-          <div className="mt-12 md:mt-16 p-6 md:p-8 bg-[#F9F8F6] rounded-2xl text-center">
-            <BookOpen className="w-10 h-10 text-[#FF4D00] mx-auto mb-4" />
-            <h3 className="font-display text-xl md:text-2xl text-[#1A1818] mb-3">
-              ¿Te gustó este artículo?
-            </h3>
-            <p className="text-[#5C5850] mb-6">
-              Descubre cómo podemos ayudarte a implementar estas ideas en tu
-              negocio.
-            </p>
-            <Link
-              href="/contacto"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-[#1A1818] text-white rounded-full hover:bg-[#FF4D00] transition-colors font-medium"
-            >
-              Hablemos de tu proyecto
-            </Link>
-          </div>
+          <aside
+            aria-labelledby="post-cta-title"
+            className="mt-16 grid gap-6 border border-(--ds-border) bg-(--ds-muted) p-6 md:grid-cols-12 md:items-center md:p-8"
+          >
+            <div className="md:col-span-8">
+              <h2 id="post-cta-title" className={`${heading} text-2xl font-semibold tracking-tight`}>
+                ¿Te gustó este artículo?
+              </h2>
+              <p className="mt-2 leading-relaxed text-(--ds-muted-fg)">
+                Descubre cómo podemos ayudarte a implementar estas ideas en tu negocio.
+              </p>
+            </div>
+            <div className="md:col-span-4 md:justify-self-end">
+              <Link href="/contacto" className={`${ctaAccent} w-full md:w-auto`}>
+                Hablemos de tu proyecto <ArrowRight className="size-4" aria-hidden />
+              </Link>
+            </div>
+          </aside>
         </div>
       </div>
     </article>
   );
+}
+
+function toIso(date: Date | string | null | undefined) {
+  if (!date) return undefined;
+  const d = date instanceof Date ? date : new Date(date);
+  return isNaN(d.getTime()) ? undefined : d.toISOString();
 }

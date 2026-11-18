@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
-import Link from 'next/link';
+import { useEffect } from "react";
+import Link from "next/link";
+import { AlertTriangle, Home, RefreshCw } from "lucide-react";
+import { dsRoot } from "@/components/ds/fonts";
+import { container, ctaAccent, ctaSecondary, focusRing, heading } from "@/components/ds/ui";
 
 export default function Error({
   error,
@@ -13,91 +14,66 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Log error to monitoring service
-    console.error('Application error:', error);
-    
-    // TODO: Send to error tracking service (Sentry)
-    if (typeof window !== 'undefined') {
-      // Client-side error logging
-      const errorData = {
-        message: error.message,
-        stack: error.stack,
-        digest: error.digest,
-        url: window.location.href,
-        userAgent: navigator.userAgent,
-        timestamp: new Date().toISOString(),
-      };
-      
-      // Send to analytics or error service
-      console.error('Error details:', errorData);
-    }
+    // Sin servicio de monitoreo todavía (TODO: Sentry): queda en la consola.
+    console.error("Application error:", {
+      message: error.message,
+      stack: error.stack,
+      digest: error.digest,
+      url: window.location.href,
+      timestamp: new Date().toISOString(),
+    });
   }, [error]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F9F8F6] px-4">
-      <div className="max-w-md w-full text-center">
-        <div className="mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-50 border border-red-200 mb-6">
-            <AlertTriangle className="w-8 h-8 text-red-500" />
+    <div className={`${dsRoot} bg-(--ds-bg)`}>
+      <section aria-labelledby="error-title" className="py-20 md:py-28">
+        <div className={`${container} max-w-2xl`}>
+          <div className="border-t border-(--ds-fg) pt-8">
+            <AlertTriangle className="size-8 text-(--ds-destructive)" aria-hidden />
+            <h1 id="error-title" className={`${heading} mt-6 text-3xl font-semibold tracking-tight md:text-4xl`}>
+              Algo salió mal
+            </h1>
+            <p className="mt-4 text-lg leading-relaxed text-(--ds-muted-fg)">
+              Ocurrió un error inesperado al cargar esta página. Puedes intentarlo de nuevo o volver al inicio.
+            </p>
+
+            {process.env.NODE_ENV === "development" && (
+              <details className="mt-6 border border-(--ds-destructive) bg-(--ds-card) p-4">
+                <summary className={`cursor-pointer text-sm font-medium text-(--ds-destructive) ${focusRing}`}>
+                  Detalles del error (desarrollo)
+                </summary>
+                <pre className="mt-3 overflow-auto text-xs text-(--ds-fg)">
+                  {error.message}
+                  {error.stack && `\n\n${error.stack}`}
+                </pre>
+              </details>
+            )}
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <button type="button" onClick={reset} className={ctaAccent}>
+                <RefreshCw className="size-4" aria-hidden />
+                Intentar de nuevo
+              </button>
+              <Link href="/" className={ctaSecondary}>
+                <Home className="size-4" aria-hidden />
+                Ir al inicio
+              </Link>
+            </div>
+
+            <p className="mt-10 border-t border-(--ds-border) pt-6 text-(--ds-muted-fg)">
+              ¿Necesitas ayuda ahora?{" "}
+              <a
+                href="https://wa.me/18498534067?text=Hola,%20tuve%20un%20error%20en%20la%20página%20web"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`font-medium text-(--ds-primary-text) underline underline-offset-4 ${focusRing}`}
+              >
+                Escríbenos por WhatsApp
+              </a>
+            </p>
           </div>
-          
-          <h1 className="font-display text-2xl md:text-3xl font-medium text-[#1A1818] mb-4">
-            Algo salió mal
-          </h1>
-          
-          <p className="text-[#5C5850] mb-2">
-            Ocurrió un error inesperado. Nuestro equipo ha sido notificado.
-          </p>
-          
-          {process.env.NODE_ENV === 'development' && (
-            <details className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg text-left">
-              <summary className="cursor-pointer text-sm font-medium text-red-800 mb-2">
-                Detalles del error (desarrollo)
-              </summary>
-              <pre className="text-xs text-red-700 overflow-auto">
-                {error.message}
-                {error.stack && `\n\n${error.stack}`}
-              </pre>
-            </details>
-          )}
         </div>
-
-        <div className="space-y-3">
-          <Button
-            onClick={reset}
-            className="w-full bg-[#FF4D00] hover:bg-[#E64500] text-white"
-            size="lg"
-          >
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Intentar de nuevo
-          </Button>
-          
-          <Link href="/" className="block">
-            <Button
-              variant="outline"
-              className="w-full border-[#1A1818]/20 text-[#1A1818] hover:bg-[#1A1818]/5"
-              size="lg"
-            >
-              <Home className="w-4 h-4 mr-2" />
-              Ir al inicio
-            </Button>
-          </Link>
-        </div>
-
-        <div className="mt-8 pt-6 border-t border-[#1A1818]/10">
-          <p className="text-sm text-[#9C9890] mb-2">
-            ¿Necesitas ayuda inmediata?
-          </p>
-          <a
-            href="https://wa.me/18498534067?text=Hola,%20tuve%20un%20error%20en%20la%20página%20web"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-[#FF4D00] hover:text-[#E64500] font-medium"
-          >
-            Contáctanos por WhatsApp
-          </a>
-        </div>
-      </div>
+      </section>
     </div>
   );
 }

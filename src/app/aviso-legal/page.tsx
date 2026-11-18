@@ -23,7 +23,7 @@ export default function AvisoLegalPage() {
       intro="Titularidad del sitio, condiciones de uso y datos identificativos de FireforgeRD."
     >
       <p>
-        <strong className="text-[#1A1818]">
+        <strong>
           Este documento está en actualización.
         </strong>{" "}
         Estamos redactando la versión definitiva del aviso legal junto a

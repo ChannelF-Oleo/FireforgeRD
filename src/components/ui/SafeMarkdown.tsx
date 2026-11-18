@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useEffect, useState } from "react";
+import { useMemo } from "react";
 import { marked } from "marked";
 
 interface SafeMarkdownProps {
@@ -9,22 +9,14 @@ interface SafeMarkdownProps {
 }
 
 /**
- * Componente que renderiza Markdown de forma segura evitando hydration mismatch
- * Procesa el contenido solo en el cliente después del primer render
+ * Renderiza el contenido de un artículo (Markdown o HTML del editor).
+ *
+ * Se procesa igual en servidor y cliente (marked es determinista). Antes el
+ * servidor mandaba el Markdown crudo con <br> y se convertía al hidratar: el
+ * HTML que leía Google no tenía los subtítulos del artículo.
  */
 export function SafeMarkdown({ content, className = "" }: SafeMarkdownProps) {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
   const htmlContent = useMemo(() => {
-    if (!isClient) {
-      // En el servidor, devolver contenido plano para evitar mismatch
-      return content.replace(/\n/g, '<br>');
-    }
-
     // Detectar si ya tiene formato HTML
     const hasHtml = /<[a-z][\s\S]*>/i.test(content.trim());
 
@@ -42,7 +34,7 @@ export function SafeMarkdown({ content, className = "" }: SafeMarkdownProps) {
       console.error('Error parsing markdown:', error);
       return `<p>${content.replace(/\n/g, '<br>')}</p>`;
     }
-  }, [content, isClient]);
+  }, [content]);
 
   return (
     <div

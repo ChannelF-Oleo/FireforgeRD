@@ -2,36 +2,6 @@
 import type { ServicePlan, ServiceCategory } from "@/types";
 
 // Definimos interfaces específicas para este archivo
-export interface ServiceCatalog {
-  web: {
-    laChispa: ServicePlan;
-    laFragua: ServicePlan;
-    acero: ServicePlan;
-    hierroForjado: ServicePlan;
-  };
-  ecommerce: {
-    tiendaStart: ServicePlan;
-    ecommercePro: ServicePlan;
-    marketplace: ServicePlan;
-  };
-  saas: {
-    agendaSimple: ServicePlan;
-    gestionPro: ServicePlan;
-    sistemaAdministrativo: ServicePlan;
-  };
-  automation: {
-    elPortero: ServicePlan;
-    botCaptador: ServicePlan;
-  };
-  technical: {
-    emailCorp: ServicePlan;
-    vCard: ServicePlan;
-    identidad: ServicePlan;
-    copy: ServicePlan;
-    rescate: ServicePlan;
-  };
-}
-
 export interface CategoryInfo {
   id: ServiceCategory;
   name: string;
@@ -119,14 +89,15 @@ export const webServices: ServicePlan[] = [
   },
 ];
 
-// E-commerce Services
+// Tiendas online: viven dentro de "Desarrollo Web" (ya no son categoría
+// propia). El array se conserva separado para poder referirlas por grupo.
 export const ecommerceServices: ServicePlan[] = [
   {
     id: "tienda-start",
     name: "Tienda Start",
     price: 550,
     currency: "USD",
-    category: "ecommerce",
+    category: "web",
     idealFor: "Ropa, Accesorios, Productos Digitales",
     deliveryTime: "15-20 días",
     recurringFee: { amount: 25, period: "mes", label: "Mantenimiento" },
@@ -143,7 +114,7 @@ export const ecommerceServices: ServicePlan[] = [
     name: "E-Commerce Pro",
     price: 1100,
     currency: "USD",
-    category: "ecommerce",
+    category: "web",
     idealFor: "Tiendas Establecidas",
     deliveryTime: "20-30 días",
     isRecommended: true,
@@ -161,7 +132,7 @@ export const ecommerceServices: ServicePlan[] = [
     name: "Marketplace",
     price: 1900,
     currency: "USD",
-    category: "ecommerce",
+    category: "web",
     idealFor: "B2B, Mayoristas",
     deliveryTime: "30-45 días",
     recurringFee: { amount: 90, period: "mes", label: "Mantenimiento" },
@@ -228,57 +199,180 @@ export const saasServices: ServicePlan[] = [
   },
 ];
 
-// Automation Services
-// Automation Services - OPTIMIZADO: Modelo Híbrido (Setup + Recurrencia)
-export const automationServices: ServicePlan[] = [
+// Subservicios: trabajos puntuales, presencia digital básica y mantenimiento.
+// Orden: el paquete primero y luego de lo que más vende a lo que menos.
+export const subServices: ServicePlan[] = [
   {
-    id: "el-portero",
-    name: "El Portero",
-    price: 150, // Setup fee
+    id: "kit-negocio-nuevo",
+    name: "Kit Negocio Nuevo",
+    price: 110,
     currency: "USD",
-    category: "automation",
-    idealFor: "Menú Digital & FAQ",
-    deliveryTime: "5-7 días",
-    setupFee: true,
-    setupNote: "Pago único",
-    recurringFee: { amount: 25, period: "mes", label: "Mantenimiento" },
-    features: incluidos(
-      "Chatbot de reglas",
-      "Menú de botones interactivo",
-      "Soporte Técnico",
-    ),
-  },
-  {
-    id: "bot-captador",
-    name: "Bot Captador",
-    price: 300, // Setup fee
-    currency: "USD",
-    category: "automation",
-    idealFor: "CRM Automatizado",
-    deliveryTime: "7-10 días",
+    category: "subservicios",
+    idealFor: "Negocios que arrancan",
+    deliveryTime: "3-5 días",
     isRecommended: true,
-    setupFee: true,
-    setupNote: "Pago único",
-    recurringFee: { amount: 50, period: "mes", label: "Soporte" },
     features: incluidos(
-      "Cualificación y Filtro de Leads",
-      "Conexión a Notion/Sheets/Google",
-      "Reporte mensual de conversaciones", // Valor agregado mensual
+      "Email Corporativo",
+      "Firma HTML para correos",
+      "Perfil de Google configurado",
+      "WhatsApp Business configurado",
     ),
   },
-];
-
-// ... (Existing code from webServices, ecommerceServices, saasServices, automationServices) ...
-
-// 5.5 Complementary Technical Services
-// Servicios Técnicos Complementarios - Servicios puntuales y mantenimiento
-export const technicalServices: ServicePlan[] = [
+  {
+    // Precio propuesto, a validar. Separado: Menú QR $90 + alta delivery $150
+    // + Perfil de Google $45 = $285.
+    id: "kit-restaurante",
+    name: "Kit Restaurante",
+    price: 240,
+    currency: "USD",
+    category: "subservicios",
+    idealFor: "Restaurantes",
+    deliveryTime: "7-14 días",
+    features: incluidos(
+      "Menú QR con tu marca (primer año)",
+      "Alta en Uber Eats y PedidosYa",
+      "Perfil de Google configurado",
+      "Gestión de delivery aparte, desde US$60/mes",
+    ),
+  },
+  {
+    id: "perfil-google",
+    name: "Perfil de Google",
+    price: 45,
+    currency: "USD",
+    category: "subservicios",
+    idealFor: "Negocios locales",
+    deliveryTime: "3-5 días",
+    features: incluidos(
+      "Alta o reclamo del perfil",
+      "Acompañamiento en la verificación",
+      "Categorías, horarios y servicios",
+      "Descripción optimizada para búsquedas",
+      "Fotos optimizadas",
+    ),
+  },
+  // Menú QR: hay competencia barata o gratis en RD, así que no se compite
+  // por precio sino por diseño propio y por el panel de autogestión. El panel
+  // se construye cuando el primer restaurante lo contrate.
+  {
+    id: "menu-qr",
+    name: "Menú QR",
+    price: 90,
+    currency: "USD",
+    category: "subservicios",
+    idealFor: "Restaurantes, Cafeterías",
+    deliveryTime: "5-7 días",
+    recurringFee: { amount: 5, period: "mes", label: "Hosting desde el 2º año" },
+    features: incluidos(
+      "Diseño propio con tu marca",
+      "Panel para cambiar precios tú mismo",
+      "Activar y desactivar platos al momento",
+      "Código QR para mesas y mostrador",
+      "Hosting del primer año incluido",
+    ),
+  },
+  // Delivery: lo que se vende no es el registro (el dueño puede hacerlo gratis)
+  // sino dejar la cuenta bien armada y manejarla cada mes. Límites de cambios
+  // y horario de soporte acotan la gestión para que el margen no se diluya.
+  // Pendiente de confirmar antes de ofrecerlo: llevar clientes de las apps al
+  // WhatsApp propio del restaurante (los términos de las apps pueden impedirlo).
+  {
+    id: "delivery-basico",
+    name: "Delivery Apps Básico",
+    price: 150,
+    currency: "USD",
+    category: "subservicios",
+    idealFor: "Restaurantes",
+    deliveryTime: "7-14 días (según aprobación de cada app)",
+    setupFee: true,
+    setupNote: "Alta en Uber Eats y PedidosYa",
+    recurringFee: { amount: 60, period: "mes", label: "Gestión" },
+    features: incluidos(
+      "Menú de 12 a 18 platos con descripciones",
+      "Precios calculados para cubrir la comisión",
+      "Edición de fotos, horarios y tiempos de preparación",
+      "Hasta 8 cambios de menú al mes",
+      "Soporte hasta las 8:30 p.m. para desactivar platos y cambios urgentes",
+      "Respuesta a reseñas y reporte mensual",
+    ),
+    notes: [
+      "El contrato con cada app lo firma el restaurante con su RNC o cédula. Operamos con un usuario delegado, nunca con tu contraseña.",
+      "Las comisiones por pedido las cobra cada app.",
+    ],
+  },
+  {
+    id: "delivery-pro",
+    name: "Delivery Apps Pro",
+    price: 150,
+    currency: "USD",
+    category: "subservicios",
+    idealFor: "Restaurantes con volumen",
+    deliveryTime: "7-14 días (según aprobación de cada app)",
+    setupFee: true,
+    setupNote: "Alta en Uber Eats y PedidosYa",
+    recurringFee: { amount: 120, period: "mes", label: "Gestión" },
+    features: incluidos(
+      "Todo lo de Delivery Apps Básico",
+      "Hasta 20 cambios de menú al mes",
+      "Promociones y publicidad dentro de las apps",
+      "Reporte semanal",
+    ),
+    notes: [
+      "La inversión en publicidad dentro de las apps la paga el restaurante, aparte de la cuota de gestión.",
+      "El contrato con cada app lo firma el restaurante con su RNC o cédula. Operamos con un usuario delegado, nunca con tu contraseña.",
+      "Las comisiones por pedido las cobra cada app.",
+    ],
+  },
+  {
+    id: "catalogo-whatsapp",
+    name: "Catálogo WhatsApp",
+    price: 90,
+    currency: "USD",
+    category: "subservicios",
+    idealFor: "Tiendas que venden por Instagram",
+    deliveryTime: "5-7 días",
+    features: incluidos(
+      "Catálogo digital con fotos y precios",
+      "Pedido armado directo a WhatsApp",
+      "Código QR para compartir",
+      "Enlace para la bio de Instagram",
+    ),
+  },
+  {
+    id: "vcard-nfc",
+    name: "vCard + Tarjeta NFC",
+    price: 95,
+    currency: "USD",
+    category: "subservicios",
+    idealFor: "Networking, Ventas",
+    deliveryTime: "5-7 días",
+    features: incluidos(
+      "Todo lo de vCard Digital",
+      "Tarjeta física con chip NFC",
+      "Se comparte acercando el teléfono",
+    ),
+  },
+  {
+    id: "whatsapp-business",
+    name: "WhatsApp Business",
+    price: 30,
+    currency: "USD",
+    category: "subservicios",
+    idealFor: "Atención a clientes",
+    deliveryTime: "24-48 horas",
+    features: incluidos(
+      "Perfil de empresa completo",
+      "Mensajes de bienvenida y ausencia",
+      "Respuestas rápidas",
+      "Etiquetas para organizar chats",
+    ),
+  },
   {
     id: "email-corporativo",
     name: "Email Corporativo",
     price: 40,
     currency: "USD",
-    category: "technical",
+    category: "subservicios",
     idealFor: "Profesionales, Nuevos Negocios",
     deliveryTime: "24-48 horas",
     features: incluidos(
@@ -293,7 +387,7 @@ export const technicalServices: ServicePlan[] = [
     name: "vCard Digital",
     price: 55,
     currency: "USD",
-    category: "technical",
+    category: "subservicios",
     idealFor: "Networking, Ventas",
     deliveryTime: "3-5 días",
     features: incluidos(
@@ -305,26 +399,11 @@ export const technicalServices: ServicePlan[] = [
     ),
   },
   {
-    id: "identidad-tecnica",
-    name: "Identidad Técnica",
-    price: 35,
-    currency: "USD",
-    category: "technical",
-    idealFor: "Marca Personal",
-    deliveryTime: "24 horas",
-    features: incluidos(
-      "Configuración Gravatar Global",
-      "Firma HTML para correos",
-      "Unificación de avatares",
-      "Asesoría de imagen digital",
-    ),
-  },
-  {
     id: "copywriting-seo",
     name: "Copywriting SEO",
     price: 40,
     currency: "USD",
-    category: "technical",
+    category: "subservicios",
     idealFor: "Blogs, Landing Pages",
     deliveryTime: "3-5 días",
     features: incluidos(
@@ -340,7 +419,7 @@ export const technicalServices: ServicePlan[] = [
     name: "Mantenimiento/Rescate",
     price: 40,
     currency: "USD / Hora", // Adjusted to reflect hourly nature
-    category: "technical",
+    category: "subservicios",
     idealFor: "Sitios Hackeados, Bugs",
     deliveryTime: "Inmediato / Urgente",
     features: incluidos(
@@ -353,62 +432,19 @@ export const technicalServices: ServicePlan[] = [
   },
 ];
 
-// ... (Update existing exports below) ...
-
-// Service Catalog Update
-export const serviceCatalog: ServiceCatalog = {
-  web: {
-    laChispa: webServices[0],
-    laFragua: webServices[1],
-    acero: webServices[2],
-    hierroForjado: webServices[3],
-  },
-  ecommerce: {
-    tiendaStart: ecommerceServices[0],
-    ecommercePro: ecommerceServices[1],
-    marketplace: ecommerceServices[2],
-  },
-  saas: {
-    agendaSimple: saasServices[0],
-    gestionPro: saasServices[1],
-    sistemaAdministrativo: saasServices[2],
-  },
-  automation: {
-    elPortero: automationServices[0],
-    botCaptador: automationServices[1],
-  },
-  // Added Technical Services to Catalog
-  technical: {
-    emailCorp: technicalServices[0],
-    vCard: technicalServices[1],
-    identidad: technicalServices[2],
-    copy: technicalServices[3],
-    rescate: technicalServices[4],
-  },
-};
-
-// All services combined Update
 export const allServices = [
   ...webServices,
   ...ecommerceServices,
   ...saasServices,
-  ...automationServices,
-  ...technicalServices, // Included here
+  ...subServices,
 ];
 
-// Service categories Update
 export const serviceCategories = [
   {
     id: "web",
     name: "Desarrollo Web",
-    description: "Sitios web corporativos y landing pages de alto rendimiento",
-    services: webServices,
-  },
-  {
-    id: "ecommerce",
-    name: "E-Commerce",
-    description: "Tiendas online con pasarelas de pago seguras",
-    services: ecommerceServices,
+    description: "Sitios web, landing pages y tiendas online de alto rendimiento",
+    services: [...webServices, ...ecommerceServices],
   },
   {
     id: "saas",
@@ -417,16 +453,9 @@ export const serviceCategories = [
     services: saasServices,
   },
   {
-    id: "automation",
-    name: "Automatización",
-    description: "Chatbots y automatización con IA",
-    services: automationServices,
-  },
-  // Added Technical Category
-  {
-    id: "technical",
-    name: "Servicios Técnicos",
-    description: "Soluciones puntuales, mantenimiento y optimización",
-    services: technicalServices,
+    id: "subservicios",
+    name: "Subservicios",
+    description: "Presencia digital, soluciones puntuales y mantenimiento",
+    services: subServices,
   },
 ] as const;

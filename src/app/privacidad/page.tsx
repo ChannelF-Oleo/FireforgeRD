@@ -23,7 +23,7 @@ export default function PrivacidadPage() {
       intro="Qué datos recogemos a través de este sitio, para qué los usamos y cómo puedes ejercer tus derechos."
     >
       <p>
-        <strong className="text-[#1A1818]">
+        <strong>
           Este documento está en actualización.
         </strong>{" "}
         Estamos redactando la versión definitiva de la política de privacidad.
@@ -31,24 +31,24 @@ export default function PrivacidadPage() {
         que nos dejas.
       </p>
       <p>
-        <strong className="text-[#1A1818]">Qué recogemos.</strong> Únicamente
+        <strong>Qué recogemos.</strong> Únicamente
         los datos que nos enviás voluntariamente por el formulario de contacto
         o por el diagnóstico gratuito: nombre, empresa, correo electrónico,
         WhatsApp y el detalle del proyecto que nos cuentes.
       </p>
       <p>
-        <strong className="text-[#1A1818]">Para qué los usamos.</strong> Para
+        <strong>Para qué los usamos.</strong> Para
         responder tu consulta, preparar una propuesta y darle seguimiento
         comercial. No vendemos ni cedemos tus datos a terceros con fines
         publicitarios.
       </p>
       <p>
-        <strong className="text-[#1A1818]">Analítica.</strong> El sitio usa
+        <strong>Analítica.</strong> El sitio usa
         Google Analytics vía Google Tag Manager para medir tráfico de forma
         agregada.
       </p>
       <p>
-        <strong className="text-[#1A1818]">Tus derechos.</strong> Puedes
+        <strong>Tus derechos.</strong> Puedes
         pedirnos en cualquier momento acceder, rectificar o eliminar los datos
         que tengamos sobre ti escribiendo a hola@fireforgerd.com.
       </p>

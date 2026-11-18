@@ -31,16 +31,18 @@ export interface ServicePlan {
   idealFor: string;
   features: PlanFeature[];
   recurringFee?: RecurringFee;
-  /** true cuando `price` es el setup/inicial y no el total (saas y automation). */
+  /** true cuando `price` es el setup/inicial y no el total (planes saas). */
   setupFee?: boolean;
   /** Matiz opcional junto a la leyenda "Setup", ej. "Pago único". */
   setupNote?: string;
   isRecommended?: boolean;
   deliveryTime: string;
-  category: "web" | "ecommerce" | "saas" | "automation" | "technical";
+  /** Aclaraciones del plan (alcance, quién paga qué). Se muestran como letra chica. */
+  notes?: string[];
+  category: ServiceCategory;
 }
 
-export type ServiceCategory = "web" | "ecommerce" | "saas" | "automation" | "technical";
+export type ServiceCategory = "web" | "saas" | "subservicios";
 
 export interface ContactFormData {
   fullName: string;
@@ -173,36 +175,6 @@ export interface APIError {
   timestamp: Date;
 }
 
-// Service Catalog Structure
-export interface ServiceCatalog {
-  web: {
-    laChispa: ServicePlan;
-    laFragua: ServicePlan;
-    acero: ServicePlan;
-    hierroForjado: ServicePlan;
-  };
-  ecommerce: {
-    tiendaStart: ServicePlan;
-    ecommercePro: ServicePlan;
-    marketplace: ServicePlan;
-  };
-  saas: {
-    agendaSimple: ServicePlan;
-    gestionPro: ServicePlan;
-    sistemaAdministrativo: ServicePlan;
-  };
-  automation: {
-    elPortero: ServicePlan;
-    botCaptador: ServicePlan;
-  };
-  technical: {
-    emailCorp: ServicePlan;
-    vCard: ServicePlan;
-    identidad: ServicePlan;
-    copy: ServicePlan;
-    rescate: ServicePlan;
-  };
-}
 // Global type declarations
 declare global {
   interface Window {

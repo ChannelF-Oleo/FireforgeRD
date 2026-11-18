@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { dsRoot } from "@/components/ds/fonts";
 import { DiagnosticoQuizLoader } from "@/components/sections/DiagnosticoQuizLoader";
 
 export const metadata: Metadata = {
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
 
 export default function DiagnosticoPage() {
   return (
-    <div className="min-h-screen bg-[#F9F8F6]">
+    <div className={`${dsRoot} min-h-screen bg-(--ds-bg)`}>
       <DiagnosticoQuizLoader />
     </div>
   );

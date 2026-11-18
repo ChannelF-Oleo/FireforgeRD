@@ -2,6 +2,7 @@
 
 import React from "react";
 import { BookOpen, RefreshCw } from "lucide-react";
+import { container, ctaAccent, heading } from "@/components/ds/ui";
 
 interface BlogErrorBoundaryState {
   hasError: boolean;
@@ -36,25 +37,25 @@ export class BlogErrorBoundary extends React.Component<
         return this.props.fallback;
       }
 
+      // Se renderiza dentro del dsRoot de /blog, así que los tokens --ds-* están disponibles.
       return (
-        <div className="py-24 bg-white">
-          <div className="container mx-auto px-4 md:px-6 text-center">
-            <BookOpen className="w-16 h-16 text-[#9C9890] mx-auto mb-6" />
-            <h2 className="font-display text-2xl md:text-3xl text-[#1A1818] mb-4">
-              Error al cargar el contenido
-            </h2>
-            <p className="text-[#5C5850] mb-6 max-w-md mx-auto">
-              Hubo un problema al cargar los artículos del blog. Por favor, intenta recargar la página.
-            </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-[#FF4D00] text-white rounded-xl hover:bg-[#FF4D00]/90 transition-colors font-medium"
-            >
-              <RefreshCw className="w-4 h-4" />
-              Recargar página
-            </button>
+        <section role="alert" className="py-24">
+          <div className={container}>
+            <div className="border-t border-(--ds-fg) pt-6">
+              <BookOpen className="size-8 text-(--ds-primary)" aria-hidden />
+              <h2 className={`${heading} mt-6 text-3xl font-semibold tracking-tight text-balance`}>
+                Error al cargar el contenido
+              </h2>
+              <p className="mt-4 max-w-[65ch] text-lg leading-relaxed text-(--ds-muted-fg)">
+                Hubo un problema al cargar los artículos del blog. Recarga la página para intentarlo de nuevo.
+              </p>
+              <button type="button" onClick={() => window.location.reload()} className={`${ctaAccent} mt-8`}>
+                <RefreshCw className="size-4" aria-hidden />
+                Recargar página
+              </button>
+            </div>
           </div>
-        </div>
+        </section>
       );
     }
 
