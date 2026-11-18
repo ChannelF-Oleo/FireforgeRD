@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useState, useEffect, useRef } from "react";
+import { Fragment, useCallback, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -70,7 +70,6 @@ export function ContactForm() {
     whatsappUrl: string;
     popupAbierto: boolean;
   } | null>(null);
-  const successHeadingRef = useRef<HTMLHeadingElement>(null);
 
   const {
     register,
@@ -105,9 +104,11 @@ export function ContactForm() {
 
   // Al cambiar a la confirmación, el foco va a su título: el formulario (y el
   // botón que tenía el foco) desaparece y el lector de pantalla lo anuncia.
-  useEffect(() => {
-    if (isSuccess) successHeadingRef.current?.focus();
-  }, [isSuccess]);
+  // Ref callback y no efecto: con AnimatePresence mode="wait" el título se
+  // monta después de la salida del formulario, cuando el efecto ya corrió.
+  const focusSuccessHeading = useCallback((el: HTMLHeadingElement | null) => {
+    el?.focus();
+  }, []);
 
   const onSubmit = async (data: FormDataSchema) => {
     setIsSubmitting(true);
@@ -436,7 +437,7 @@ export function ContactForm() {
                         <Check className="size-6" strokeWidth={3} aria-hidden />
                       </span>
                       <h2
-                        ref={successHeadingRef}
+                        ref={focusSuccessHeading}
                         tabIndex={-1}
                         className={`${heading} mt-6 text-3xl font-semibold tracking-tight outline-none`}
                       >

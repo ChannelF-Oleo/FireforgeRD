@@ -1,3 +1,6 @@
+"use client";
+
+import { useSyncExternalStore } from "react";
 import Link from "next/link";
 import { Instagram, Mail, MessageCircle } from "lucide-react";
 import { FireMark } from "@/components/ui/fire-mark";
@@ -7,8 +10,17 @@ import { container, focusRing, heading } from "./ui";
 
 const linkClass = `inline-flex min-h-11 cursor-pointer items-center gap-2 hover:text-(--ds-primary-text) ${focusRing}`;
 
+const noSubscribe = () => () => {};
+
 export function SiteFooter() {
-  const year = new Date().getFullYear();
+  // El año sale del navegador: el HTML estático/ISR puede ser de un año
+  // anterior. En el servidor y al hidratar es null (sin año, sin mismatch) y
+  // justo después React vuelve a renderizar con el año actual.
+  const year = useSyncExternalStore(
+    noSubscribe,
+    () => new Date().getFullYear(),
+    () => null,
+  );
   return (
     <footer className={`${dsRoot} border-t border-(--ds-border) bg-(--ds-bg) py-12`}>
       <div className={`${container} grid gap-8 text-sm sm:grid-cols-2 md:grid-cols-12`}>
@@ -53,9 +65,7 @@ export function SiteFooter() {
         </ul>
 
         <div className="flex flex-col gap-2 border-t border-(--ds-border) pt-6 text-(--ds-muted-fg) sm:col-span-2 sm:flex-row sm:justify-between md:col-span-12">
-          {/* El HTML cacheado (estático/ISR) puede ser del año anterior: el
-              cliente corrige el año sin que React lo trate como error. */}
-          <p suppressHydrationWarning>© {year} FireforgeRD</p>
+          <p>© {year ? `${year} ` : ""}FireforgeRD</p>
           <p className="flex gap-6">
             <Link href="/aviso-legal" className={linkClass}>Aviso legal</Link>
             <Link href="/privacidad" className={linkClass}>Privacidad</Link>

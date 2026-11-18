@@ -345,22 +345,22 @@ export function Subservices() {
                     {plan.name}
                     <ChevronDown className="size-4 shrink-0 text-(--ds-primary) transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none" aria-hidden />
                   </h3>
-                  <p className="row-start-2 text-sm text-(--ds-muted-fg) md:col-span-3 md:row-start-auto md:text-base">
+                  <span className="block row-start-2 text-sm text-(--ds-muted-fg) md:col-span-3 md:row-start-auto md:text-base">
                     <span className="md:hidden">{plan.idealFor} · </span>
                     <span className="hidden md:inline">{plan.idealFor}</span>
                     <span className="md:hidden">{plan.deliveryTime}</span>
-                  </p>
-                  <p className="hidden text-(--ds-muted-fg) md:col-span-2 md:block">{plan.deliveryTime}</p>
-                  <p className="col-start-2 row-start-1 text-right tabular-nums md:col-span-3 md:col-start-auto md:row-start-auto">
+                  </span>
+                  <span className="hidden text-(--ds-muted-fg) md:col-span-2 md:block">{plan.deliveryTime}</span>
+                  <span className="block col-start-2 row-start-1 text-right tabular-nums md:col-span-3 md:col-start-auto md:row-start-auto">
                     {plan.setupFee && <span className="text-(--ds-muted-fg)">alta </span>}
                     <strong className="whitespace-nowrap">{usd(plan.price)}</strong>
                     {unit && <span className="whitespace-nowrap text-(--ds-muted-fg)"> / {unit}</span>}
-                  </p>
+                  </span>
                   {plan.recurringFee && (
-                    <p className="col-span-2 text-sm text-(--ds-muted-fg) md:col-span-3 md:col-start-10 md:text-right">
+                    <span className="block col-span-2 text-sm text-(--ds-muted-fg) md:col-span-3 md:col-start-10 md:text-right">
                       + {usd(plan.recurringFee.amount)}/{plan.recurringFee.period}
                       {plan.recurringFee.label && ` ${plan.recurringFee.label.toLowerCase()}`}
-                    </p>
+                    </span>
                   )}
                   </summary>
                   <div className="grid gap-4 pb-6 md:grid-cols-12 md:gap-4">
