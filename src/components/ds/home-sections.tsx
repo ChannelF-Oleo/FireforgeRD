@@ -131,9 +131,10 @@ export function Services() {
             const Icon = categoryIcons[cat.id] ?? Code2;
             // "setup" solo si el plan más barato es un setup: en Subservicios
             // el mínimo es un pago único aunque otros planes sí cobren setup.
-            const cheapest = cat.services.reduce((a, b) => (b.price < a.price ? b : a));
-            const min = cheapest.price;
-            const isSetup = Boolean(cheapest.setupFee);
+            const base = cheapest(cat.services);
+            if (!base) return null;
+            const min = base.price;
+            const isSetup = Boolean(base.setupFee);
             return (
               <article key={cat.id} className="flex h-full flex-col bg-(--ds-card) p-8">
                 <Icon className="size-6 text-(--ds-primary)" aria-hidden />
@@ -374,27 +375,43 @@ export function Subservices() {
 }
 
 /* ---------- FAQ (respuestas tomadas del FAQ actual del sitio) ---------- */
+const faqs = [
+  {
+    q: "¿Qué tengo que entregarles para empezar?",
+    a: "Tu logo y los textos básicos. Si no tienes fotos profesionales, usamos bancos de imágenes o coordinamos una sesión con costo adicional.",
+  },
+  {
+    q: "¿Cómo funcionan los pagos?",
+    a: "50% de inicial para comenzar el proyecto y el 50% restante contra entrega.",
+  },
+  {
+    q: "¿Puedo ver cómo va quedando?",
+    a: "Sí. Tienes 2 revisiones completas durante el proceso para ajustar colores, textos y detalles antes del lanzamiento.",
+  },
+  {
+    q: "¿Tengo que pagar mensualidades?",
+    a: "No obligatoriamente. El desarrollo es un pago único; el mantenimiento mensual de cada plan es opcional.",
+  },
+];
+
+// Datos estructurados FAQPage (los publicaba la FAQSection anterior).
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
+
 export function Faq() {
-  const faqs = [
-    {
-      q: "¿Qué tengo que entregarles para empezar?",
-      a: "Tu logo y los textos básicos. Si no tienes fotos profesionales, usamos bancos de imágenes o coordinamos una sesión con costo adicional.",
-    },
-    {
-      q: "¿Cómo funcionan los pagos?",
-      a: "50% de inicial para comenzar el proyecto y el 50% restante contra entrega.",
-    },
-    {
-      q: "¿Puedo ver cómo va quedando?",
-      a: "Sí. Tienes 2 revisiones completas durante el proceso para ajustar colores, textos y detalles antes del lanzamiento.",
-    },
-    {
-      q: "¿Tengo que pagar mensualidades?",
-      a: "No obligatoriamente. El desarrollo es un pago único; el mantenimiento mensual de cada plan es opcional.",
-    },
-  ];
   return (
     <section id="faq" aria-labelledby="faq-title" className="scroll-mt-20 py-24">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }}
+      />
       <div className={container}>
         <SectionHeader id="faq-title" eyebrow="Preguntas" title="Preguntas frecuentes" />
         <div className="mt-12 md:ml-[25%]">

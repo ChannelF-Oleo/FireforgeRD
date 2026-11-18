@@ -7,6 +7,7 @@ import { SafeMarkdown } from "@/components/ui/SafeMarkdown";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { container, ctaAccent, focusRing, heading } from "@/components/ds/ui";
 import type { BlogPost } from "@/types";
+import { estimateReadTime, formatPostDate } from "@/lib/blog-format";
 
 interface Props {
   post: BlogPost;
@@ -15,47 +16,6 @@ interface Props {
 export function BlogPostView({ post }: Props) {
   // Aviso accesible en vez de alert() cuando se copia el enlace.
   const [copied, setCopied] = useState(false);
-
-  const formatDate = (date: Date | string | null | undefined) => {
-    // ⚡ SOLUCIÓN: Validación robusta de fechas
-    if (!date) return "Fecha no disponible";
-    
-    try {
-      let dateObj: Date;
-      
-      if (date instanceof Date) {
-        dateObj = date;
-      } else if (typeof date === 'string') {
-        dateObj = new Date(date);
-      } else {
-        return "Fecha no disponible";
-      }
-      
-      // Verificar si la fecha es válida
-      if (isNaN(dateObj.getTime())) {
-        return "Fecha no válida";
-      }
-      
-      // Zona fija: el servidor corre en UTC y el visitante en hora de RD; sin
-      // esto un artículo publicado de noche mostraba otro día en cada lado y
-      // la hidratación fallaba (React #418).
-      return new Intl.DateTimeFormat("es-DO", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-        timeZone: "America/Santo_Domingo",
-      }).format(dateObj);
-    } catch (error) {
-      console.error("Error formatting date:", error, date);
-      return "Fecha no disponible";
-    }
-  };
-
-  const estimateReadTime = (content: string) => {
-    const wordsPerMinute = 200;
-    const words = content.split(/\s+/).length;
-    return Math.ceil(words / wordsPerMinute);
-  };
 
   const handleShare = async () => {
     // Verificar que estamos en el cliente
@@ -138,7 +98,7 @@ export function BlogPostView({ post }: Props) {
               </span>
               <span className="flex items-center gap-1.5">
                 <Calendar className="size-4" aria-hidden />
-                <time dateTime={toIso(post.createdAt)}>{formatDate(post.createdAt)}</time>
+                <time dateTime={toIso(post.createdAt)}>{formatPostDate(post.createdAt)}</time>
               </span>
               <span className="flex items-center gap-1.5 tabular-nums">
                 <Clock className="size-4" aria-hidden />

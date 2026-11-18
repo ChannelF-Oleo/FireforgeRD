@@ -73,7 +73,7 @@ export function BlogManager() {
           .toLowerCase()
           // Quitar tildes antes de filtrar: sin esto "página" daba "p-gina".
           .normalize("NFD")
-          .replace(/[̀-ͯ]/g, "")
+          .replace(/[\u0300-\u036f]/g, "")
           .replace(/[^a-z0-9]+/g, "-")
           .replace(/(^-|-$)/g, "");
 

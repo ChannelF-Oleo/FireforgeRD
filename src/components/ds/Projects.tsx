@@ -7,17 +7,6 @@ import { ProjectImage } from "./ProjectImage";
 import { SectionHeader } from "./SectionHeader";
 import { container, ctaAccent, focusRing, heading } from "./ui";
 
-// Si Firestore falla, el home no se cae: se muestra la sección sin el grid
-// (las reseñas de Google se cargan aparte, desde Elfsight).
-async function loadClients(): Promise<Client[]> {
-  try {
-    return await getClients();
-  } catch (error) {
-    console.error("[home] No se pudieron cargar los clientes:", error);
-    return [];
-  }
-}
-
 function ProjectCard({ client }: { client: Client }) {
   return (
     <article className="flex h-full flex-col border border-(--ds-border) bg-(--ds-card)">
@@ -58,7 +47,10 @@ function ProjectCard({ client }: { client: Client }) {
 
 /* ---------- Prueba social: proyectos reales (Firestore) + reseñas de Google ---------- */
 export async function Projects() {
-  const clients = await loadClients();
+  // Sin try/catch: el home es ISR (revalidate 300). Si Firestore falla en una
+  // regeneración, el error deja servir la versión anterior; devolver [] la
+  // reemplazaba por una sección de proyectos vacía.
+  const clients = await getClients();
 
   return (
     <section id="proyectos" aria-labelledby="proyectos-title" className="scroll-mt-20 bg-(--ds-muted) py-24">

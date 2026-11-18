@@ -15,6 +15,7 @@ import {
 import { SafeImage } from "@/components/ui/SafeImage";
 import { ctaAccent, focusRing, heading } from "@/components/ds/ui";
 import type { BlogPost } from "@/types";
+import { estimateReadTime, formatPostDate } from "@/lib/blog-format";
 
 // Control de formulario Swiss: radio 0, borde de 1px, 44px de alto.
 const field = `min-h-11 w-full border border-(--ds-border) bg-(--ds-card) text-sm text-(--ds-fg) transition-colors duration-200 placeholder:text-(--ds-muted-fg) hover:border-(--ds-fg) ${focusRing}`;
@@ -95,47 +96,6 @@ export function BlogListUI({ initialPosts }: BlogListUIProps) {
   };
 
   const hasActiveFilters = searchTerm.trim() || selectedTags.length > 0 || sortBy !== 'newest';
-
-  const formatDate = (date: Date | string | null | undefined) => {
-    // ⚡ SOLUCIÓN: Validación robusta de fechas
-    if (!date) return "Fecha no disponible";
-    
-    try {
-      let dateObj: Date;
-      
-      if (date instanceof Date) {
-        dateObj = date;
-      } else if (typeof date === 'string') {
-        dateObj = new Date(date);
-      } else {
-        return "Fecha no disponible";
-      }
-      
-      // Verificar si la fecha es válida
-      if (isNaN(dateObj.getTime())) {
-        return "Fecha no válida";
-      }
-      
-      // Zona fija: el servidor corre en UTC y el visitante en hora de RD; sin
-      // esto un artículo publicado de noche mostraba otro día en cada lado y
-      // la hidratación fallaba (React #418).
-      return new Intl.DateTimeFormat("es-DO", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-        timeZone: "America/Santo_Domingo",
-      }).format(dateObj);
-    } catch (error) {
-      console.error("Error formatting date:", error, date);
-      return "Fecha no disponible";
-    }
-  };
-
-  const estimateReadTime = (content: string) => {
-    const wordsPerMinute = 200;
-    const words = content.split(/\s+/).length;
-    return Math.ceil(words / wordsPerMinute);
-  };
 
   const getSortLabel = (sort: SortOption) => {
     switch (sort) {
@@ -349,7 +309,7 @@ export function BlogListUI({ initialPosts }: BlogListUIProps) {
                     <div className="mt-6 flex items-center justify-between gap-4 border-t border-(--ds-border) pt-4 text-sm text-(--ds-muted-fg)">
                       <span className="flex items-center gap-1.5">
                         <Calendar className="size-4" aria-hidden />
-                        {formatDate(post.createdAt)}
+                        {formatPostDate(post.createdAt)}
                       </span>
                       <span className="flex items-center gap-1.5 tabular-nums">
                         <Clock className="size-4" aria-hidden />
