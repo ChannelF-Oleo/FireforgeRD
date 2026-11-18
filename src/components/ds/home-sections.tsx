@@ -232,7 +232,7 @@ export function Pricing() {
                 <tr>
                   <th scope="col">Plan</th>
                   <th scope="col">Ideal para</th>
-                  <th scope="col">Setup desde</th>
+                  <th scope="col">Precio</th>
                 </tr>
               </thead>
               <tbody>
@@ -240,8 +240,17 @@ export function Pricing() {
                   <tr key={plan.id} className="border-b border-(--ds-border)">
                     <th scope="row" className="py-4 pr-4 font-medium">{plan.name}</th>
                     <td className="hidden py-4 pr-4 text-(--ds-muted-fg) sm:table-cell">{plan.idealFor}</td>
-                    <td className="py-4 text-right tabular-nums whitespace-nowrap">
-                      setup <strong>{usd(plan.price)}</strong>
+                    <td className="py-4 text-right tabular-nums">
+                      <span className="whitespace-nowrap">
+                        setup <strong>{usd(plan.price)}</strong>
+                      </span>
+                      {/* La cuota mensual es obligatoria en estos planes: sin
+                          ella el setup parecía el precio total. */}
+                      {plan.recurringFee && (
+                        <span className="block whitespace-nowrap text-sm text-(--ds-muted-fg)">
+                          + {usd(plan.recurringFee.amount)}/{plan.recurringFee.period}
+                        </span>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -390,7 +399,7 @@ const faqs = [
   },
   {
     q: "¿Tengo que pagar mensualidades?",
-    a: "No obligatoriamente. El desarrollo es un pago único; el mantenimiento mensual de cada plan es opcional.",
+    a: "En las páginas web y tiendas, no: el desarrollo es un pago único y el mantenimiento mensual es opcional (el dominio incluido se renueva a partir del segundo año). Los sistemas a medida y la gestión de apps de delivery sí llevan una cuota mensual, que se indica junto al precio de cada plan.",
   },
 ];
 

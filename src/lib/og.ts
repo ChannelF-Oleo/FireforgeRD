@@ -13,19 +13,27 @@ export const OG_IMAGE_SIZE = { width: 1200, height: 630 };
  */
 export const defaultOgImage = { url: "/opengraph-image", ...OG_IMAGE_SIZE, alt: OG_IMAGE_ALT };
 
-type OpenGraph = NonNullable<Metadata["openGraph"]>;
-
 /**
- * openGraph de una página. Repite los campos del layout raíz (siteName, locale,
- * type, imagen) porque el de la página no se mezcla con el del layout: lo
- * reemplaza.
+ * openGraph y twitter de una página. Repiten los campos del layout raíz
+ * (siteName, locale, type, imagen, creator) porque el objeto de la página no
+ * se mezcla con el del layout: lo reemplaza. El twitter también hace falta:
+ * sin él la tarjeta de X heredaba el título y la descripción del home.
  */
-export function pageOpenGraph(og: { title: string; description: string; url: string }): OpenGraph {
+export function pageSocial(page: { title: string; description: string; url: string }): Pick<Metadata, "openGraph" | "twitter"> {
   return {
-    siteName: "FireforgeRD",
-    locale: "es_DO",
-    type: "website",
-    images: [defaultOgImage],
-    ...og,
+    openGraph: {
+      siteName: "FireforgeRD",
+      locale: "es_DO",
+      type: "website",
+      images: [defaultOgImage],
+      ...page,
+    },
+    twitter: {
+      card: "summary_large_image",
+      creator: "@fireforgerd",
+      title: page.title,
+      description: page.description,
+      images: [defaultOgImage],
+    },
   };
 }

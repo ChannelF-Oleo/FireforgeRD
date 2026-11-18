@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { pageOpenGraph } from "@/lib/og";
+import { pageSocial } from "@/lib/og";
 import { BlogList } from "@/components/sections/BlogList";
 import { BlogErrorBoundary } from "@/components/ui/BlogErrorBoundary";
 import { dsRoot } from "@/components/ds/fonts";
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://www.fireforgerd.com/blog",
   },
-  openGraph: pageOpenGraph({
+  ...pageSocial({
     title: "Blog | FireforgeRD",
     description:
       "Guías prácticas sobre páginas web, tiendas online y ventas por internet para negocios dominicanos.",

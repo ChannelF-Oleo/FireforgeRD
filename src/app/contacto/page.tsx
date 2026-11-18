@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { pageOpenGraph } from "@/lib/og";
+import { pageSocial } from "@/lib/og";
 import { dsRoot } from "@/components/ds/fonts";
 import { ContactForm } from "@/components/sections/ContactForm";
 
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://www.fireforgerd.com/contacto",
   },
-  openGraph: pageOpenGraph({
+  ...pageSocial({
     title: "Contacto | FireforgeRD",
     description:
       "Contáctanos para iniciar tu proyecto digital. Respuesta en menos de 24 horas.",

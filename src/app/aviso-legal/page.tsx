@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { pageOpenGraph } from "@/lib/og";
+import { pageSocial } from "@/lib/og";
 import { LegalPageShell } from "@/components/sections/LegalPageShell";
 
 export const metadata: Metadata = {
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://www.fireforgerd.com/aviso-legal",
   },
-  openGraph: pageOpenGraph({
+  ...pageSocial({
     title: "Aviso Legal | FireforgeRD",
     description:
       "Titularidad del sitio, condiciones de uso y datos de contacto de FireforgeRD.",

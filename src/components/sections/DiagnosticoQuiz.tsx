@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 import {
   ArrowRight,
@@ -54,7 +54,6 @@ export function DiagnosticoQuiz() {
   const [showStepError, setShowStepError] = useState(false);
   const [triedSubmit, setTriedSubmit] = useState(false);
 
-  const questionHeadingRef = useRef<HTMLHeadingElement>(null);
   const hasNavigated = useRef(false);
 
   const currentQuestion = quizQuestions[currentStep];
@@ -69,11 +68,14 @@ export function DiagnosticoQuiz() {
     window.scrollTo({ top: 0 });
   }, [screen]);
 
-  // Al cambiar de pregunta, llevar el foco al enunciado (lectores de pantalla y teclado).
-  useEffect(() => {
-    if (!hasNavigated.current) return;
-    questionHeadingRef.current?.focus({ preventScroll: true });
-  }, [currentStep]);
+  // Al cambiar de pregunta, llevar el foco al enunciado (lectores de pantalla y
+  // teclado). Con un ref callback y no con un efecto: AnimatePresence
+  // mode="wait" monta la pregunta nueva recién cuando termina la salida de la
+  // anterior, y un efecto sobre currentStep enfocaba el <h2> que se iba a
+  // desmontar (el foco terminaba en <body>).
+  const focusQuestionHeading = useCallback((el: HTMLHeadingElement | null) => {
+    if (el && hasNavigated.current) el.focus({ preventScroll: true });
+  }, []);
 
   const handleSingleAnswer = (value: string) => {
     setShowStepError(false);
@@ -518,7 +520,7 @@ export function DiagnosticoQuiz() {
                 <p className={eyebrowText}>{currentQuestion.category}</p>
                 <h2
                   id={questionId}
-                  ref={questionHeadingRef}
+                  ref={focusQuestionHeading}
                   tabIndex={-1}
                   className={`${heading} mt-2 text-xl font-semibold tracking-tight text-balance focus:outline-none sm:text-2xl`}
                 >

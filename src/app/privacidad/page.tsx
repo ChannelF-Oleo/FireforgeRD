@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { pageOpenGraph } from "@/lib/og";
+import { pageSocial } from "@/lib/og";
 import { LegalPageShell } from "@/components/sections/LegalPageShell";
 
 export const metadata: Metadata = {
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://www.fireforgerd.com/privacidad",
   },
-  openGraph: pageOpenGraph({
+  ...pageSocial({
     title: "Política de Privacidad | FireforgeRD",
     description:
       "Qué datos recoge FireforgeRD a través del sitio, para qué los usa y cómo ejercer tus derechos.",
