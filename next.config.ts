@@ -49,6 +49,16 @@ const nextConfig: NextConfig = {
         destination: "https://www.fireforgerd.com/:path*",
         permanent: true,
       },
+      {
+        // /clientes se eliminó: repetía la sección de proyectos del home.
+        // Se redirige para no romper enlaces externos ni lo ya indexado.
+        source: "/clientes",
+        destination: "/#proyectos",
+        permanent: true,
+      },
+      // Las URLs viejas del blog (sin tildes) se redirigen en la página del
+      // artículo, no aquí: next.config no puede importar de src/ porque la
+      // imagen de producción solo copia este archivo. Ver src/lib/blog-slugs.ts.
     ];
   },
 

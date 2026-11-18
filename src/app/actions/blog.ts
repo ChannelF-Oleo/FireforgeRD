@@ -21,18 +21,3 @@ export async function revalidateBlog() {
     return { success: false, error: 'Failed to revalidate cache' };
   }
 }
-
-/**
- * Invalida el caché de un post específico por slug
- */
-export async function revalidateBlogPost(slug: string) {
-  try {
-    revalidatePath(`/blog/${slug}`);
-    revalidatePath('/blog');
-    
-    return { success: true };
-  } catch (error) {
-    console.error('Error revalidating blog post:', error);
-    return { success: false, error: 'Failed to revalidate post' };
-  }
-}

@@ -42,10 +42,16 @@ RUN addgroup --system --gid 1001 nodejs \
  && adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next
+# .next a nombre de nextjs: el servidor escribe ahí la caché de ISR
+# (revalidate del home y del blog). Con dueño root fallaba con EACCES y las
+# páginas no se regeneraban.
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/next.config.ts ./next.config.ts
+# Fuente que lee src/app/opengraph-image.tsx. Hoy esa imagen se genera en el
+# build, pero si alguna vez se renderiza al vuelo debe encontrar el archivo.
+COPY --from=builder /app/src/components/ds/fonts/Outfit-Bold.ttf ./src/components/ds/fonts/Outfit-Bold.ttf
 
 USER nextjs
 EXPOSE 3000

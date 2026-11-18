@@ -20,7 +20,7 @@ export const quizQuestions: QuizQuestion[] = [
       {
         value: "restaurante",
         label: "Restaurante / Food service",
-        weight: { landing: 2, ecommerce: 1, chatbot: 2 },
+        weight: { landing: 2, ecommerce: 1, presencia: 2 },
       },
       {
         value: "salud",
@@ -47,7 +47,7 @@ export const quizQuestions: QuizQuestion[] = [
     question: "¿Cuántos empleados tiene tu empresa?",
     type: "single",
     options: [
-      { value: "solo", label: "Solo yo", weight: { landing: 2, chatbot: 1 } },
+      { value: "solo", label: "Solo yo", weight: { landing: 2, presencia: 1 } },
       {
         value: "micro",
         label: "2-5 empleados",
@@ -62,7 +62,7 @@ export const quizQuestions: QuizQuestion[] = [
       {
         value: "grande",
         label: "Más de 50 empleados",
-        weight: { sistema: 3, chatbot: 2 },
+        weight: { sistema: 3 },
       },
     ],
     required: true,
@@ -77,7 +77,7 @@ export const quizQuestions: QuizQuestion[] = [
       {
         value: "redes",
         label: "Solo redes sociales",
-        weight: { landing: 3, chatbot: 1 },
+        weight: { landing: 3, presencia: 2 },
       },
       {
         value: "basica",
@@ -92,7 +92,7 @@ export const quizQuestions: QuizQuestion[] = [
       {
         value: "avanzada",
         label: "Sitio web con funcionalidades avanzadas",
-        weight: { sistema: 2, chatbot: 1 },
+        weight: { sistema: 2 },
       },
     ],
     required: true,
@@ -108,7 +108,7 @@ export const quizQuestions: QuizQuestion[] = [
       {
         value: "visibilidad",
         label: "Aumentar visibilidad y conseguir clientes",
-        weight: { landing: 3, chatbot: 1 },
+        weight: { landing: 3, presencia: 2 },
       },
       {
         value: "ventas_online",
@@ -118,12 +118,12 @@ export const quizQuestions: QuizQuestion[] = [
       {
         value: "automatizar",
         label: "Automatizar procesos internos",
-        weight: { sistema: 3, chatbot: 2 },
+        weight: { sistema: 3 },
       },
       {
         value: "atencion",
         label: "Mejorar atención al cliente",
-        weight: { chatbot: 3, sistema: 1 },
+        weight: { presencia: 3, sistema: 1 },
       },
       {
         value: "escalar",
@@ -143,7 +143,7 @@ export const quizQuestions: QuizQuestion[] = [
       {
         value: "leads",
         label: "Capturar más leads/contactos",
-        weight: { landing: 2, chatbot: 1 },
+        weight: { landing: 2, presencia: 1 },
       },
       {
         value: "reservas",
@@ -167,8 +167,8 @@ export const quizQuestions: QuizQuestion[] = [
       },
       {
         value: "whatsapp",
-        label: "Atención por WhatsApp 24/7",
-        weight: { chatbot: 3 },
+        label: "Atención ordenada por WhatsApp",
+        weight: { presencia: 3 },
       },
     ],
     required: false,
@@ -184,12 +184,12 @@ export const quizQuestions: QuizQuestion[] = [
       {
         value: "no_clientes",
         label: "No llegan suficientes clientes",
-        weight: { landing: 3, chatbot: 1 },
+        weight: { landing: 3, presencia: 2 },
       },
       {
         value: "tiempo",
         label: "Pierdo mucho tiempo en tareas repetitivas",
-        weight: { sistema: 3, chatbot: 2 },
+        weight: { sistema: 3 },
       },
       {
         value: "desorganizacion",
@@ -199,7 +199,7 @@ export const quizQuestions: QuizQuestion[] = [
       {
         value: "atencion_lenta",
         label: "No puedo responder rápido a clientes",
-        weight: { chatbot: 3 },
+        weight: { presencia: 2, sistema: 1 },
       },
       {
         value: "ventas_fisicas",
@@ -221,12 +221,12 @@ export const quizQuestions: QuizQuestion[] = [
     type: "single",
     options: [
       { value: "pocos", label: "Menos de 10", weight: { landing: 1 } },
-      { value: "moderado", label: "10-30 mensajes", weight: { chatbot: 1 } },
-      { value: "muchos", label: "30-100 mensajes", weight: { chatbot: 2 } },
+      { value: "moderado", label: "10-30 mensajes", weight: { presencia: 1 } },
+      { value: "muchos", label: "30-100 mensajes", weight: { presencia: 2 } },
       {
         value: "masivo",
         label: "Más de 100 mensajes",
-        weight: { chatbot: 3, sistema: 1 },
+        weight: { presencia: 2, sistema: 2 },
       },
     ],
     required: true,
@@ -301,11 +301,15 @@ export const quizQuestions: QuizQuestion[] = [
     question: "¿Cuál es tu presupuesto aproximado para esta inversión?",
     type: "single",
     options: [
-      { value: "bajo", label: "Menos de RD$30,000", weight: { landing: 2 } },
+      {
+        value: "bajo",
+        label: "Menos de RD$30,000",
+        weight: { landing: 2, presencia: 1 },
+      },
       {
         value: "medio_bajo",
         label: "RD$30,000 - RD$80,000",
-        weight: { landing: 2, chatbot: 1 },
+        weight: { landing: 2, presencia: 1 },
       },
       {
         value: "medio",
@@ -394,26 +398,32 @@ export const solutionDescriptions = {
   sistema: {
     name: "Sistema a Medida",
     description:
-      "Software personalizado para automatizar y gestionar tu negocio.",
+      "Software personalizado para organizar y gestionar tu negocio.",
     benefits: [
-      "Automatización de procesos",
+      "Procesos internos digitalizados",
       "Reportes personalizados",
       "Integración con otras herramientas",
       "Escalable según crecimiento",
     ],
     plans: ["Agenda Simple", "Gestión Pro", "Sistema Administrativo"],
   },
-  chatbot: {
-    name: "Chatbot / Automatización IA",
-    description: "Asistente virtual para atender clientes automáticamente.",
+  presencia: {
+    name: "Presencia Digital Esencial",
+    description:
+      "Lo básico para que te encuentren y te escriban: Google, WhatsApp y catálogo.",
     benefits: [
-      "Atención 24/7",
-      "Respuestas instantáneas",
-      "Captura de leads automática",
-      "Integración con WhatsApp",
+      "Apareces en Google Maps y búsquedas locales",
+      "WhatsApp Business ordenado y profesional",
+      "Catálogo para vender por Instagram y WhatsApp",
+      "Listo en días, no en semanas",
     ],
     // OJO: esta lista es texto suelto, no referencia a services-data.
     // Si se agrega o quita un plan del catálogo, hay que actualizarla a mano.
-    plans: ["El Portero", "Bot Captador"],
+    plans: [
+      "Kit Negocio Nuevo",
+      "Perfil de Google",
+      "Catálogo WhatsApp",
+      "WhatsApp Business",
+    ],
   },
 };

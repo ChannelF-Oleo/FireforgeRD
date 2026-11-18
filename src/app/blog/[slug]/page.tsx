@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { adminDb } from "@/lib/firebase-admin";
 import { BlogPostView } from "@/components/sections/BlogPostView";
 import type { BlogPost } from "@/types";
 import { unstable_cache } from "next/cache";
+import { dsRoot } from "@/components/ds/fonts";
+import { publicSlug, renamedSlug, storedSlugCandidates, uniqueByPublicSlug } from "@/lib/blog-slugs";
+import { defaultOgImage } from "@/lib/og";
 
 // ⚡ SOLUCIÓN: Revalidar cada 10 minutos para posts individuales
 export const revalidate = 600; // 10 minutos
@@ -13,44 +16,44 @@ interface Props {
 }
 
 // ⚡ SOLUCIÓN: Cache optimizado para posts individuales
+// Sin try/catch: un error de Firestore debe propagarse. Si se devolviera null,
+// unstable_cache guardaría "no existe" 10 minutos y el artículo daría 404; al
+// lanzar, no se cachea nada y en una regeneración ISR se sigue sirviendo la
+// versión anterior de la página.
 const getCachedPost = unstable_cache(
   async (slug: string): Promise<BlogPost | null> => {
-    try {
-      const snapshot = await adminDb
-        .collection("blog_posts")
-        .where("slug", "==", slug)
-        .where("published", "==", true)
-        .limit(1)
-        .get();
+    const snapshot = await adminDb
+      .collection("blog_posts")
+      .where("slug", "in", storedSlugCandidates(slug))
+      .where("published", "==", true)
+      .limit(2)
+      .get();
 
-      if (snapshot.empty) return null;
+    if (snapshot.empty) return null;
 
-      const doc = snapshot.docs[0];
-      const data = doc.data();
+    // Con el slug viejo y uno nuevo idéntico al público, gana el nuevo.
+    const [doc] = uniqueByPublicSlug(snapshot.docs, (d) => d.data().slug ?? "");
+    const data = doc.data();
 
-      // ⚡ SOLUCIÓN: Conversión segura de fechas de Firestore
-      const createdAt = data.createdAt?.toDate ? data.createdAt.toDate() : 
-                       data.createdAt ? new Date(data.createdAt) : new Date();
-      const updatedAt = data.updatedAt?.toDate ? data.updatedAt.toDate() : 
-                       data.updatedAt ? new Date(data.updatedAt) : new Date();
+    // ⚡ SOLUCIÓN: Conversión segura de fechas de Firestore
+    const createdAt = data.createdAt?.toDate ? data.createdAt.toDate() : 
+                     data.createdAt ? new Date(data.createdAt) : new Date();
+    const updatedAt = data.updatedAt?.toDate ? data.updatedAt.toDate() : 
+                     data.updatedAt ? new Date(data.updatedAt) : new Date();
 
-      return {
-        id: doc.id,
-        title: data.title || "",
-        slug: data.slug || "",
-        excerpt: data.excerpt || "",
-        content: data.content || "",
-        coverImage: data.coverImage || null,
-        author: data.author || "FireforgeRD",
-        tags: data.tags || [],
-        published: data.published || false,
-        createdAt,
-        updatedAt,
-      } as BlogPost;
-    } catch (error) {
-      console.error("Error fetching post:", error);
-      return null;
-    }
+    return {
+      id: doc.id,
+      title: data.title || "",
+      slug: publicSlug(data.slug || ""),
+      excerpt: data.excerpt || "",
+      content: data.content || "",
+      coverImage: data.coverImage || null,
+      author: data.author || "FireforgeRD",
+      tags: data.tags || [],
+      published: data.published || false,
+      createdAt,
+      updatedAt,
+    } as BlogPost;
   },
   ['blog-post'],
   { 
@@ -59,47 +62,134 @@ const getCachedPost = unstable_cache(
 );
 
 async function getPost(slug: string): Promise<BlogPost | null> {
-  return getCachedPost(slug);
+  const post = await getCachedPost(slug);
+  if (!post) return null;
+  // unstable_cache guarda el resultado como JSON: en un acierto de caché las
+  // fechas vuelven como string. Sin esto, createdAt.toISOString() fallaba en
+  // generateMetadata y cada artículo publicaba la metadata genérica de reserva
+  // (sin su título, descripción ni imagen para compartir).
+  // Una fecha que no se puede leer cae en "ahora" (igual que una que falta):
+  // toISOString() lanza con una fecha inválida y tumbaría el artículo.
+  const createdAt = validDate(post.createdAt);
+  return {
+    ...post,
+    createdAt,
+    updatedAt: validDate(post.updatedAt, createdAt),
+  };
+}
+
+function validDate(value: Date | string, fallback = new Date()): Date {
+  const date = new Date(value);
+  return isNaN(date.getTime()) ? fallback : date;
+}
+
+const SITE = "https://www.fireforgerd.com";
+
+function postUrl(slug: string) {
+  return `${SITE}/blog/${slug}`;
+}
+
+/** BlogPosting + migas de pan, en el HTML del servidor. */
+function postJsonLd(post: BlogPost) {
+  const url = postUrl(post.slug);
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BlogPosting",
+        "@id": `${url}#articulo`,
+        headline: post.title,
+        description: post.excerpt,
+        ...(post.coverImage ? { image: [post.coverImage] } : {}),
+        datePublished: post.createdAt.toISOString(),
+        dateModified: post.updatedAt.toISOString(),
+        inLanguage: "es-DO",
+        mainEntityOfPage: url,
+        url,
+        ...(post.tags.length ? { keywords: post.tags.join(", ") } : {}),
+        author: { "@type": "Organization", name: post.author || "FireforgeRD", url: SITE },
+        publisher: {
+          "@type": "Organization",
+          name: "FireforgeRD",
+          url: SITE,
+          logo: { "@type": "ImageObject", url: `${SITE}/Icon.png` },
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Inicio", item: SITE },
+          { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE}/blog` },
+          { "@type": "ListItem", position: 3, name: post.title, item: url },
+        ],
+      },
+    ],
+  };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  try {
-    const { slug } = await params;
-    const post = await getPost(slug);
+  const { slug } = await params;
+  // URL vieja: la página redirige, no hace falta consultar Firestore.
+  if (renamedSlug(slug)) return {};
+  const post = await getPost(slug);
 
-    if (!post) {
-      return { title: "Post no encontrado" };
-    }
+  if (!post) {
+    return { title: "Post no encontrado" };
+  }
 
-    return {
+  const url = postUrl(post.slug);
+  // Sin portada se usa la imagen general del sitio: el openGraph/twitter de
+  // la página reemplaza al del layout, así que hay que declararla aquí.
+  const images = post.coverImage ? [post.coverImage] : [defaultOgImage];
+  return {
+    title: post.title,
+    description: post.excerpt,
+    alternates: { canonical: url },
+    openGraph: {
+      title: `${post.title} | FireforgeRD`,
+      description: post.excerpt,
+      url,
+      siteName: "FireforgeRD",
+      locale: "es_DO",
+      images,
+      type: "article",
+      publishedTime: post.createdAt.toISOString(),
+      modifiedTime: post.updatedAt.toISOString(),
+      tags: post.tags,
+    },
+    twitter: {
+      card: "summary_large_image",
+      creator: "@fireforgerd",
       title: post.title,
       description: post.excerpt,
-      openGraph: {
-        title: `${post.title} | FireforgeRD`,
-        description: post.excerpt,
-        images: post.coverImage ? [post.coverImage] : [],
-        type: "article",
-        publishedTime: post.createdAt.toISOString(),
-      },
-    };
-  } catch (error) {
-    console.error("Error generating metadata:", error);
-    return { title: "Error" };
-  }
+      images,
+    },
+  };
 }
 
 export default async function BlogPostPage({ params }: Props) {
-  try {
-    const { slug } = await params;
-    const post = await getPost(slug);
+  // URL vieja (de antes de corregir las tildes): 308 a la nueva.
+  const { slug: requested } = await params;
+  const renamed = renamedSlug(requested);
+  if (renamed) permanentRedirect(`/blog/${renamed}`);
 
-    if (!post) {
-      notFound();
-    }
+  // Solo un post inexistente da 404. Un error de Firestore se propaga: lo
+  // muestra error.tsx y, en una regeneración ISR, se conserva la página anterior
+  // en vez de reemplazarla por un 404.
+  const post = await getPost(requested);
 
-    return <BlogPostView post={post} />;
-  } catch (error) {
-    console.error("Error loading blog post:", error);
+  if (!post) {
     notFound();
   }
+
+  return (
+    <div className={`${dsRoot} min-h-screen bg-(--ds-bg)`}>
+      <script
+        type="application/ld+json"
+        // "<" escapado: el título o el extracto no pueden cerrar el <script>.
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(postJsonLd(post)).replace(/</g, "\\u003c") }}
+      />
+      <BlogPostView post={post} />
+    </div>
+  );
 }

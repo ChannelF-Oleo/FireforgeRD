@@ -29,6 +29,7 @@ import { RichTextEditor } from "./RichTextEditor";
 import { Modal, ModalContent, ModalFooter } from "@/components/ui/Modal";
 import { revalidateBlog } from "@/app/actions/blog";
 import type { BlogPost } from "@/types";
+import { publicSlug } from "@/lib/blog-slugs";
 
 export function BlogManager() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -70,6 +71,9 @@ export function BlogManager() {
         editingPost.slug ||
         editingPost.title
           .toLowerCase()
+          // Quitar tildes antes de filtrar: sin esto "página" daba "p-gina".
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
           .replace(/[^a-z0-9]+/g, "-")
           .replace(/(^-|-$)/g, "");
 
@@ -374,7 +378,7 @@ export function BlogManager() {
                 <div className="flex items-center gap-1 mt-3 pt-3 border-t border-[#1A1818]/5 sm:border-0 sm:pt-0 sm:mt-2">
                   {post.published && (
                     <a
-                      href={`/blog/${post.slug}`}
+                      href={`/blog/${publicSlug(post.slug)}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 p-2 rounded-lg text-[#6F6B65] bg-[#F9F8F6] hover:bg-[#1A1818]/5 text-xs sm:text-sm"

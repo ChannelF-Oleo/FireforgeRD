@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { BookOpen } from "lucide-react";
+import { canOptimizeImage } from "@/lib/image-utils";
 
 interface SafeImageProps {
   src: string | null | undefined;
@@ -32,18 +33,12 @@ export function SafeImage({
   blurDataURL,
 }: SafeImageProps) {
   const [hasError, setHasError] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Si no hay src o hubo error, mostrar fallback
   if (!src || hasError) {
     return (
-      <div className={`flex items-center justify-center bg-[#F9F8F6] ${className}`}>
-        <BookOpen className="w-12 h-12 text-[#9C9890]" />
+      <div className={`flex items-center justify-center bg-(--ds-muted) ${className}`}>
+        <BookOpen className="size-12 text-(--ds-muted-fg)" aria-hidden />
       </div>
     );
   }
@@ -51,29 +46,16 @@ export function SafeImage({
   const handleError = () => {
     console.warn(`Failed to load image: ${src}`);
     setHasError(true);
-    setIsLoading(false);
   };
 
-  const handleLoad = () => {
-    setIsLoading(false);
-  };
-
-  // Don't render the image until mounted to prevent hydration issues
-  if (!mounted) {
-    return (
-      <div className={`flex items-center justify-center bg-[#F9F8F6] ${className}`}>
-        <div className="w-8 h-8 border-2 border-[#FF4D00] border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
+  // La imagen va en el HTML del servidor (antes se esperaba a la hidratación y
+  // en /blog el navegador tardaba ~5 s en empezar a descargar la portada, que
+  // es el LCP). Sin capa de "cargando" encima: llegaba en ese mismo HTML y
+  // tapaba la portada hasta que React hidrataba y corría onLoad (y sin JS no
+  // se quitaba nunca). Mientras carga se ve el fondo del contenedor.
 
   return (
-    <div className="relative w-full h-full">
-      {isLoading && (
-        <div className={`absolute inset-0 flex items-center justify-center bg-[#F9F8F6] z-10`}>
-          <div className="w-8 h-8 border-2 border-[#FF4D00] border-t-transparent rounded-full animate-spin" />
-        </div>
-      )}
+    <div className="relative w-full h-full bg-(--ds-muted)">
       <Image
         src={src}
         alt={alt}
@@ -82,10 +64,13 @@ export function SafeImage({
         className={className}
         priority={priority}
         quality={quality}
-        placeholder={placeholder}
+        // "blur" exige blurDataURL con imágenes remotas (Firebase Storage): sin
+        // ella, next/image lanza un error en desarrollo y el blog caía en su
+        // error boundary. Sin miniatura disponible se usa "empty".
+        placeholder={placeholder === "blur" && !blurDataURL ? "empty" : placeholder}
         blurDataURL={blurDataURL}
+        unoptimized={!canOptimizeImage(src)}
         onError={handleError}
-        onLoad={handleLoad}
       />
     </div>
   );

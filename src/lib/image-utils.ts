@@ -80,3 +80,21 @@ export function getBlogImageProps(
     blurDataURL: IMAGE_PLACEHOLDER,
   };
 }
+// Hosts de images.remotePatterns en next.config.ts (mantener en sincronía).
+const OPTIMIZABLE_HOSTS = [/^firebasestorage\.googleapis\.com$/, /^[^.]+\.firebasestorage\.app$/, /^storage\.googleapis\.com$/];
+
+/**
+ * Si next/image puede optimizar esta URL. Con un host fuera de remotePatterns
+ * next/image lanza al renderizar (en desarrollo) o /_next/image responde 400;
+ * esas imágenes se sirven con `unoptimized`.
+ */
+export function canOptimizeImage(src: string): boolean {
+  // Ruta local ("/x.png"), pero no una URL sin protocolo ("//host/x.png").
+  if (src.startsWith("/") && !src.startsWith("//")) return true;
+  try {
+    const { protocol, hostname } = new URL(src);
+    return protocol === "https:" && OPTIMIZABLE_HOSTS.some((re) => re.test(hostname));
+  } catch {
+    return false;
+  }
+}
