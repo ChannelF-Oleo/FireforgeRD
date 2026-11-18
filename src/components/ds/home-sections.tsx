@@ -174,6 +174,9 @@ function PlanCard({ plan }: { plan: ServicePlan }) {
       {plan.recurringFee && (
         <p className="mt-1 text-sm text-(--ds-muted-fg) tabular-nums">
           + {usd(plan.recurringFee.amount)}/{plan.recurringFee.period} {plan.recurringFee.label?.toLowerCase()}
+          {/* En los planes web la cuota es opcional (lo dice la sección y el
+              FAQ); en uno con setup es obligatoria. */}
+          {!plan.setupFee && " (opcional)"}
         </p>
       )}
       <p className="mt-1 text-sm text-(--ds-muted-fg)">Entrega: {plan.deliveryTime}</p>
@@ -244,7 +247,8 @@ export function Pricing() {
                     <td className="hidden py-4 pr-4 text-(--ds-muted-fg) sm:table-cell">{plan.idealFor}</td>
                     <td className="py-4 text-right tabular-nums">
                       <span className="whitespace-nowrap">
-                        setup <strong>{usd(plan.price)}</strong>
+                        {plan.setupFee && "setup "}
+                        <strong>{usd(plan.price)}</strong>
                       </span>
                       {/* La cuota mensual es obligatoria en estos planes: sin
                           ella el setup parecía el precio total. */}

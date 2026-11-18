@@ -14,10 +14,12 @@ import { QuizConfirmation } from "@/emails/QuizConfirmation";
 
 // --- SCHEMAS ---
 
+// trim(): el teclado del móvil suele dejar un espacio al final del email y
+// .email() lo rechazaba.
 const contactSchema = z.object({
-  clientName: z.string().min(2, "Nombre requerido"),
-  companyName: z.string().min(2, "Empresa requerida"),
-  email: z.string().email({ message: "Email inválido" }),
+  clientName: z.string().trim().min(2, "Nombre requerido"),
+  companyName: z.string().trim().min(2, "Empresa requerida"),
+  email: z.string().trim().email({ message: "Email inválido" }),
   whatsapp: z.string().min(8, "WhatsApp inválido"),
   serviceType: z.string().min(1, "Servicio requerido"),
   plan: z.string().optional(),
