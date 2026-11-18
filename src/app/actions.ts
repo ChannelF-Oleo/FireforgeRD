@@ -25,8 +25,8 @@ const contactSchema = z.object({
 });
 
 const quizSchema = z.object({
-  clientName: z.string().min(2, "Nombre requerido"),
-  email: z.string().email({ message: "Email inválido" }),
+  clientName: z.string().trim().min(2, "Nombre requerido"),
+  email: z.string().trim().email({ message: "Email inválido" }),
   answers: z.record(z.string(), z.union([z.string(), z.array(z.string())])),
   recommendation: z.string(),
   recommendationDescription: z.string(),

@@ -151,7 +151,7 @@ export function DiagnosticoQuiz() {
   };
 
   const handleSubmitWithEmail = async () => {
-    if (!clientName.trim() || !email.trim()) return;
+    if (nameError || emailError) return;
 
     setIsCalculating(true);
     setSubmitError(null);
@@ -162,8 +162,10 @@ export function DiagnosticoQuiz() {
 
     try {
       const result = await submitQuizResults({
-        clientName,
-        email,
+        // Recortados: el teclado del móvil suele dejar un espacio al final y
+        // el servidor rechazaba el email (el lead se perdía en silencio).
+        clientName: clientName.trim(),
+        email: email.trim(),
         answers,
         recommendation: primarySolution.name,
         recommendationDescription: primarySolution.description,
@@ -189,7 +191,12 @@ export function DiagnosticoQuiz() {
     setIsCalculating(false);
   };
 
-  const nameError = !clientName.trim() ? "Escribe tu nombre." : null;
+  // Mismas reglas que quizSchema en el servidor (nombre de 2+ caracteres).
+  const nameError = !clientName.trim()
+    ? "Escribe tu nombre."
+    : clientName.trim().length < 2
+      ? "El nombre debe tener al menos 2 caracteres."
+      : null;
   const emailError = !email.trim()
     ? "Escribe tu email."
     : !EMAIL_RE.test(email.trim())

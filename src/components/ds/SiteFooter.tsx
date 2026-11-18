@@ -53,7 +53,9 @@ export function SiteFooter() {
         </ul>
 
         <div className="flex flex-col gap-2 border-t border-(--ds-border) pt-6 text-(--ds-muted-fg) sm:col-span-2 sm:flex-row sm:justify-between md:col-span-12">
-          <p>© {year} FireforgeRD</p>
+          {/* El HTML cacheado (estático/ISR) puede ser del año anterior: el
+              cliente corrige el año sin que React lo trate como error. */}
+          <p suppressHydrationWarning>© {year} FireforgeRD</p>
           <p className="flex gap-6">
             <Link href="/aviso-legal" className={linkClass}>Aviso legal</Link>
             <Link href="/privacidad" className={linkClass}>Privacidad</Link>
