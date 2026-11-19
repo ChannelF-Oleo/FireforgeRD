@@ -32,7 +32,12 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     // ⚡ SOLUCIÓN: Configuración para manejar timeouts de Firebase
     loader: 'default',
-    unoptimized: false,
+    // Se agotó la cuota de optimización de imágenes de Vercel: /_next/image
+    // responde 402 (OPTIMIZED_IMAGE_REQUEST_PAYMENT_REQUIRED) para toda
+    // variante que no esté en caché. En escritorio se veían las ya cacheadas;
+    // en móvil (otro ancho por la densidad de píxeles) se pedían variantes
+    // nuevas, fallaban y salía el ícono de reserva. Se sirven las originales.
+    unoptimized: true,
   },
 
   // 2. Redirecciones permanentes (301/308) para SEO
